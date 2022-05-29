@@ -37,5 +37,17 @@
             <ColumnDefinition Width="25"/>
             <ColumnDefinition Width="25"/>
         </Grid.ColumnDefinitions>
+        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="9" Margin="0,0,0,-34" Grid.RowSpan="16" HorizontalAlignment="Center" Width="1"/>
+        <Grid Grid.Column="9" Height="424" VerticalAlignment="Bottom" RenderTransformOrigin="2.5,0.695" Margin="30,0,-212,-29" Grid.RowSpan="16">
+            <Rectangle HorizontalAlignment="Center" Height="122" Stroke="Black" VerticalAlignment="Top" Width="207"/>
+            <Label x:Name="Level" Content="Level&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,168,0,0" VerticalAlignment="Top" Height="44" Width="70"/>
+            <Label x:Name="Score" Content="Score&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,212,0,0" VerticalAlignment="Top" Height="44" Width="70"/>
+            <Label x:Name="Lines" Content="Lines&#xD;&#xA;&#xA;" HorizontalAlignment="Left" Margin="10,261,0,0" VerticalAlignment="Top" Height="44" Width="70"/>
+            <Label x:Name="Level_Value" Content="1&#xD;&#xA;" HorizontalAlignment="Left" Margin="162,168,0,0" VerticalAlignment="Top" Height="39" Width="45"/>
+            <Label x:Name="Score_Value" Content="35&#xD;&#xA;&#xA;" HorizontalAlignment="Left" Margin="162,212,0,0" VerticalAlignment="Top" Height="44" Width="45" RenderTransformOrigin="1.889,0.545"/>
+            <Label x:Name="Lines_Value" Content="0" HorizontalAlignment="Left" Margin="162,261,0,0" VerticalAlignment="Top" Height="44" Width="45"/>
+            <Button x:Name="Quit" Content="Quit" HorizontalAlignment="Left" Margin="11,334,0,0" VerticalAlignment="Top" Height="35" Width="69"/>
+            <Button x:Name="Pause" Content="Pause" HorizontalAlignment="Left" Margin="116,334,0,0" VerticalAlignment="Top" Height="35" Width="68"/>
+        </Grid>
     </Grid>
 </Window>
