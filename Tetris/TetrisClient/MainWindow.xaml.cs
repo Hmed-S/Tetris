@@ -34,41 +34,41 @@ namespace TetrisClient
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler((object sender, EventArgs args) =>
             {
-                DrawTetromino(offsetY, offsetx);
+                if (offsetY == TetrisGrid.RowDefinitions.Count -2) dispatcherTimer.Stop();
+                
                 TetrisGrid.Children.RemoveRange(0, offsetY * 6);
+                
+                DrawTetromino(offsetY, offsetx);
 
-                if (offsetY == TetrisGrid.Children.Count - 1) dispatcherTimer.Stop();
                 offsetY += 1;
-
             });
-            dispatcherTimer.Interval = TimeSpan.FromSeconds(5);
-            dispatcherTimer.Start();
 
+            dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
+            dispatcherTimer.Start();
         }
 
         private void DrawTetromino(int offsetY, int offsetX)
         {
             int[,] values = matrix.Value;
+
             for (int i = 0; i < values.GetLength(0); i++)
             {
                 for (int j = 0; j < values.GetLength(1); j++)
                 {
-                    // Als de waarde niet gelijk is aan 1,
-                    // dan hoeft die niet getekent te worden:
                     if (values[i, j] != 1) continue;
 
                     Rectangle rectangle = new Rectangle()
                     {
-                        Width = 25, // Breedte van een 'cell' in de Grid
-                        Height = 25, // Hoogte van een 'cell' in de Grid
-                        Stroke = Brushes.White, // De rand
-                        StrokeThickness = 1, // Dikte van de rand
-                        Fill = Brushes.Red, // Achtergrondkleur
+                        Width = 25, 
+                        Height = 25, 
+                        Stroke = Brushes.White, 
+                        StrokeThickness = 1, 
+                        Fill = Brushes.Red,
                     };
 
-                    TetrisGrid.Children.Add(rectangle); // Voeg de rectangle toe aan de Grid
-                    Grid.SetRow(rectangle, i + offsetY); // Zet de rij
-                    Grid.SetColumn(rectangle, j + offsetX); // Zet de kolom
+                    TetrisGrid.Children.Add(rectangle); 
+                    Grid.SetRow(rectangle, i + offsetY); 
+                    Grid.SetColumn(rectangle, j + offsetX); 
                 }
             }
 
