@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace TetrisClient
 {
@@ -20,22 +12,42 @@ namespace TetrisClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            Matrix matrix = new Matrix(new int[,]
+        private Matrix matrix = new(new int[,]
                 {
                     { 0, 0, 1 },
                     { 1, 1, 1 },
                     { 0, 0, 0 },
                 }
             );
-            matrix = matrix.Rotate90();
-            
-            int offsetY = 0;
-            int offsetX = 0;
+        public MainWindow()
+        {
+            InitializeComponent();
+            Init();
+        }
 
+
+        private void Init()
+        {
+            int offsetY = 0;
+            int offsetx = 0;
+
+            var dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler((object sender, EventArgs args) =>
+            {
+                DrawTetromino(offsetY, offsetx);
+                TetrisGrid.Children.RemoveRange(0, offsetY * 6);
+
+                if (offsetY == TetrisGrid.Children.Count - 1) dispatcherTimer.Stop();
+                offsetY += 1;
+
+            });
+            dispatcherTimer.Interval = TimeSpan.FromSeconds(5);
+            dispatcherTimer.Start();
+
+        }
+
+        private void DrawTetromino(int offsetY, int offsetX)
+        {
             int[,] values = matrix.Value;
             for (int i = 0; i < values.GetLength(0); i++)
             {
@@ -59,6 +71,7 @@ namespace TetrisClient
                     Grid.SetColumn(rectangle, j + offsetX); // Zet de kolom
                 }
             }
+
         }
     }
 }
