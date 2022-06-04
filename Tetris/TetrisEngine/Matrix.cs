@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.Contracts;
 
-namespace TetrisClient
+namespace TetrisEngine
 {
     /// <summary>
     /// Represents a matrix.
