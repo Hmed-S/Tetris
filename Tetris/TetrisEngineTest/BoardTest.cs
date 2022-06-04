@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using System;
-using TetrisEngine;
+using Engine;
 
 namespace TetrisEngineTest
 {
