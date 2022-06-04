@@ -1,6 +1,6 @@
 ﻿
 
-namespace TetrisEngine
+namespace Engine
 {
     public class Board
     {
@@ -21,5 +21,6 @@ namespace TetrisEngine
                 for (int j = 0; i < collumnCount; i++)
                     Values[i, j] = 0;
         }
+
     }
 }

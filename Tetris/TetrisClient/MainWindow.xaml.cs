@@ -12,7 +12,7 @@ namespace TetrisClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TetrisEngine.Matrix matrix = new(new int[,]
+        private Engine.Matrix matrix = new(new int[,]
                 {
                     { 0, 0, 1 },
                     { 1, 1, 1 },
