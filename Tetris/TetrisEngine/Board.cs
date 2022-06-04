@@ -1,6 +1,4 @@
-﻿
-
-namespace Engine
+﻿namespace Engine
 {
     public class Board
     {
@@ -12,14 +10,15 @@ namespace Engine
                 throw new ArgumentException("row and column count must at least be ten");
 
             Values = new int[rowCount, columnCount];
-            FillBoard(rowCount, columnCount);
+            Replace(0,rowCount, 0,columnCount, (i,j)=>0);
         }
 
-        private void FillBoard(int rowCount, int collumnCount)
+        public void Replace(int rowFrom, int rowTo,
+                    int columnFrom, int columnTo, Func<int, int, int> action)
         {
-            for(int i = 0; i < rowCount; i++)
-                for (int j = 0; i < collumnCount; i++)
-                    Values[i, j] = 0;
+            for (int i = rowFrom; i < rowTo; i++)
+                for (int j =columnFrom; j < columnTo; j++)
+                    Values.SetValue(action(i, j), i, j);
         }
 
     }

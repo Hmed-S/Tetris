@@ -16,23 +16,17 @@
                 }
             );
 
-        private int PutTetromino(int y)
+        public int PutTetromino(int y)
         {
             int maxYvalue = Board.Values.Length - 3;
             
             if (y - 1 == maxYvalue) return -1;
 
-            for (int i = y + 2; i > 0; i--)
-                for (int j = 0; j < _board.Values.GetLength(1); j++)
-                    _board.Values[i, j] = 0;
+            _board.Replace(0, y + 2, 0, _board.Values.GetLength(1), (i, j) => 0);
 
-            for (int i = y - 1; i < y + 2; i++)
-            {
-                for (int j = 0; j < _currentTetromino.Value.GetLength(1); j++)
-                {
-                    _board.Values[i, j] = _currentTetromino.Value[i, j];
-                }
-            }
+            _board.Replace(y-1, y+2,
+                0, _currentTetromino.Value.GetLength(1),
+                (i, j) => _currentTetromino.Value[i,j]);
 
             return 0;
         }
