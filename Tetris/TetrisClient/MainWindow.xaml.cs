@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Engine;
 
 namespace TetrisClient
 {
@@ -12,46 +13,37 @@ namespace TetrisClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Engine.Matrix matrix = new(new int[,]
-                {
-                    { 0, 0, 1 },
-                    { 1, 1, 1 },
-                    { 0, 0, 0 },
-                }
-            );
+        private TetrisEngine _tetrisEngine;
 
         public MainWindow()
         {
             InitializeComponent();
             Init();
+            _tetrisEngine = new TetrisEngine { Board = new Board(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count)};
         }
 
 
         private void Init()
         {
-            int offsetY = 0;
             int offsetx = 0;
 
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler((object sender, EventArgs args) =>
             {
-                if (offsetY == TetrisGrid.RowDefinitions.Count -2) dispatcherTimer.Stop();
-                
-                TetrisGrid.Children.RemoveRange(0, offsetY * 6);
-                
-                DrawTetromino(offsetY, offsetx);
+                var result = _tetrisEngine.DropTetromino(); 
+                if (result.DropStatus==-1) dispatcherTimer.Stop();
 
-                offsetY += 1;
+                TetrisGrid.Children.RemoveRange(0, result.Rows.GetLength(0) * 6);
+                
+                DrawTetromino(offsetx, result.Rows);
             });
 
             dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
             dispatcherTimer.Start();
         }
 
-        private void DrawTetromino(int offsetY, int offsetX)
+        private void DrawTetromino(int offsetX, int[,] values)
         {
-            int[,] values = matrix.Value;
-
             for (int i = 0; i < values.GetLength(0); i++)
             {
                 for (int j = 0; j < values.GetLength(1); j++)
@@ -68,7 +60,7 @@ namespace TetrisClient
                     };
 
                     TetrisGrid.Children.Add(rectangle); 
-                    Grid.SetRow(rectangle, i + offsetY); 
+                    Grid.SetRow(rectangle, i); 
                     Grid.SetColumn(rectangle, j + offsetX); 
                 }
             }
