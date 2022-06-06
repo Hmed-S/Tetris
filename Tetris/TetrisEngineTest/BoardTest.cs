@@ -39,14 +39,14 @@ namespace TetrisEngineTest
         {
             Board board = new(15, 10);
 
-            board.Replace(0, 4, 0,5, (i,j) => i + j);
+            board.Replace(0, 1, 0,5, new [,]{{0,1,2,3,4}});
 
-            int[,] expectedBoard = new int[,]
+            int[,] expectedBoard =
             {
             { 0,1,2,3,4,0,0,0,0,0 },
-            { 1,2,3,4,5,0,0,0,0,0 },
-            { 2,3,4,5,6,0,0,0,0,0 },
-            { 3,4,5,6,7,0,0,0,0,0 },
+            { 0,0,0,0,0,0,0,0,0,0 },
+            { 0,0,0,0,0,0,0,0,0,0 },
+            { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,0,0,0,0,0,0 },
             { 0,0,0,0,0,0,0,0,0,0 },
@@ -74,6 +74,24 @@ namespace TetrisEngineTest
         public void ThrowsExeptionWithValuesBelowTen(int rowCount, int columnCount)
         {
             Assert.Throws<ArgumentException>(()=> new Board(rowCount, columnCount));
+        }
+
+        [Test]
+        public void BoardReturnsRightSubmatrix()
+        {
+            Board board = new(10, 10);
+
+            int[,] rows = board.GetRows(0,5);
+
+            int[,] expected =
+            {
+                { 0,0,0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0,0,0},
+                { 0,0,0,0,0,0,0,0,0,0},
+            };
+            Assert.AreEqual(expected, rows);
         }
     }
 }
