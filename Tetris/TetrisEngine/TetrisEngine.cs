@@ -1,4 +1,6 @@
-﻿namespace Engine
+﻿using Engine.MatrixExtensions;
+
+namespace Engine
 {
     public class TetrisEngine
     {
@@ -49,7 +51,7 @@
             int lastPosition = (_lastPosition+2 >Board.Values.GetLength(0)) ? Board.Values.GetLength(0) : _lastPosition + 2;
             return new()
             {
-                Rows = _board.GetRows(0, lastPosition),
+                Rows = _board.Values.SubMatrix(lastPosition, _board.Values.GetLength(1)),
                 DropStatus = put
             };
         }

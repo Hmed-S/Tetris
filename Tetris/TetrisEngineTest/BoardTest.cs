@@ -75,23 +75,5 @@ namespace TetrisEngineTest
         {
             Assert.Throws<ArgumentException>(()=> new Board(rowCount, columnCount));
         }
-
-        [Test]
-        public void BoardReturnsRightSubmatrix()
-        {
-            Board board = new(10, 10);
-
-            int[,] rows = board.GetRows(0,5);
-
-            int[,] expected =
-            {
-                { 0,0,0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0,0,0},
-                { 0,0,0,0,0,0,0,0,0,0},
-            };
-            Assert.AreEqual(expected, rows);
-        }
     }
 }
