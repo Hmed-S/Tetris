@@ -1,4 +1,4 @@
-﻿using Engine.MatrixExtensions;
+﻿using Engine.Extensions;
 
 namespace Engine
 {
@@ -17,41 +17,40 @@ namespace Engine
                     { 0, 0, 0 },
                 }
             );
-        private int _lastPosition;
+        private int _lastYPosition;
 
 
         private int PutTetromino(int y)
         {
-            int length = Board.Values.GetLength(0);
+            int length = Board.Height;
             int maxYValue = length-3;
-            int redrawWindow = (y>Board.Values.Length - 3)? length-1:y+2;
+            int redrawWindow = (y>maxYValue - 3)? length-1:y+2;
             
             
             if (y > maxYValue && y <length)
             {
-                _board.Replace(0, length-1, 0, _board.Values.GetLength(1), (i, j) => 0);
-                _board.Replace(y - 1, length-1, 0, _currentTetromino.Value.GetLength(1), _currentTetromino.Value);
-            
-                _lastPosition = y;
+                _board.Replace(0, redrawWindow, 0, _board.Width, (i, j) => 0);
+                _board.DrawTetromino(y - 1, length-1, 0, _currentTetromino.Value.GetLength(1), _currentTetromino.Value);
+                _lastYPosition = y;
                 return 0;
             }
             
             if (y==length) return -1;
             
-            _board.Replace(0, redrawWindow, 0, _board.Values.GetLength(1), (i, j) => 0);
-            _board.Replace(y - 1, y + 2, 0, _currentTetromino.Value.GetLength(1), _currentTetromino.Value);
+            _board.Replace(0, redrawWindow, 0, _board.Width, (i, j) => 0);
+            _board.DrawTetromino(y - 1, y + 2, 0, _currentTetromino.Value.Columns(), _currentTetromino.Value);
             
-            _lastPosition = y;
+            _lastYPosition = y;
             return 0;
         }
 
         public Result DropTetromino()
         {
-            int put = PutTetromino(_lastPosition+1);
-            int lastPosition = (_lastPosition+2 >Board.Values.GetLength(0)) ? Board.Values.GetLength(0) : _lastPosition + 2;
+            int put = PutTetromino(_lastYPosition+1);
+            int lastPosition = (_lastYPosition+2 >Board.Height) ? Board.Height : _lastYPosition + 2;
             return new()
             {
-                Rows = _board.Values.SubMatrix(lastPosition, _board.Values.GetLength(1)),
+                Rows = _board[lastPosition,_board.Width],
                 DropStatus = put
             };
         }
