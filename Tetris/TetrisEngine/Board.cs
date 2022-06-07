@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using Engine.MatrixExtensions;
+﻿using Engine.Extensions;
 
 namespace Engine
 {
     public class Board
     {
-        public int[,] Values { get; private set; }
-
+        public int[,] Values { get; }
+        public int Height { get => Values.Rows(); }
+        public int Width { get => Values.Columns(); }
+        
         public Board(int rowCount, int columnCount)
         {
             if (rowCount < 10 || columnCount < 10)
@@ -15,6 +16,7 @@ namespace Engine
             Values = new int[rowCount, columnCount];
             Replace(0,rowCount, 0,columnCount, (i,j)=>0);
         }
+        
 
         public void Replace(int rowFrom, int rowTo,
             int columnFrom, int columnTo,  Func<int, int, int> action)
@@ -27,15 +29,14 @@ namespace Engine
             }
             
         }
+
+        public int[,] this[int from, int to] => Values.SubMatrix(from, to);
         
-        public void Replace(int rowFrom, int rowTo,
+        public void DrawTetromino(int rowFrom, int rowTo,
             int columnFrom, int columnTo, int[,] matrix)
         {
             var matrixIndex = 0;
-            Func<int[,], int> horizontalLength = (m) => m.GetLength(0);
-            
-            bool trueForMatrix = Array.TrueForAll(matrix.GetRow(horizontalLength(matrix) - 1), i => i==0);
-            bool trueForBoard =  Array.TrueForAll(Values.GetRow(horizontalLength(Values)-1), i => i==0);
+            Predicate<int[,]> zeroOnBotom = (m) =>  Array.TrueForAll(m.GetRow(m.Rows() - 1), i => i==0);
             
             for (int i = rowFrom; i < rowTo; i++)
             {
@@ -45,10 +46,10 @@ namespace Engine
                 }
                 matrixIndex += 1;
             }
-            if (trueForMatrix && trueForBoard && rowFrom >= horizontalLength(Values)-2)
+            if (zeroOnBotom(matrix) && zeroOnBotom(Values) && rowFrom >= Values.Rows()-2)
             {
                 Replace(rowFrom, rowTo, columnFrom, columnTo, (i,j)=> 0);
-                Replace(rowFrom, Values.GetLength(0), columnFrom, columnTo, matrix.SubMatrix(2,3));
+                DrawTetromino(rowFrom, Values.GetLength(0), columnFrom, columnTo, matrix.SubMatrix(2,3));
             }
         }
     }

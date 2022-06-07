@@ -39,7 +39,7 @@ namespace TetrisEngineTest
         {
             Board board = new(15, 10);
 
-            board.Replace(0, 1, 0,5, new [,]{{0,1,2,3,4}});
+            board.DrawTetromino(0, 1, 0,5, new [,]{{0,1,2,3,4}});
 
             int[,] expectedBoard =
             {
