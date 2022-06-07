@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -25,8 +26,8 @@ namespace TetrisClient
 
         private void Init()
         {
-            int offsetx = 0;
-
+            GetWindow(this).PreviewKeyDown += Window_PreviewKeyDown;
+            
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler((object sender, EventArgs args) =>
             {
@@ -35,14 +36,20 @@ namespace TetrisClient
 
                 TetrisGrid.Children.RemoveRange(0, result.Rows.GetLength(0) * 6);
                 
-                DrawTetromino(offsetx, result.Rows);
+                DrawTetromino(result.Rows);
             });
 
             dispatcherTimer.Interval = TimeSpan.FromSeconds(1);
             dispatcherTimer.Start();
         }
+        
+        public void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Right)  _tetrisEngine.ShiftToRight();
+            else if (e.Key == Key.Left) _tetrisEngine.ShiftToLeft();
+        }
 
-        private void DrawTetromino(int offsetX, int[,] values)
+        private void DrawTetromino(int[,] values)
         {
             for (int i = 0; i < values.GetLength(0); i++)
             {
@@ -61,7 +68,7 @@ namespace TetrisClient
 
                     TetrisGrid.Children.Add(rectangle); 
                     Grid.SetRow(rectangle, i); 
-                    Grid.SetColumn(rectangle, j + offsetX); 
+                    Grid.SetColumn(rectangle, j); 
                 }
             }
 

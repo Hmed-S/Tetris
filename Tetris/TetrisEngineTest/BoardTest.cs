@@ -33,35 +33,7 @@ namespace TetrisEngineTest
             };
             Assert.AreEqual(expectedBoard, board.Values);
         }
-
-        [Test]
-        public void BoardReplacesValuesCorrect()
-        {
-            Board board = new(15, 10);
-
-            board.DrawTetromino(0, 1, 0,5, new [,]{{0,1,2,3,4}});
-
-            int[,] expectedBoard =
-            {
-            { 0,1,2,3,4,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            { 0,0,0,0,0,0,0,0,0,0 },
-            };
-            Assert.AreEqual(expectedBoard, board.Values);
-        }
-
+        
 
         [Test]
         [TestCase(9, 9)]

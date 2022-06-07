@@ -35,16 +35,19 @@ namespace Engine
         public void DrawTetromino(int rowFrom, int rowTo,
             int columnFrom, int columnTo, int[,] matrix)
         {
-            var matrixIndex = 0;
-            Predicate<int[,]> zeroOnBotom = (m) =>  Array.TrueForAll(m.GetRow(m.Rows() - 1), i => i==0);
+            var matrixYIndex = 0;
+            var matrixXIndex = 0;
             
+            Predicate<int[,]> zeroOnBotom = (m) =>  Array.TrueForAll(m.GetRow(m.Rows() - 1), i => i==0);
             for (int i = rowFrom; i < rowTo; i++)
             {
-                for (int j = columnFrom; j < columnTo; j++)
+                for (int j = columnFrom; j != columnTo; j++)
                 {
-                    Values[i, j] = matrix[matrixIndex, j];
+                    if (matrixXIndex > 2) matrixXIndex = 0;
+                    Values[i, j] = matrix[matrixYIndex, matrixXIndex];
+                    matrixXIndex += 1;
                 }
-                matrixIndex += 1;
+                matrixYIndex += 1;
             }
             if (zeroOnBotom(matrix) && zeroOnBotom(Values) && rowFrom >= Values.Rows()-2)
             {
