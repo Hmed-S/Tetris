@@ -22,20 +22,20 @@ namespace TetrisClient
             Init();
             _tetrisEngine = new TetrisEngine { Board = new Board(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count)};
         }
-
-
+        
         private void Init()
         {
-            GetWindow(this).PreviewKeyDown += Window_PreviewKeyDown;
+            PreviewKeyDown += Window_PreviewKeyDown;
             
             var dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler((object sender, EventArgs args) =>
             {
-                var result = _tetrisEngine.DropTetromino(); 
-                if (result.DropStatus==-1) dispatcherTimer.Stop();
-
-                TetrisGrid.Children.RemoveRange(0, result.Rows.GetLength(0) * 6);
+                _tetrisEngine.DropTetromino();
                 
+                var result = _tetrisEngine.Status(); 
+                if (result.DropStatus==-1 || result.DropStatus ==-2) dispatcherTimer.Stop();
+                
+                TetrisGrid.Children.RemoveRange(0, result.Rows.GetLength(0) * 6);
                 DrawTetromino(result.Rows);
             });
 
