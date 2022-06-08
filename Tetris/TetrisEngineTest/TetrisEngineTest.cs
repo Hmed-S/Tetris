@@ -1,5 +1,4 @@
-﻿using System;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Engine;
 
 namespace TetrisEngineTest
@@ -195,7 +194,8 @@ namespace TetrisEngineTest
 
             for (int i = 0; i < numberOfDrops-1; i++) 
                 engine.DropTetromino();
-            Result result = engine.DropTetromino();
+            engine.DropTetromino();
+            Result result = engine.Status();
             
             Assert.AreEqual(rows, result.Rows);
         }
@@ -208,7 +208,8 @@ namespace TetrisEngineTest
 
             for (int i = 0; i < numberOfShifts - 1; i++)
                 engine.ShiftToRight();
-            Result result = engine.ShiftToRight();
+            engine.ShiftToRight();
+            Result result = engine.Status();
             
             Assert.AreEqual(rows, result.Rows);
         }

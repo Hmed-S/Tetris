@@ -32,7 +32,7 @@ namespace Engine
 
         public int[,] this[int from, int to] => Values.SubMatrix(from, to);
         
-        public void DrawTetromino(int rowFrom, int rowTo,
+        private void PutTetromino(int rowFrom, int rowTo,
             int columnFrom, int columnTo, int[,] matrix)
         {
             var matrixYIndex = 0;
@@ -52,8 +52,35 @@ namespace Engine
             if (zeroOnBotom(matrix) && zeroOnBotom(Values) && rowFrom >= Values.Rows()-2)
             {
                 Replace(rowFrom, rowTo, columnFrom, columnTo, (i,j)=> 0);
-                DrawTetromino(rowFrom, Values.GetLength(0), columnFrom, columnTo, matrix.SubMatrix(2,3));
+                PutTetromino(rowFrom, Values.GetLength(0), columnFrom, columnTo, matrix.SubMatrix(2,3));
             }
         }
+        
+        
+        public int DrawTetromino(int x, int y, int[,] matrix)
+        {
+            
+            int maxYValue = Height-3;
+            int maxXValue = Width - 2;
+            
+            int redrawYWindow = (y>maxYValue - 3)? Height-1:y+2;
+            int redrawXWindow = (x>maxXValue - 3)? Width-1:x+2;
+            
+            if (y==Height) return -1;
+            if (x == maxXValue || x<1) return -2;
+            
+            if (y > maxYValue && y <Height)
+            {
+                Replace(0, redrawYWindow+1, 0, redrawXWindow+1, (i, j) => 0);
+                PutTetromino(y - 1, Height-1, x-1, Width, matrix);
+                return 0;
+            }
+            
+            Replace(0, redrawYWindow, 0, redrawXWindow, (i, j) => 0);
+            PutTetromino(y - 1, y + 2, x-1, x+2, matrix);
+            
+            return 0;
+        }
+        
     }
 }
