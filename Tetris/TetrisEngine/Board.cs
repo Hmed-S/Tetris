@@ -60,7 +60,7 @@ namespace Engine
         public int DrawTetromino(int x, int y, int[,] matrix)
         {
             
-            int maxYValue = Height-3;
+            int maxYValue = Height -3;
             int maxXValue = Width - 2;
             
             int redrawYWindow = (y>maxYValue - 3)? Height-1:y+2;
@@ -68,11 +68,13 @@ namespace Engine
             
             if (y==Height) return -1;
             if (x == maxXValue || x<1) return -2;
+            if (x > maxXValue) x = maxXValue;
             
             if (y > maxYValue && y <Height)
             {
+
                 Replace(0, redrawYWindow+1, 0, redrawXWindow+1, (i, j) => 0);
-                PutTetromino(y - 1, Height-1, x-1, Width, matrix);
+                PutTetromino(y - 1, Height-1, x-1, x+2, matrix);
                 return 0;
             }
             
