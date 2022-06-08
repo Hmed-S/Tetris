@@ -9,112 +9,16 @@ namespace TetrisEngineTest
         {
             return new object[]
             {
-                new object[]{
-                    1, new [,]{
-                        {0, 0, 1},
-                        {1, 1, 1},
-                        {0, 0, 0},
-                    }},
-                
-                new object[]{
-                    2, new [,]{
-                    {0, 0, 0},
-                    {0, 0, 1},
-                    {1, 1, 1},
-                    {0, 0, 0}
-                    
-                }},
-                new object[]{
-                    3, new [,]{
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 1},
-                    {1, 1, 1},
-                    {0, 0, 0}
-                    
-                    }},
-                new object[]{
-                    4, new[,]{
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 1},
-                    {1, 1, 1},
-                    {0, 0, 0}
-                    
-                    }},
-                new object[]{
-                    5, new [,]{
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 1},
-                        {1, 1, 1},
-                        {0, 0, 0}
-                    }},
-                new object[]{
-                    6, new [,]{
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 1},
-                    {1, 1, 1},
-                    {0, 0, 0}
-                    }},
-                new object[]{
-                    7, new [,]{
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 1},
-                        {1, 1, 1},
-                        {0, 0, 0}
-                    }},
-                new object[]{
-                    8, new[,]{
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 1},
-                        {1, 1, 1},
-                        {0, 0, 0}
-                    }},
-                new object[]{
-                9, new[,]{
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 0},
-                    {0, 0, 1},
-                    {1, 1, 1}
-                }},
-                new object[]{
-                    10, new[,]{
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 0},
-                        {0, 0, 1},
-                        {1, 1, 1}
-                    }},
+               new object[]{1,1},
+               new object[]{2,2},
+               new object[]{3,3},
+               new object[]{4,4},
+               new object[]{5,5},
+               new object[]{6,6},
+               new object[]{7,7},
+               new object[]{8,8},
+               new object[]{9,10},
+               new object[]{10,10},
             };
         }
         
@@ -123,72 +27,21 @@ namespace TetrisEngineTest
         {
             return new object[]
             {
-                new object[]{
-                    1, new [,]{
-                        {0, 0, 0, 1},
-                        {0, 1, 1, 1},
-                        {0, 0, 0, 0},
-                    }},
-                
-                new object[]{
-                    2, new [,]{
-                        {0, 0, 0, 0, 1},
-                        {0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                    3, new [,]{
-                        {0, 0, 0, 0, 0, 1},
-                        {0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                    4, new[,]{
-                        {0, 0, 0, 0, 0, 0, 1},
-                        {0, 0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                    5, new [,]{
-                        {0, 0, 0, 0, 0, 0, 0, 1},
-                        {0, 0, 0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                    6, new [,]{
-                        {0, 0, 0, 0, 0, 0, 0, 0, 1},
-                        {0, 0, 0, 0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                    7, new [,]{
-                        {0, 0, 0, 0, 0, 0, 0, 0, 1},
-                        {0, 0, 0, 0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                    8, new[,]{
-                        {0 ,0 ,0 ,0 ,0 ,0 ,0, 0, 1},
-                        {0, 0, 0, 0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    }},
-                new object[]{
-                9, new[,]{
-                    {0 ,0 ,0 ,0 ,0 ,0 ,0, 0, 1},
-                    {0, 0, 0, 0, 0, 0, 1, 1, 1},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                }},
-                new object[]{
-                    10, new[,]{
-                        {0 ,0 ,0 ,0 ,0 ,0 ,0, 0, 1},
-                        {0, 0, 0, 0, 0, 0, 1, 1, 1},
-                        {0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    }},
+                new object[]{1,2},
+                new object[]{2,3},
+                new object[]{3,4},
+                new object[]{4,5},
+                new object[]{5,6},
+                new object[]{6,7},
+                new object[]{7,7},
+                new object[]{8,7},
+                new object[]{9,7},
+                new object[]{10,7},
             };
         }
         
         [TestCaseSource(nameof(DropCases))]
-        public void DropTetrominoReturnsRightRows(int numberOfDrops, int[,] rows)
+        public void DropTetrominoReturnsRightRows(int numberOfDrops, int yPosition)
         {
             TetrisEngine engine = new(){ Board = new Board(10, 10) };
 
@@ -197,11 +50,11 @@ namespace TetrisEngineTest
             engine.DropTetromino();
             Result result = engine.Status();
             
-            Assert.AreEqual(rows, result.Rows);
+            Assert.AreEqual(yPosition, result.LastYPosition);
         }
 
         [TestCaseSource(nameof(ShiftRightCases))]
-        public void CanShiftToRight(int numberOfShifts, int[,] rows)
+        public void CanShiftToRight(int numberOfShifts, int xPosition)
         {
             TetrisEngine engine = new(){ Board = new Board(10, 10) };
             engine.DropTetromino();
@@ -211,7 +64,7 @@ namespace TetrisEngineTest
             engine.ShiftToRight();
             Result result = engine.Status();
             
-            Assert.AreEqual(rows, result.Rows);
+            Assert.AreEqual(xPosition, result.LastXPosition);
         }
         
     }
