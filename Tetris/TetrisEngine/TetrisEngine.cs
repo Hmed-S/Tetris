@@ -30,12 +30,14 @@ namespace Engine
 
         public Result Status()
         {
-            int lastYPosition = (_lastYPosition+2 >Board.Height) ? Board.Height : _lastYPosition + 2;
-            int lastXPosition = (_lastXposition+2 >Board.Width) ? Board.Width : _lastXposition + 2;
+            int lastYPosition = (_lastYPosition+2 >Board.Height) ? Board.Height : _lastYPosition;
+            
             return new()
             {
-                Rows = Board[lastYPosition, lastXPosition],
-                DropStatus = _lastDropStatus
+                LastXPosition = _lastXposition,
+                LastYPosition = lastYPosition,
+                DropStatus = _lastDropStatus,
+                Tetromino = _currentTetromino.Value
             };
         }
         
