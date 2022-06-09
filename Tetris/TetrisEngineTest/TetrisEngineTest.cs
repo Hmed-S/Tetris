@@ -48,9 +48,9 @@ namespace TetrisEngineTest
             for (int i = 0; i < numberOfDrops-1; i++) 
                 engine.DropTetromino();
             engine.DropTetromino();
-            Result result = engine.Status();
+            Tetronmino tetronmino = engine.Status();
             
-            Assert.AreEqual(yPosition, result.LastYPosition);
+            Assert.AreEqual(yPosition, tetronmino.LastYPosition);
         }
 
         [TestCaseSource(nameof(ShiftRightCases))]
@@ -62,9 +62,9 @@ namespace TetrisEngineTest
             for (int i = 0; i < numberOfShifts - 1; i++)
                 engine.ShiftToRight();
             engine.ShiftToRight();
-            Result result = engine.Status();
+            Tetronmino tetronmino = engine.Status();
             
-            Assert.AreEqual(xPosition, result.LastXPosition);
+            Assert.AreEqual(xPosition, tetronmino.LastXPosition);
         }
         
     }
