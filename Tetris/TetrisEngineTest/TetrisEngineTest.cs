@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Engine;
+using Moq;
 
 namespace TetrisEngineTest
 {
@@ -17,55 +18,56 @@ namespace TetrisEngineTest
                new object[]{6,6},
                new object[]{7,7},
                new object[]{8,8},
-               new object[]{9,10},
-               new object[]{10,10},
+               new object[]{9,8},
+               new object[]{10,8},
             };
         }
-        
-        
-         public static object[] ShiftRightCases()
+
+        public static object[] ShiftRightCases()
         {
             return new object[]
             {
-                new object[]{1,2},
-                new object[]{2,3},
-                new object[]{3,4},
-                new object[]{4,5},
-                new object[]{5,6},
-                new object[]{6,7},
+                new object[]{1,1},
+                new object[]{2,2},
+                new object[]{3,3},
+                new object[]{4,4},
+                new object[]{5,5},
+                new object[]{6,6},
                 new object[]{7,7},
                 new object[]{8,7},
                 new object[]{9,7},
-                new object[]{10,7},
+                new object[]{10,7}
             };
         }
         
         [TestCaseSource(nameof(DropCases))]
         public void DropTetrominoReturnsRightRows(int numberOfDrops, int yPosition)
         {
-            TetrisEngine engine = new(){ Board = new Board(10, 10) };
+            var engineMock = new Mock<TetrisEngine>(10,10);
+            engineMock.Setup(engine => engine.CurrentTetromino()).Returns(Tetronmino.FromShape(Shapes.LShape));
+            TetrisEngine engine = engineMock.Object;
 
             for (int i = 0; i < numberOfDrops-1; i++) 
                 engine.DropTetromino();
             engine.DropTetromino();
-            Tetronmino tetronmino = engine.Status();
+            Tetronmino tetronmino = engine.CurrentTetromino();
             
-            Assert.AreEqual(yPosition, tetronmino.LastYPosition);
+            Assert.AreEqual(yPosition, tetronmino.YPosition);
         }
 
         [TestCaseSource(nameof(ShiftRightCases))]
         public void CanShiftToRight(int numberOfShifts, int xPosition)
         {
-            TetrisEngine engine = new(){ Board = new Board(10, 10) };
-            engine.DropTetromino();
+            var engineMock = new Mock<TetrisEngine>(10,10);
+            engineMock.Setup(engine => engine.CurrentTetromino()).Returns(Tetronmino.FromShape(Shapes.LShape));
+            TetrisEngine engine = engineMock.Object;
 
             for (int i = 0; i < numberOfShifts - 1; i++)
                 engine.ShiftToRight();
             engine.ShiftToRight();
-            Tetronmino tetronmino = engine.Status();
+            Tetronmino tetronmino = engine.CurrentTetromino();
             
-            Assert.AreEqual(xPosition, tetronmino.LastXPosition);
+            Assert.AreEqual(xPosition, tetronmino.XPosition);
         }
-        
     }
 }
