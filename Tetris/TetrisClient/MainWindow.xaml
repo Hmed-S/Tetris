@@ -54,6 +54,18 @@
             <Label x:Name="Lines_Value" Content="0" HorizontalAlignment="Right" Margin="162,49,0,0" VerticalAlignment="Top" Height="44" Width="45" Grid.Row="1"/>
             <Button x:Name="Quit" Content="Quit" HorizontalAlignment="Left" Margin="11,117,0,0" VerticalAlignment="Top" Height="35" Width="69" Grid.Row="1" RenderTransformOrigin="0.447,0.126"/>
             <Button x:Name="Pause" Content="Pause" HorizontalAlignment="Left" Margin="136,117,0,0" VerticalAlignment="Top" Height="35" Width="68" Grid.Row="1"/>
+            <Grid x:Name="PreviewGrid" HorizontalAlignment="Left" Height="75" Margin="84,75,50,15" VerticalAlignment="Top" Width="75">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="25"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

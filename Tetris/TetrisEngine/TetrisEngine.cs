@@ -4,14 +4,9 @@ namespace Engine
     public class TetrisEngine
     {
         public Board Board { get; init; }
- 
-        private Matrix _currentTetromino = new(new [,]
-                {
-                    { 0, 0, 1 },
-                    { 1, 1, 1 },
-                    { 0, 0, 0 },
-                }
-            );
+
+        private Tetronmino _currentTetromino = Tetronmino.Random();
+        public Tetronmino Preview { get; private set; } = Tetronmino.Random();
         private int _lastYPosition;
         private int _lastXposition =1;
         private int _lastDropStatus;
@@ -19,7 +14,7 @@ namespace Engine
 
         private void PutTetromino(int x, int y)
         {
-            int draw = Board.DrawTetromino(x, y, _currentTetromino.Value);
+            int draw = Board.DrawTetromino(x, y, _currentTetromino.Shape.Value);
             if (draw == 0)
             {
                 _lastXposition = x;
@@ -28,17 +23,23 @@ namespace Engine
             _lastDropStatus = draw;
         }
 
-        public Result Status()
+        public void Next()
+        {
+            _currentTetromino = Preview;
+            Preview = Tetronmino.Random();
+            _lastYPosition = 0;
+            _lastXposition = 1;
+            _lastDropStatus = 0;
+            
+        }
+
+        public Tetronmino Status()
         {
             int lastYPosition = (_lastYPosition+2 >Board.Height) ? Board.Height : _lastYPosition;
-            
-            return new()
-            {
-                LastXPosition = _lastXposition,
-                LastYPosition = lastYPosition,
-                DropStatus = _lastDropStatus,
-                Tetromino = _currentTetromino.Value
-            };
+            _currentTetromino.LastXPosition = _lastXposition;
+            _currentTetromino.LastYPosition = lastYPosition;
+            _currentTetromino. DropStatus = _lastDropStatus;
+            return _currentTetromino;
         }
         
         public void ShiftToLeft()

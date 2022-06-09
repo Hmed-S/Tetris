@@ -37,6 +37,8 @@ namespace Engine
         {
             var matrixYIndex = 0;
             var matrixXIndex = 0;
+
+            if (rowFrom < 0) rowFrom = 0;
             
             Predicate<int[,]> zeroOnBotom = (m) =>  Array.TrueForAll(m.GetRow(m.Rows() - 1), i => i==0);
             for (int i = rowFrom; i < rowTo; i++)
