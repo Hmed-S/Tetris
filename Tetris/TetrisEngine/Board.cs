@@ -29,14 +29,22 @@ namespace Engine
             return x;
         }
 
+        private Tetronmino? FindByXCoordinates(int x, int index) =>
+            Tetronminos.Find(tetronmino => tetronmino.XPosition == x && index != Tetronminos.IndexOf(tetronmino));
+        
+        private Tetronmino? FindByYCoordinates(int y,int index) =>
+            Tetronminos.Find(tetronmino => tetronmino.XPosition == y && index !=Tetronminos.IndexOf(tetronmino));
+
+
         public int ShiftCoordinates(int x, int y, Tetronmino tetromino)
         {
             int maxYValue = Height-2 + EmptyCount(tetromino.Shape.Value, i => isEmpty(tetromino.Shape.Value.GetRow(i)));
             int maxXValue = Width-2 + EmptyCount(tetromino.Shape.Value, i => isEmpty(tetromino.Shape.Value.GetColumn(i)));
-
+            int index = Tetronminos.IndexOf(tetromino);
+            
             if (y >=maxYValue) return -1;
             if (x >= maxXValue || x<0) return -2;
-
+            
             tetromino.YPosition = y;
             tetromino.XPosition = x;
             return 0;

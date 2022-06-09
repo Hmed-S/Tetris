@@ -45,6 +45,24 @@ namespace TetrisEngineTest
             };
         }
 
+        public static IEnumerable<TestCaseData> CollisionCases()
+        {
+            return new[]
+            {
+                new TestCaseData(1,2,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,5,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,7,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,8,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,9,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,10,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,11,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(5,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(7,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+            };
+        }
+        
+
         [Test]
         [TestCase(9, 9)]
         [TestCase(7, 8)]
@@ -65,5 +83,19 @@ namespace TetrisEngineTest
             int result = board.ShiftCoordinates(x, y, tetronmino);
             Assert.AreEqual(dropstatus, result);
         }
+
+        [TestCaseSource(nameof(CollisionCases))]
+        public void CollisionDetection(int x, int y, Tetronmino tetronmino, Tetronmino tetronmino2)
+        {
+            Board board = new Board(10, 10);
+            board.AddTetromino(tetronmino);
+            board.AddTetromino(tetronmino2);
+            
+            board.ShiftCoordinates(x, y, tetronmino);
+            int result = board.ShiftCoordinates(x, y, tetronmino2);
+            
+            Assert.AreEqual(-1, result);
+        }
+
     }
 }
