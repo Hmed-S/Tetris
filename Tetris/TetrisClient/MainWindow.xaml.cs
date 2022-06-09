@@ -22,9 +22,8 @@ namespace TetrisClient
         public MainWindow()
         {
             InitializeComponent();
-            _tetrisEngine = new TetrisEngine { Board = new Board(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count)};
+            _tetrisEngine = new(TetrisGrid.ColumnDefinitions.Count, TetrisGrid.RowDefinitions.Count);
             Init();
-
         }
         
         private void Init()
@@ -59,13 +58,14 @@ namespace TetrisClient
         private void DropTetromino(object sender, EventArgs args)
         {
             _tetrisEngine.DropTetromino();
-            var result = _tetrisEngine.Status();
+            var result = _tetrisEngine.AllTetrominos();
             TetrisGrid.Children.Clear();
-
-            Trace.WriteLine($"{result.LastYPosition+2}");
-            TetrisGrid.Children.RemoveRange(0, result.LastYPosition+2);
-            DrawTetromino(result.LastYPosition-1, result.LastXPosition-1, result.Shape, TetrisGrid);
-            _timer.IsEnabled = !(result.LastYPosition == TetrisGrid.RowDefinitions.Count -2 || result.DropStatus == -1);
+            
+            result.ForEach(tetronmino =>
+            {
+                Trace.WriteLine($"{tetronmino.YPosition}, {tetronmino.XPosition} ${tetronmino.DropStatus}");
+                DrawTetromino((tetronmino.YPosition==1)? 0:tetronmino.YPosition, tetronmino.XPosition, tetronmino.Shape, TetrisGrid);
+            });
         }
         
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -73,23 +73,7 @@ namespace TetrisClient
             if (e.Key == Key.Right)  _tetrisEngine.ShiftToRight();
             else if (e.Key == Key.Left) _tetrisEngine.ShiftToLeft();
         }
-
-
-        private void PrintChildren()
-        {
-            Trace.WriteLine(TetrisGrid.Children.Count);
-            foreach (var v in TetrisGrid.Children)
-            {
-                Trace.WriteLine(v);
-            }
-        }
-        private void SmartRemove(int from , int to)
-        {
-            for(int i = from; i <to; i++ )
-            {
-                TetrisGrid.Children.RemoveAt(i);
-            }
-        }
+        
         private void DrawTetromino(int offsetY, int offsetX, Matrix matrix, Grid grid)
         {
             

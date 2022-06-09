@@ -1,58 +1,37 @@
-﻿
-namespace Engine
+﻿namespace Engine;
+
+public class TetrisEngine
 {
-    public class TetrisEngine
+    private Board Board { get;}
+    public Tetronmino Preview { get; private set; }
+    public TetrisEngine(int width, int height)
     {
-        public Board Board { get; init; }
-
-        private Tetronmino _currentTetromino = Tetronmino.Random();
-        public Tetronmino Preview { get; private set; } = Tetronmino.Random();
-        private int _lastYPosition;
-        private int _lastXposition =1;
-        private int _lastDropStatus;
-    
-
-        private void PutTetromino(int x, int y)
-        {
-            int draw = Board.DrawTetromino(x, y, _currentTetromino.Shape.Value);
-            if (draw == 0)
-            {
-                _lastXposition = x;
-                _lastYPosition = y;
-            }
-            _lastDropStatus = draw;
-        }
-
-        public void Next()
-        {
-            _currentTetromino = Preview;
-            Preview = Tetronmino.Random();
-            _lastYPosition = 0;
-            _lastXposition = 1;
-            _lastDropStatus = 0;
-            
-        }
-
-        public Tetronmino Status()
-        {
-            int lastYPosition = (_lastYPosition+2 >Board.Height) ? Board.Height : _lastYPosition;
-            _currentTetromino.LastXPosition = _lastXposition;
-            _currentTetromino.LastYPosition = lastYPosition;
-            _currentTetromino. DropStatus = _lastDropStatus;
-            return _currentTetromino;
-        }
-        
-        public void ShiftToLeft()
-        {
-            if(_lastYPosition != Board.Height-3) PutTetromino(_lastXposition-1, _lastYPosition);
-        }
-
-        public void ShiftToRight()
-        {
-            if(_lastYPosition != Board.Height-3) PutTetromino(_lastXposition+1, _lastYPosition);
-        }
-        
-        public void DropTetromino() => PutTetromino(_lastXposition, _lastYPosition+1);
-
+        Board = new Board(height, width);
+        Board.AddTetromino(Tetronmino.Random());
+        Preview = Tetronmino.Random();
     }
+
+    public virtual Tetronmino CurrentTetromino() => Board.Tetronminos[Board.Tetronminos.Count - 1];
+
+    private void PutTetromino(int x, int y)
+    {
+        int draw = Board.ShiftCoordinates(x, y, CurrentTetromino());
+        CurrentTetromino().DropStatus = draw;
+        if(CurrentTetromino().DropStatus == -1) Next();
+    }
+
+    public void Next()
+    {
+        Board.AddTetromino(Preview);
+        Preview = Tetronmino.Random();
+    }
+
+    public List<Tetronmino> AllTetrominos() => Board.Tetronminos;
+        
+    public void ShiftToLeft() => PutTetromino(CurrentTetromino().XPosition-1, CurrentTetromino().YPosition);
+        
+    public void ShiftToRight() => PutTetromino(CurrentTetromino().XPosition+1, CurrentTetromino().YPosition);
+        
+    public void DropTetromino() => PutTetromino(CurrentTetromino().XPosition, CurrentTetromino().YPosition+1);
+
 }
