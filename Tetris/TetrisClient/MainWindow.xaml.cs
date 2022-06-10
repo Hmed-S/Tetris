@@ -63,7 +63,7 @@ namespace TetrisClient
             
             result.ForEach(tetronmino =>
             {
-                Trace.WriteLine($"{tetronmino.YPosition}, {tetronmino.XPosition} ${tetronmino.DropStatus}");
+                //Trace.WriteLine($"{tetronmino.YPosition}, {tetronmino.XPosition} ${tetronmino.DropStatus}");
                 DrawTetromino((tetronmino.YPosition==1)? 0:tetronmino.YPosition, tetronmino.XPosition, tetronmino.Shape, TetrisGrid);
             });
         }

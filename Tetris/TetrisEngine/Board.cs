@@ -34,17 +34,26 @@ namespace Engine
         
         private Tetronmino? FindByYCoordinates(int y,int index) =>
             Tetronminos.Find(tetronmino => tetronmino.XPosition == y && index !=Tetronminos.IndexOf(tetronmino));
-
-
+        
         public int ShiftCoordinates(int x, int y, Tetronmino tetromino)
         {
             int maxYValue = Height-2 + EmptyCount(tetromino.Shape.Value, i => isEmpty(tetromino.Shape.Value.GetRow(i)));
             int maxXValue = Width-2 + EmptyCount(tetromino.Shape.Value, i => isEmpty(tetromino.Shape.Value.GetColumn(i)));
             int index = Tetronminos.IndexOf(tetromino);
-            
+
+            var other = Tetronminos.Find(tetromino => y+2 == tetromino.YPosition
+            && x+1 == tetromino.XPosition);
+
+            if (other != null && Tetronminos.Count >1)
+            {
+                maxYValue = other.YPosition-5;
+                maxXValue = other.XPosition;
+            }
+
+            //  if (Tetronminos.Exists(tetromino => x == tetromino.XPosition)) return -2;
             if (y >=maxYValue) return -1;
             if (x >= maxXValue || x<0) return -2;
-            
+
             tetromino.YPosition = y;
             tetromino.XPosition = x;
             return 0;
