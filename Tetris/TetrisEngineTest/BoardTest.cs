@@ -49,16 +49,16 @@ namespace TetrisEngineTest
         {
             return new[]
             {
-                new TestCaseData(1,2,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,5,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,7,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,8,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,9,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,10,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,11,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
                 new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(5,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(7,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,2,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(3,3,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,4,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,5,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,6,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                // new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                // new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                // new TestCaseData(5,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                // new TestCaseData(7,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
             };
         }
         
