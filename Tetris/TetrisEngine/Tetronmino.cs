@@ -1,4 +1,6 @@
-﻿namespace Engine
+﻿using Engine.Extensions;
+
+namespace Engine
 {
     public class Tetronmino
     {
@@ -7,6 +9,21 @@
         public int YPosition { get; set; }
         public Matrix Shape { get; set; }
 
+        private bool isEmpty(int[] array) => Array.TrueForAll(array, i => i==0);
+
+        private int EmptyCount(int[,] matrix, Predicate<int> predicate)
+        {
+            int x = 0;
+            foreach (int i in Enumerable.Range(0, matrix.ColumnCount()))
+                if (predicate(i))
+                    x += 1;
+            return x;
+        }
+
+        public int NumberOfEmptyRows() => EmptyCount(Shape.Value, i => isEmpty(Shape.Value.GetRow(i)));
+
+        public int numberOfEmptyColumns() => EmptyCount(Shape.Value, i => isEmpty(Shape.Value.GetColumn(i)));
+        
         public static Tetronmino Random()
         {
             Random random = new Random();

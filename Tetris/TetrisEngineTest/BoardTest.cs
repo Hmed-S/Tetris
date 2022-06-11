@@ -2,7 +2,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using Engine;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 
 namespace TetrisEngineTest
 {
@@ -49,16 +48,25 @@ namespace TetrisEngineTest
         {
             return new[]
             {
-                new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,2,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(3,3,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,4,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,5,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                new TestCaseData(1,6,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                // new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                // new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                // new TestCaseData(5,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
-                // new TestCaseData(7,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape)),
+                new TestCaseData(1,1,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,1, 0,1),
+                new TestCaseData(1,2,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,2, 0,2),
+                new TestCaseData(1,3,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,2,-0,2),
+                new TestCaseData(1,4,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,3,0,3),
+                new TestCaseData(1,5,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,4,0,4),
+                new TestCaseData(1,6,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,5,0,5),
+                new TestCaseData(1,7,Tetronmino.FromShape(Shapes.JShape),Tetronmino.FromShape(Shapes.OShape),1,6,0,6),
+                
+                new TestCaseData(1,1,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,1,0,1),
+                new TestCaseData(1,2,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,2,0,2),
+                new TestCaseData(1,3,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,2,0,2),
+                new TestCaseData(1,4,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,3,0,3),
+                new TestCaseData(1,5,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,4,0,4),
+                new TestCaseData(1,6,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,5,0,5),
+                new TestCaseData(1,7,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,6,0,6),
+                new TestCaseData(1,8,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,6,0,6),
+                new TestCaseData(1,9,Tetronmino.FromShape(Shapes.SShape),Tetronmino.FromShape(Shapes.IShape),1,6,0,6)
+                
+                
             };
         }
         
@@ -85,16 +93,17 @@ namespace TetrisEngineTest
         }
 
         [TestCaseSource(nameof(CollisionCases))]
-        public void CollisionDetection(int x, int y, Tetronmino tetronmino, Tetronmino tetronmino2)
+        public void CollisionDetection(int x, int y, Tetronmino tetronmino, Tetronmino tetronmino2, int x2, int y2, int expected, int ExpectedYPosition)
         {
             Board board = new Board(10, 10);
             board.AddTetromino(tetronmino);
             board.AddTetromino(tetronmino2);
             
             board.ShiftCoordinates(x, y, tetronmino);
-            int result = board.ShiftCoordinates(x, y, tetronmino2);
+            int result = board.ShiftCoordinates(x2, y2, tetronmino2);
             
-            Assert.AreEqual(-1, result);
+            Assert.AreEqual(expected, result);
+            Assert.AreEqual(ExpectedYPosition, tetronmino2.YPosition);
         }
 
     }
