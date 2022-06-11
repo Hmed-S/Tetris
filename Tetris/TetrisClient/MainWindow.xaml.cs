@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -34,27 +35,15 @@ namespace TetrisClient
             _timer.Tick += DropTetromino;
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Start();
+            Pause.Click += PauseTimer;
         }
-
-        private string toString(int[,] a)
+        
+        private void PauseTimer(object sender, EventArgs args) =>_timer.IsEnabled = !_timer.IsEnabled;
+        public void RedrawPreview()
         {
-            var result = string.Empty;
-            var maxI = a.GetLength(0);
-            var maxJ = a.GetLength(1);
-            for (var i = 0; i < maxI; i++)
-            {
-                result += ",{";
-                for (var j = 0; j < maxJ; j++)
-                {
-                    result += $"{a[i, j]},";
-                }
-
-                result += "}";
-            }
-
-            return result;
+            PreviewGrid.Children.Clear();
+            DrawTetromino(0,0, _tetrisEngine.Preview.Shape, PreviewGrid);
         }
-
         private void DropTetromino(object sender, EventArgs args)
         {
             _tetrisEngine.DropTetromino();
@@ -63,9 +52,10 @@ namespace TetrisClient
             
             result.ForEach(tetronmino =>
             {
-                //Trace.WriteLine($"{tetronmino.YPosition}, {tetronmino.XPosition} ${tetronmino.DropStatus}");
+                if (tetronmino.DropStatus == -1) RedrawPreview();
                 DrawTetromino((tetronmino.YPosition==1)? 0:tetronmino.YPosition, tetronmino.XPosition, tetronmino.Shape, TetrisGrid);
             });
+            Trace.WriteLine($"{result.Last().YPosition}, {result.Last().XPosition} ${result.Last().DropStatus}");
         }
         
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)

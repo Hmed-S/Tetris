@@ -1,4 +1,5 @@
-﻿using Engine.Extensions;
+﻿using System.Diagnostics;
+using Engine.Extensions;
 
 namespace Engine
 {
@@ -18,39 +19,68 @@ namespace Engine
 
         public void AddTetromino(Tetronmino tetronmino) => Tetronminos.Add(tetronmino);
 
-        private bool isEmpty(int[] array) => Array.TrueForAll(array, i => i==0);
-
-        private int EmptyCount(int[,] matrix, Predicate<int> predicate)
+        /// <summary>
+        ///  tetromino1:
+        /// [
+        ///  [ 1, 1, 1 ]
+        ///  [ 0, 1, 1 ]
+        ///  [ 0, 1, 0 ] // returns 0 if last is [1,0,0] continue
+        /// ]
+        ///
+        ///  tetromino2
+        /// [
+        ///  [ 1, 0, 0 ]
+        ///  [ 1, 0, 0 ]  [1,0,0] 
+        ///  [ 1, 0, 0 ]  [1,1,1]
+        /// ] returns 1 with above output and collumn = 1
+        /// </summary>
+        /// <param name="Tetromino1"></param>
+        /// <returns></returns>
+        public int FitTogether(Tetronmino tetronmino1, Tetronmino tetronmino2, int collumn)
         {
-            int x = 0;
-            foreach (int i in Enumerable.Range(0, matrix.ColumnCount()))
-                if (predicate(i))
-                    x += 1;
-            return x;
+            int total = 0;
+            Func<Tetronmino,int, int, bool> trueForRow = (m, i, match) =>  Array.TrueForAll(m.Shape.Value.GetRow(i), i => i==match);
+            if (trueForRow(tetronmino1, 2, 2) || trueForRow(tetronmino2, 0, 1)) return total;
+            int[] tetromino1Column = tetronmino1.Shape.Value.GetColumn(collumn);
+            int[] tetromnino2Column = tetronmino2.Shape.Value.GetColumn(collumn);
+            foreach (int i in Enumerable.Range(0,2))
+            {
+                if (tetromino1Column[i] == 1 && tetromnino2Column[i] == 0 ||
+                    tetromino1Column[i] == 0 && tetromnino2Column[i] == 1  ) total += 1;
+                else if(tetromnino2Column[i] == 1)  break;
+            }
+            return total;
         }
-
-        private Tetronmino? FindByXCoordinates(int x, int index) =>
-            Tetronminos.Find(tetronmino => tetronmino.XPosition == x && index != Tetronminos.IndexOf(tetronmino));
-        
-        private Tetronmino? FindByYCoordinates(int y,int index) =>
-            Tetronminos.Find(tetronmino => tetronmino.XPosition == y && index !=Tetronminos.IndexOf(tetronmino));
         
         public int ShiftCoordinates(int x, int y, Tetronmino tetromino)
         {
-            int maxYValue = Height-2 + EmptyCount(tetromino.Shape.Value, i => isEmpty(tetromino.Shape.Value.GetRow(i)));
-            int maxXValue = Width-2 + EmptyCount(tetromino.Shape.Value, i => isEmpty(tetromino.Shape.Value.GetColumn(i)));
-            int index = Tetronminos.IndexOf(tetromino);
+            int maxYValue = Height - 2 + tetromino.NumberOfEmptyRows();
+            int maxXValue = Width - 2 + tetromino.numberOfEmptyColumns();
 
-            var other = Tetronminos.Find(tetromino => y+2 == tetromino.YPosition
-            && x+1 == tetromino.XPosition);
-
+            var other = Tetronminos.FindLast(tetro =>  tetro.YPosition == tetromino.YPosition+3);
+            
+            
             if (other != null && Tetronminos.Count >1)
             {
-                maxYValue = other.YPosition-5;
-                maxXValue = other.XPosition;
+                if (other.XPosition == tetromino.XPosition)
+                {
+                    maxYValue = other.YPosition-3;
+
+                    if(Array.TrueForAll(other.Shape.Value.GetRow(0), i=> i==0)) maxYValue += 1;
+                    if(Array.TrueForAll(tetromino.Shape.Value.GetRow(2), i=> i==0)) maxYValue += 1;
+                    maxYValue +=FitTogether(tetromino, other, 0);
+                    
+                    tetromino.YPosition = maxYValue;
+                }
+
+                if (tetromino.XPosition == other.XPosition + 1)
+                {
+                    Trace.WriteLine("+1");
+                }
+                if(tetromino.XPosition == other.XPosition+2) Trace.WriteLine("+2");
+                
             }
 
-            //  if (Tetronminos.Exists(tetromino => x == tetromino.XPosition)) return -2;
             if (y >=maxYValue) return -1;
             if (x >= maxXValue || x<0) return -2;
 
