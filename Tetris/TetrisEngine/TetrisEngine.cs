@@ -3,15 +3,15 @@
 public class TetrisEngine
 {
     private Board Board { get;}
-    public Tetronmino Preview { get; private set; }
+    public Tetromino Preview { get; private set; }
     public TetrisEngine(int width, int height)
     {
         Board = new Board(height, width);
-        Board.AddTetromino(Tetronmino.Random());
-        Preview = Tetronmino.Random();
+        Board.AddTetromino(Tetromino.Random());
+        Preview = Tetromino.Random();
     }
 
-    public virtual Tetronmino CurrentTetromino() => Board.Tetronminos[Board.Tetronminos.Count - 1];
+    public virtual Tetromino CurrentTetromino() => Board.Tetronminos[Board.Tetronminos.Count - 1];
 
     private void PutTetromino(int x, int y)
     {
@@ -23,10 +23,10 @@ public class TetrisEngine
     public void Next()
     {
         Board.AddTetromino(Preview);
-        Preview = Tetronmino.Random();
+        Preview = Tetromino.Random();
     }
 
-    public List<Tetronmino> AllTetrominos() => Board.Tetronminos;
+    public List<Tetromino> AllTetrominos() => Board.Tetronminos;
         
     public void ShiftToLeft() => PutTetromino(CurrentTetromino().XPosition-1, CurrentTetromino().YPosition);
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,7 +34,7 @@ namespace TetrisClient
             PreviewKeyDown += Window_PreviewKeyDown;
             _timer = new DispatcherTimer();
             _timer.Tick += DropTetromino;
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Interval = TimeSpan.FromSeconds(0.4);
             _timer.Start();
             Pause.Click += PauseTimer;
         }
@@ -55,7 +56,6 @@ namespace TetrisClient
                 if (tetronmino.DropStatus == -1) RedrawPreview();
                 DrawTetromino((tetronmino.YPosition==1)? 0:tetronmino.YPosition, tetronmino.XPosition, tetronmino.Shape, TetrisGrid);
             });
-            Trace.WriteLine($"{result.Last().YPosition}, {result.Last().XPosition} ${result.Last().DropStatus}");
         }
         
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
