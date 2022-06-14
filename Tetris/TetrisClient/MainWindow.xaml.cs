@@ -30,7 +30,7 @@ namespace TetrisClient
         
         private void Init()
         {
-            DrawTetromino(0, 0, _tetrisEngine.Preview.Shape, PreviewGrid);
+            DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
             PreviewKeyDown += Window_PreviewKeyDown;
             _timer = new DispatcherTimer();
             _timer.Tick += DropTetromino;
@@ -43,19 +43,14 @@ namespace TetrisClient
         public void RedrawPreview()
         {
             PreviewGrid.Children.Clear();
-            DrawTetromino(0,0, _tetrisEngine.Preview.Shape, PreviewGrid);
+            DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
         }
         private void DropTetromino(object sender, EventArgs args)
         {
             _tetrisEngine.DropTetromino();
-            var result = _tetrisEngine.AllTetrominos();
+            if (_tetrisEngine.CurrentTetromino().DropStatus == -1) RedrawPreview();
             TetrisGrid.Children.Clear();
-            
-            result.ForEach(tetronmino =>
-            {
-                if (tetronmino.DropStatus == -1) RedrawPreview();
-                DrawTetromino((tetronmino.YPosition==1)? 0:tetronmino.YPosition, tetronmino.XPosition, tetronmino.Shape, TetrisGrid);
-            });
+            DrawTetromino(_tetrisEngine.Board, TetrisGrid);
         }
         
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -64,10 +59,8 @@ namespace TetrisClient
             else if (e.Key == Key.Left) _tetrisEngine.ShiftToLeft();
         }
         
-        private void DrawTetromino(int offsetY, int offsetX, Matrix matrix, Grid grid)
+        private void DrawTetromino(int[,] values, Grid grid)
         {
-            
-            var values = matrix.Value;
             for (int i = 0; i < values.GetLength(0); i++)
             {
                 
@@ -86,8 +79,8 @@ namespace TetrisClient
                         Fill = Brushes.Red, // Achtergrondkleur
                     };
                     grid.Children.Add(rectangle); // Voeg de rectangle toe aan de Grid
-                    Grid.SetRow(rectangle, i + offsetY); // Zet de rij
-                    Grid.SetColumn(rectangle, j + offsetX); // Zet de kolom
+                    Grid.SetRow(rectangle, i); // Zet de rij
+                    Grid.SetColumn(rectangle, j); // Zet de kolom
                 }
             }
 

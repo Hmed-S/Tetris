@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using Engine.Extensions;
-
-namespace Engine
+﻿namespace Engine
 {
     public class Board
     {
@@ -33,97 +30,73 @@ namespace Engine
             }
         }
 
-        public List<int> RowFromRange(int rowNumber)
+        public bool CanGoDown(int potentialYPosition, Tetromino tetromino)
         {
-            return Values.GetRow(rowNumber)
-                .ToList();
-        }
-        
-        public List<int> RowFromRange(int rownumber, int from, int count)
-        {
-            return Values.GetRow(rownumber)
-                .ToList()
-                .GetRange(from, count);
+            int[,] matrix = tetromino.Shape.Value;
+            bool canGoDown = true;
+            
+            EmptySpot(tetromino);
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (matrix[i, j] == 0 )continue;
+                    if (Values[i + potentialYPosition, j + tetromino.XPosition] !=0 && matrix[i, j] != 0)
+                    {
+                        canGoDown = false;
+                        break;
+                    }
+                }
+            }
+            PutTetromino(tetromino.XPosition, tetromino.YPosition, tetromino);
+            return canGoDown;
         }
 
-        public bool CanNotGoDown(Tetromino tetromino)
-        {
-            int xMax = tetromino.XPosition <Width-2? 3: 2;
-            int xMin = tetromino.XPosition == 0 ? tetromino.XPosition : tetromino.XPosition - 1;
-            
-            var nextRow = RowFromRange(tetromino.YPosition + 3 - tetromino.NumberOfEmptyRows(), tetromino.XPosition, 
-                xMax-tetromino.EmptyColumnFromEnd());
-            Trace.WriteLine(string.Join(",", nextRow));
-            return nextRow.Contains(1);
-        }
-        
-        private int PutTetromino(int x, int y, Tetromino tetromino)
+        private void EmptySpot(Tetromino tetromino)
         {
             var matrix = tetromino.Shape.Value;
-            int maxYValue = Height - 2 + tetromino.NumberOfEmptyRows();
-            int maxXValue = Width - 2 + tetromino.numberOfEmptyColumns();
-            
-  
-            if (y >=maxYValue) return -1;
-            if (x >= maxXValue || x<0) return -2;
-            if (CanNotGoDown(tetromino)) return -1;
-
-
-            for (int i = tetromino.YPosition; i < tetromino.YPosition+3; i++)
+            for (int i = 0; i < 3; i++)
             {
-                for (int j = tetromino.XPosition; j < tetromino.XPosition+3 -tetromino.EmptyColumnFromEnd(); j++)
+                for (int j = 0; j < 3; j++)
                 {
-                    Values[i, j] = 0;
+                    if (matrix[i, j] == 0 )continue;
+                    Values[i+tetromino.YPosition, j+tetromino.XPosition] = 0;
                 }
             }
-
-            var matrixYIndex = 0;
-            var matrixXIndex = 0;
-            for (int i = y; i < y+3; i++)
-            {
-                for (int j = x; j < x+3; j++)
-                {
-                    if (matrixXIndex > 2) matrixXIndex = 0;
-                    if(matrix[matrixYIndex, matrixXIndex] == 0) continue;
-                    Values[i, j] = matrix[matrixYIndex, matrixXIndex];
-                    
-                    matrixXIndex += 1;
-                }
-                matrixYIndex += 1;
-            }
-
-            return 0;
         }
         
-        private string toString(int[,] a)
+        private void PutTetromino(int x, int y, Tetromino tetromino)
         {
-            var result = string.Empty;
-            var maxI = a.GetLength(0);
-            var maxJ = a.GetLength(1);
-            for (var i = 0; i < maxI; i++)
+            var matrix = tetromino.Shape.Value;
+            EmptySpot(tetromino);
+            for (int i = 0; i < 3; i++)
             {
-                result += "{";
-                for (var j = 0; j < maxJ; j++)
+                for (int j = 0; j < 3; j++)
                 {
-                    result += $"{a[i, j]}";
+                    if (matrix[i,j] == 0) continue;
+                    if(Values[i+y, j+x] ==1) continue;
+                    if(matrix[i, j] == 1 && Values[i+y, j+x] ==0) Values[i+y, j+x] = matrix[i, j];
                 }
-
-                result += "}";
             }
-
-            return result;
         }
-        public int ShiftCoordinates(int x, int y, Tetromino tetromino)
-        {
-            int put = PutTetromino(x,y, tetromino);
 
-            if (put == 0)
+        public int ShiftCoordinates(int x, int y, Tetromino tetromino)
+        {            
+            int maxYValue = Height - 2 + tetromino.NumberOfEmptyRows();
+            int maxXValue = Width - 2 + tetromino.numberOfEmptyColumns();
+
+            if (y >= maxYValue || !CanGoDown(y, tetromino))
             {
-                tetromino.YPosition = y;
-                tetromino.XPosition = x;
-                
+                tetromino.DropStatus = -1;
+                return -1;
             }
-            return put;
+            if (x >= maxXValue || x<0) return -2;
+            
+            PutTetromino(x,y, tetromino);
+
+            tetromino.YPosition = y;
+            tetromino.XPosition = x;
+            return 0;
         }
     }
 }
