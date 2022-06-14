@@ -32,6 +32,32 @@ public class TetrisEngine
     public void ShiftToLeft() => PutTetromino(CurrentTetromino().XPosition-1, CurrentTetromino().YPosition);
         
     public void ShiftToRight() => PutTetromino(CurrentTetromino().XPosition+1, CurrentTetromino().YPosition);
+
+    public void RotateRight()
+    {
+        var current = CurrentTetromino();
+        Matrix rotated = current.Shape.Rotate90();
+        
+        if (_board.CanFit(current, rotated.Value))
+        {         
+            _board.EmptySpot(current);
+            current.Shape = rotated;
+            _board.ShiftCoordinates(current.XPosition, current.YPosition, current);
+        }
+    }
+
+    public void RotateLeft()
+    {
+        var current = CurrentTetromino();
+        Matrix rotated = current.Shape.Rotate90CounterClockwise();
+        
+        if (_board.CanFit(current, rotated.Value))
+        {
+            _board.EmptySpot(current);
+            current.Shape = rotated;
+            _board.ShiftCoordinates(current.XPosition, current.YPosition, current);
+        }
+    }
         
     public void DropTetromino() => PutTetromino(CurrentTetromino().XPosition, CurrentTetromino().YPosition+1);
 

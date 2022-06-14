@@ -36,9 +36,9 @@
             bool canGoDown = true;
             
             EmptySpot(tetromino);
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 3-tetromino.NumberOfEmptyRows(); i++)
             {
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 3-tetromino.numberOfEmptyColumns(); j++)
                 {
                     if (matrix[i, j] == 0 )continue;
                     if (Values[i + potentialYPosition, j + tetromino.XPosition] !=0 && matrix[i, j] != 0)
@@ -52,11 +52,35 @@
             return canGoDown;
         }
         
+        public bool CanFit(Tetromino tetromino, int[,] rotatedValue)
+        {
+            bool canRotate = true;
+            if (tetromino.YPosition == Height-3 || tetromino.XPosition == Width-3)
+                return false;
+
+            EmptySpot(tetromino);
+            
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (rotatedValue[i, j] == 0 )continue;
+                    if (Values[i + tetromino.YPosition, j + tetromino.XPosition] !=0 && rotatedValue[i, j] != 0)
+                    {
+                        canRotate = false;
+                        break;
+                    }
+                }
+            }
+            PutTetromino(tetromino.XPosition, tetromino.YPosition, tetromino);
+            return canRotate;
+        }
+        
         public bool CanGoLeftOrRight(int potentialXPosition, Tetromino tetromino)
         {
             int[,] matrix = tetromino.Shape.Value;
-            bool canGoDown = true;
-            
+            bool canGoLeftOrRight = true;
+
             EmptySpot(tetromino);
             for (int i = 0; i < 3; i++)
             {
@@ -65,16 +89,16 @@
                     if (matrix[i, j] == 0 )continue;
                     if (Values[i + tetromino.YPosition, j + potentialXPosition] !=0 && matrix[i, j] != 0)
                     {
-                        canGoDown = false;
+                        canGoLeftOrRight = false;
                         break;
                     }
                 }
             }
             PutTetromino(tetromino.XPosition, tetromino.YPosition, tetromino);
-            return canGoDown;
+            return canGoLeftOrRight;
         }
 
-        private void EmptySpot(Tetromino tetromino)
+        public void EmptySpot(Tetromino tetromino)
         {
             var matrix = tetromino.Shape.Value;
             for (int i = 0; i < 3; i++)
@@ -102,10 +126,13 @@
             }
         }
 
+        private int MaximumYValue(Tetromino tetromino) => Height - 2 + tetromino.NumberOfEmptyRows();
+        private int MaximumXValue(Tetromino tetromino) => Width - 2 + tetromino.numberOfEmptyColumns();
+        
         public int ShiftCoordinates(int x, int y, Tetromino tetromino)
-        {            
-            int maxYValue = Height - 2 + tetromino.NumberOfEmptyRows();
-            int maxXValue = Width - 2 + tetromino.numberOfEmptyColumns();
+        {
+            int maxYValue = MaximumYValue(tetromino);
+            int maxXValue = MaximumXValue(tetromino);
 
             if (y >= maxYValue || !CanGoDown(y, tetromino))
             {

@@ -43,28 +43,7 @@ namespace TetrisEngineTest
                 new TestCaseData(11,1, -2, Tetromino.FromShape(Shapes.LShape))
             };
         }
-
-        public static IEnumerable<TestCaseData> CollisionCases()
-        {
-            return new[]
-            {
-                new TestCaseData(new int[10,10]
-                {
-                    {0,0,0,0,0,0,0,0,0,0},
-                    {0,0,0,0,0,0,0,0,0,0},
-                    {0,0,0,0,0,0,0,0,0,0},
-                    {0,0,0,0,0,0,0,0,0,0},
-                    {0,1,1,1,0,0,0,0,0,0},
-                    {0,1,1,0,0,0,0,0,0,0},
-                    {0,1,1,0,0,0,0,0,0,0},
-                    {0,1,0,0,0,0,0,0,0,0},
-                    {1,1,0,0,0,0,0,0,0,0},
-                    {1,1,0,0,0,0,0,0,0,0}
-                })
-            };
-        }
-
-
+        
         [Test]
         [TestCase(9, 9)]
         [TestCase(7, 8)]
@@ -85,12 +64,6 @@ namespace TetrisEngineTest
             int result = board.ShiftCoordinates(x, y, tetromino);
             Assert.AreEqual(dropstatus, result);
         }
-
-        [TestCaseSource(nameof(CollisionCases))]
-        public void CollisionDetection(int[,] expectedBoard)
-        {
-            Board board = new Board(10, 10);
-        }
-
+        
     }
 }
