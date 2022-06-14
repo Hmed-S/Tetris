@@ -48,25 +48,19 @@ namespace TetrisEngineTest
         {
             return new[]
             {
-                new TestCaseData(1,1,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,1, 0,1),
-                new TestCaseData(1,2,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,2, 0,2),
-                new TestCaseData(1,3,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,2,-0,2),
-                new TestCaseData(1,4,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,3,0,3),
-                new TestCaseData(1,5,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,4,0,4),
-                new TestCaseData(1,6,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,5,0,5),
-                new TestCaseData(1,7,Tetromino.FromShape(Shapes.JShape),Tetromino.FromShape(Shapes.OShape),1,6,0,6),
-                
-                new TestCaseData(1,1,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,1,0,1),
-                new TestCaseData(1,2,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,2,0,2),
-                new TestCaseData(1,3,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,2,0,2),
-                new TestCaseData(1,4,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,3,0,3),
-                new TestCaseData(1,5,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,4,0,4),
-                new TestCaseData(1,6,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,5,0,5),
-                new TestCaseData(1,7,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,6,0,6),
-                new TestCaseData(1,8,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,6,0,6),
-                new TestCaseData(1,9,Tetromino.FromShape(Shapes.SShape),Tetromino.FromShape(Shapes.IShape),1,6,0,6)
-                
-                
+                new TestCaseData(new int[10,10]
+                {
+                    {0,0,0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0,0,0},
+                    {0,0,0,0,0,0,0,0,0,0},
+                    {0,1,1,1,0,0,0,0,0,0},
+                    {0,1,1,0,0,0,0,0,0,0},
+                    {0,1,1,0,0,0,0,0,0,0},
+                    {0,1,0,0,0,0,0,0,0,0},
+                    {1,1,0,0,0,0,0,0,0,0},
+                    {1,1,0,0,0,0,0,0,0,0}
+                })
             };
         }
 
@@ -93,17 +87,9 @@ namespace TetrisEngineTest
         }
 
         [TestCaseSource(nameof(CollisionCases))]
-        public void CollisionDetection(int x, int y, Tetromino tetromino, Tetromino tetronmino2, int x2, int y2, int expected, int ExpectedYPosition)
+        public void CollisionDetection(int[,] expectedBoard)
         {
             Board board = new Board(10, 10);
-            board.AddTetromino(tetromino);
-            board.AddTetromino(tetronmino2);
-            
-            board.ShiftCoordinates(x, y, tetromino);
-            int result = board.ShiftCoordinates(x2, y2, tetronmino2);
-            
-            Assert.AreEqual(expected, result);
-            Assert.AreEqual(ExpectedYPosition, tetronmino2.YPosition);
         }
 
     }
