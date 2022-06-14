@@ -51,6 +51,28 @@
             PutTetromino(tetromino.XPosition, tetromino.YPosition, tetromino);
             return canGoDown;
         }
+        
+        public bool CanGoLeftOrRight(int potentialXPosition, Tetromino tetromino)
+        {
+            int[,] matrix = tetromino.Shape.Value;
+            bool canGoDown = true;
+            
+            EmptySpot(tetromino);
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (matrix[i, j] == 0 )continue;
+                    if (Values[i + tetromino.YPosition, j + potentialXPosition] !=0 && matrix[i, j] != 0)
+                    {
+                        canGoDown = false;
+                        break;
+                    }
+                }
+            }
+            PutTetromino(tetromino.XPosition, tetromino.YPosition, tetromino);
+            return canGoDown;
+        }
 
         private void EmptySpot(Tetromino tetromino)
         {
@@ -90,7 +112,7 @@
                 tetromino.DropStatus = -1;
                 return -1;
             }
-            if (x >= maxXValue || x<0) return -2;
+            if (x >= maxXValue || x<0 || !CanGoLeftOrRight(x,tetromino)) return -2;
             
             PutTetromino(x,y, tetromino);
 
