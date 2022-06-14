@@ -20,24 +20,6 @@ namespace Engine
             return x;
         }
 
-        public int EmptyColumnFromStart()
-        {
-            int x = 0;
-            foreach (int i in Enumerable.Range(0, Shape.Value.ColumnCount()))
-                if (isEmpty(Shape.Value.GetColumn(i)))
-                    x += 1;
-            return x;
-        }
-        
-        public int EmptyColumnFromEnd()
-        {
-            int x = 0;
-            for (int i = Shape.Value.ColumnCount() - 1; i > 0;i--)
-                if (isEmpty(Shape.Value.GetColumn(i)))
-                    x += 1;
-            return x;
-        }
-
         public int NumberOfEmptyRows() => EmptyCount(Shape.Value, i => isEmpty(Shape.Value.GetRow(i)));
 
         public int numberOfEmptyColumns() => EmptyCount(Shape.Value, i => isEmpty(Shape.Value.GetColumn(i)));
@@ -58,7 +40,7 @@ namespace Engine
                 {
                     { 0, 0, 1 },
                     { 1, 1, 1 },
-                    { 0, 0, 0 },
+                    { 0, 0, 0 }
                 }
             );
 
@@ -66,7 +48,7 @@ namespace Engine
             {
                 { 1, 0, 0 },
                 { 1, 0, 0 },
-                { 1, 1, 0 },
+                { 1, 1, 0 }
             }
         );
         
@@ -74,7 +56,7 @@ namespace Engine
             {
                 { 1, 0, 0 },
                 { 1, 0, 0 },
-                { 1, 0, 0 },
+                { 1, 0, 0 }
             }
         );
         
@@ -82,7 +64,7 @@ namespace Engine
             {
                 { 0, 1, 1 },
                 { 1, 1, 0 },
-                { 0, 0, 0 },
+                { 0, 0, 0 }
             }
         );
         
@@ -90,7 +72,7 @@ namespace Engine
             {
                 { 1, 1, 1 },
                 { 0, 1, 0 },
-                { 0, 1, 0 },
+                { 0, 1, 0 }
             }
         );
         
@@ -98,7 +80,7 @@ namespace Engine
             {
                 { 1, 1, 0 },
                 { 0, 1, 1 },
-                { 0, 0, 0 },
+                { 0, 0, 0 }
             }
         );
         
@@ -106,7 +88,7 @@ namespace Engine
             {
                 { 1, 1, 0 },
                 { 1, 1, 0 },
-                { 0, 0, 0 },
+                { 0, 0, 0 }
             }
         );
         

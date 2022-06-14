@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,7 +7,6 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Engine;
-using Matrix = Engine.Matrix;
 
 namespace TetrisClient
 {
@@ -31,7 +28,7 @@ namespace TetrisClient
         private void Init()
         {
             DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
-            PreviewKeyDown += Window_PreviewKeyDown;
+            PreviewKeyDown += KeyDownControls;
             _timer = new DispatcherTimer();
             _timer.Tick += DropTetromino;
             _timer.Interval = TimeSpan.FromSeconds(0.4);
@@ -53,10 +50,23 @@ namespace TetrisClient
             DrawTetromino(_tetrisEngine.Board, TetrisGrid);
         }
         
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void KeyDownControls(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Right)  _tetrisEngine.ShiftToRight();
-            else if (e.Key == Key.Left) _tetrisEngine.ShiftToLeft();
+            switch (e.Key)
+            {
+                case Key.Up:
+                case Key.X: _tetrisEngine.RotateRight();break;
+                case Key.Space: Trace.WriteLine("harddrop"); break;
+                case Key.RightShift:
+                case Key.C: Trace.WriteLine("hold"); break;
+                case Key.LeftCtrl: 
+                case Key.Z: _tetrisEngine.RotateLeft(); break;
+                case Key.Escape:
+                case Key.F1: PauseTimer(sender,e); break;
+                case Key.Left: _tetrisEngine.ShiftToLeft(); break;
+                case Key.Right: _tetrisEngine.ShiftToRight(); break;
+                case Key.Down: Trace.WriteLine("softdrop"); break;
+            }
         }
         
         private void DrawTetromino(int[,] values, Grid grid)
@@ -66,21 +76,19 @@ namespace TetrisClient
                 
                 for (int j = 0; j < values.GetLength(1); j++)
                 {
-                    // Als de waarde niet gelijk is aan 1,
-                    // dan hoeft die niet getekent te worden:
                     if (values[i, j] != 1) continue;
                     
                     Rectangle rectangle = new Rectangle()
                     {
-                        Width = 25, // Breedte van een 'cell' in de Grid
-                        Height = 25, // Hoogte van een 'cell' in de Grid
-                        Stroke = Brushes.White, // De rand
-                        StrokeThickness = 1, // Dikte van de rand
-                        Fill = Brushes.Red, // Achtergrondkleur
+                        Width = 25, 
+                        Height = 25, 
+                        Stroke = Brushes.White, 
+                        StrokeThickness = 1, 
+                        Fill = Brushes.Red, 
                     };
-                    grid.Children.Add(rectangle); // Voeg de rectangle toe aan de Grid
-                    Grid.SetRow(rectangle, i); // Zet de rij
-                    Grid.SetColumn(rectangle, j); // Zet de kolom
+                    grid.Children.Add(rectangle); 
+                    Grid.SetRow(rectangle, i); 
+                    Grid.SetColumn(rectangle, j); 
                 }
             }
 
