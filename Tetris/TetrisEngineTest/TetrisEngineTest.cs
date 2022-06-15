@@ -43,7 +43,7 @@ namespace TetrisEngineTest
         [TestCaseSource(nameof(DropCases))]
         public void DropTetrominoReturnsRightRows(int numberOfDrops, int yPosition)
         {
-            var engineMock = new Mock<TetrisEngine>(10,10);
+            var engineMock = new Mock<TetrisEngine>(new Board(10,10));
             engineMock.Setup(engine => engine.CurrentTetromino()).Returns(Tetromino.FromShape(Shapes.LShape));
             TetrisEngine engine = engineMock.Object;
 
@@ -58,7 +58,7 @@ namespace TetrisEngineTest
         [TestCaseSource(nameof(ShiftRightCases))]
         public void CanShiftToRight(int numberOfShifts, int xPosition)
         {
-            var engineMock = new Mock<TetrisEngine>(10,10);
+            var engineMock = new Mock<TetrisEngine>(new Board(10,10));
             engineMock.Setup(engine => engine.CurrentTetromino()).Returns(Tetromino.FromShape(Shapes.LShape));
             TetrisEngine engine = engineMock.Object;
 
@@ -68,6 +68,25 @@ namespace TetrisEngineTest
             Tetromino tetromino = engine.CurrentTetromino();
             
             Assert.AreEqual(xPosition, tetromino.XPosition);
+        }
+        
+        
+        [TestCase(0, 0)]
+        [TestCase(1, 40)]
+        [TestCase(2, 100)]
+        [TestCase(3, 300)]
+        [TestCase(4, 1200)]
+        [TestCase(5, 0)]
+        public void EngineCalculatesScoreCorrect(int numberOfLines, int score)
+        {
+            var boardMock = new Mock<Board>(16,10);
+            boardMock.Setup(b => b.Values).Returns(new int[16, 10]);
+            boardMock.Setup(b => b.CountLines()).Returns(numberOfLines);
+            TetrisEngine engine = new(boardMock.Object);
+            
+            engine.Next();
+            
+            Assert.AreEqual(score, engine.Score);
         }
     }
 }

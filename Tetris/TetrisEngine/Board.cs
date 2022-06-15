@@ -18,6 +18,7 @@ namespace Engine
             Height = rowCount;
             Width = columnCount;
             Values = new int[rowCount, columnCount];
+            Console.WriteLine(Values.RowCount());
             Replace(0,rowCount, 0,columnCount, (i,j)=>0);
         }
         
@@ -33,7 +34,7 @@ namespace Engine
             }
         }
         
-        public int CountLines()
+        public virtual int CountLines()
         {
             int numberOfLinesDetected = 0;
             foreach (var row in Enumerable.Range(0,Values.RowCount()))
