@@ -5,6 +5,7 @@ public class TetrisEngine
     private Board _board;
     public int[,] Board { get => _board.Values; }
     public Tetromino Preview { get; private set; }
+    public int Lines { get=> _board.Lines; }
     public TetrisEngine(int width, int height)
     {
         _board = new Board(height, width);
@@ -23,6 +24,7 @@ public class TetrisEngine
 
     public void Next()
     {
+        _board.CountLines();
         _board.AddTetromino(Preview);
         Preview = Tetromino.Random();
     }
