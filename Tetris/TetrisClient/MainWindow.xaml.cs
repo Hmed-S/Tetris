@@ -17,6 +17,7 @@ namespace TetrisClient
     {
         private TetrisEngine _tetrisEngine;
         private DispatcherTimer _timer;
+        public string GameMode { get; internal set; }
 
         public MainWindow()
         {
@@ -32,7 +33,6 @@ namespace TetrisClient
             _timer = new DispatcherTimer();
             _timer.Tick += DropTetromino;
             _timer.Interval = TimeSpan.FromSeconds(0.4);
-            _timer.Start();
             Pause.Click += PauseTimer;
         }
         
