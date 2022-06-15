@@ -45,7 +45,8 @@ namespace TetrisClient
         private void DropTetromino(object sender, EventArgs args)
         {
             _tetrisEngine.DropTetromino();
-            if (_tetrisEngine.CurrentTetromino().DropStatus == -1) RedrawPreview();
+            Lines_Value.Content = _tetrisEngine.Lines;
+            RedrawPreview();
             TetrisGrid.Children.Clear();
             DrawTetromino(_tetrisEngine.Board, TetrisGrid);
         }

@@ -1,12 +1,16 @@
-﻿namespace Engine
+﻿using Engine.Extensions;
+
+namespace Engine
 {
     public class Board
     {
         public int Height { get;}
         public int Width { get; }
         public List<Tetromino> Tetronminos { get; } = new();
-        public int[,] Values { get; }
+        public int Lines { get; private set; }
+        public virtual int[,] Values { get; set; }
 
+        
         public Board(int rowCount, int columnCount)
         {
             if (rowCount < 10 || columnCount < 10)
@@ -15,6 +19,35 @@
             Width = columnCount;
             Values = new int[rowCount, columnCount];
             Replace(0,rowCount, 0,columnCount, (i,j)=>0);
+        }
+        
+        private void ResetRow(int rowNumber)
+        {
+            Replace(rowNumber, rowNumber+1, 0, Width, (i, j) =>0);
+            foreach (var row in Enumerable.Range(0, rowNumber).Reverse()) 
+            {
+                foreach (var column in Enumerable.Range(0, Width))
+                {
+                    Values[row+1, column] = Values[row, column];
+                }
+            }
+        }
+        
+        public int CountLines()
+        {
+            int numberOfLinesDetected = 0;
+            foreach (var row in Enumerable.Range(0,Values.RowCount()))
+            {
+                bool full = Array.TrueForAll(Values.GetRow(row), i => i != 0);
+                // Console.WriteLine(full);
+                if (full)
+                {
+                    ResetRow(row);
+                    numberOfLinesDetected += 1;
+                }
+            }
+            Lines += numberOfLinesDetected;
+            return numberOfLinesDetected;
         }
 
         public void AddTetromino(Tetromino tetromino) => Tetronminos.Add(tetromino);
@@ -120,8 +153,7 @@
                 for (int j = 0; j < 3; j++)
                 {
                     if (matrix[i,j] == 0) continue;
-                    if(Values[i+y, j+x] ==1) continue;
-                    if(matrix[i, j] == 1 && Values[i+y, j+x] ==0) Values[i+y, j+x] = matrix[i, j];
+                    Values[i+y, j+x] = matrix[i, j];
                 }
             }
         }

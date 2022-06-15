@@ -4,7 +4,7 @@ public static class MatrixExtensions
 {
     public static int[] GetRow(this int[,] matrix, int rowNumber)
     {
-        return Enumerable.Range(0, matrix.GetLength(1))
+        return Enumerable.Range(0, matrix.ColumnCount())
             .Select(i => matrix[rowNumber,i])
             .ToArray();
     }
