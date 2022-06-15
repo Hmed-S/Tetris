@@ -6,9 +6,12 @@ public class TetrisEngine
     public int[,] Board { get => _board.Values; }
     public Tetromino Preview { get; private set; }
     public int Lines { get=> _board.Lines; }
-    public TetrisEngine(int width, int height)
+    
+    public int Score { get; private set; }
+    
+    public TetrisEngine(Board board)
     {
-        _board = new Board(height, width);
+        _board = board;
         _board.AddTetromino(Tetromino.Random());
         Preview = Tetromino.Random();
     }
@@ -24,7 +27,7 @@ public class TetrisEngine
 
     public void Next()
     {
-        _board.CountLines();
+        Score+=GetIncrement(_board.CountLines());
         _board.AddTetromino(Preview);
         Preview = Tetromino.Random();
     }
@@ -34,6 +37,18 @@ public class TetrisEngine
     public void ShiftToLeft() => PutTetromino(CurrentTetromino().XPosition-1, CurrentTetromino().YPosition);
         
     public void ShiftToRight() => PutTetromino(CurrentTetromino().XPosition+1, CurrentTetromino().YPosition);
+
+    private int GetIncrement(int linesGained)
+    {
+        return linesGained switch
+        {
+            1 => Score += 40,
+            2 => 100,
+            3 => 300,
+            4 => 1200,
+            _ => 0
+        };
+    }
 
     public void RotateRight()
     {

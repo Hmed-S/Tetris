@@ -21,7 +21,7 @@ namespace TetrisClient
         public MainWindow()
         {
             InitializeComponent();
-            _tetrisEngine = new(TetrisGrid.ColumnDefinitions.Count, TetrisGrid.RowDefinitions.Count);
+            _tetrisEngine = new(new Board(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count));
             Init();
         }
         
@@ -46,6 +46,7 @@ namespace TetrisClient
         {
             _tetrisEngine.DropTetromino();
             Lines_Value.Content = _tetrisEngine.Lines;
+            Score_Value.Content = _tetrisEngine.Score;
             RedrawPreview();
             TetrisGrid.Children.Clear();
             DrawTetromino(_tetrisEngine.Board, TetrisGrid);
