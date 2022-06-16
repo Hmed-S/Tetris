@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TetrisClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="1014">
+        Title="Tetris" Height="450" Width="1014">
     <Grid x:Name="Main">
         <Grid x:Name="TetrisGrid" Margin="0,0,739,0">
             <Grid.RowDefinitions>
@@ -66,6 +66,8 @@
                     <ColumnDefinition Width="25"/>
                 </Grid.ColumnDefinitions>
             </Grid>
+            <Label x:Name="LoadMessage" Content="Loading.... Please stand by" HorizontalAlignment="Center" Margin="0,157,0,0" VerticalAlignment="Top" Height="44" Width="167" Grid.Row="1" Visibility="Hidden"/>
+            <Button x:Name="ReadyUp" Content="Readyup" HorizontalAlignment="Left" Margin="136,117,0,0" VerticalAlignment="Top" Height="35" Width="68" Grid.Row="1" Visibility="Hidden"/>
         </Grid>
         <Grid x:Name="TetrisGridPlayer2" Margin="511,-13,270,13" Visibility="Hidden">
             <Grid.RowDefinitions>
@@ -125,6 +127,9 @@
                     <ColumnDefinition Width="25"/>
                 </Grid.ColumnDefinitions>
             </Grid>
+            <Label x:Name="ReadyUpMessage" Content="Waiting for player2 to ready up..." HorizontalAlignment="Left" Margin="10,104,0,0" VerticalAlignment="Top" Height="44" Width="192" Grid.Row="1"/>
         </Grid>
+
     </Grid>
+
 </Window>
