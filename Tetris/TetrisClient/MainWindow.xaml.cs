@@ -7,6 +7,8 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Engine;
+using TetrisClient.SignalR;
+using TetrisClient.Dto;
 
 namespace TetrisClient
 {
@@ -18,6 +20,7 @@ namespace TetrisClient
         private TetrisEngine _tetrisEngine;
         private DispatcherTimer _timer;
         private string _gameMode = GameMode.GetGameMode();
+        private TetrisHubConnectionService _connectionService = new();
 
         public MainWindow()
         {
@@ -26,14 +29,30 @@ namespace TetrisClient
             Init();
         }
         
+        private void InitMultiPlayer()
+        {
+            TetrisGridPlayer2.Visibility = Visibility.Visible;
+            Player2Status.Visibility = Visibility.Visible;
+            Pause.Visibility = Visibility.Hidden;
+
+
+            _connectionService.MakeConnection();
+            _connectionService.ConnectOnDrop((game) =>
+            {
+                Lines_ValuePlayer2.Content = game.Lines;
+                ScorePlayer2.Content = game.Score;
+                DrawTetromino(game.Preview, PreviewGridPlayer2);
+                DrawTetromino(game.Board, TetrisGridPlayer2);
+            });
+            
+            // ToDo: implement ready
+            //_connectionService.ConnectOnReady();
+
+        }
+
         private void Init()
         {
-            if (_gameMode == "MultiPlayer")
-            {
-                TetrisGridPlayer2.Visibility = Visibility.Visible;
-                Player2Status.Visibility = Visibility.Visible;
-                Pause.Visibility = Visibility.Hidden;
-            }
+            if (_gameMode == "MultiPlayer") InitMultiPlayer();
 
             DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
             PreviewKeyDown += KeyDownControls;
@@ -41,7 +60,7 @@ namespace TetrisClient
             _timer.Tick += DropTetromino;
             _timer.Interval = TimeSpan.FromSeconds(0.4);
             Quit.Click += QuitGame;
-            _timer.Start();
+            if(_gameMode != "MultiPlayer")_timer.Start();
             Pause.Click += PauseTimer;
         }
 
@@ -59,7 +78,7 @@ namespace TetrisClient
             PreviewGrid.Children.Clear();
             DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
         }
-        private void DropTetromino(object sender, EventArgs args)
+        private async void DropTetromino(object sender, EventArgs args)
         {
             _tetrisEngine.DropTetromino();
             Lines_Value.Content = _tetrisEngine.Lines;
@@ -67,6 +86,16 @@ namespace TetrisClient
             RedrawPreview();
             TetrisGrid.Children.Clear();
             DrawTetromino(_tetrisEngine.Board, TetrisGrid);
+            if (_gameMode == "MultiPlayer")
+            {
+                await _connectionService.DropShape(new Game
+                {
+                    Lines = _tetrisEngine.Lines,
+                    Score = _tetrisEngine.Score,
+                    Board = _tetrisEngine.Board,
+                    Preview = _tetrisEngine.Preview.Shape.Value
+                });
+            }
         }
         
         private void KeyDownControls(object sender, KeyEventArgs e)

@@ -22,6 +22,11 @@ namespace TetrisClient
             var gameWindow = new MainWindow();
             Close();
             gameWindow.Show();
+            if (b.Name == "MultiPlayer")
+            {
+                var gameWindowPlayer2 = new MainWindow();
+                gameWindowPlayer2.Show();
+            }
         }
     }
 }
