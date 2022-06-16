@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace TetrisClient
@@ -19,13 +20,20 @@ namespace TetrisClient
         {
             var b = o as Button;
             GameMode.SetGameMode(b.Name);
+
             var gameWindow = new MainWindow();
-            Close();
-            gameWindow.Show();
-            if (b.Name == "MultiPlayer")
+            var gameWindowPlayer2 = new MainWindow();
+            try
             {
-                var gameWindowPlayer2 = new MainWindow();
-                gameWindowPlayer2.Show();
+                Close();
+                gameWindow.Show();
+                if (b.Name == "MultiPlayer") gameWindowPlayer2.Show();
+            }
+            catch
+            {
+                gameWindow.Close();
+                gameWindowPlayer2.Close();
+                MessageBox.Show("Could not connect to the server please try again later");
             }
         }
     }

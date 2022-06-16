@@ -2,6 +2,7 @@
 using TetrisClient.Dto;
 using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TetrisClient.SignalR
 {
@@ -10,31 +11,56 @@ namespace TetrisClient.SignalR
     {
         private HubConnection? _hubConnection;
 
-        internal void MakeConnection()
+        internal async Task MakeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-            .WithUrl("/tetrisHub")
+            .WithUrl("http://localhost:5000/tetrisHub")
             .Build();
         }
 
-        internal void ConnectOnReady(Action<int> onReady)
+        internal async Task StartConnection()
         {
-            _hubConnection.On<int>("Ready", (seed) => onReady(seed));
+            await _hubConnection.StartAsync();
         }
 
-        internal void ConnectOnDrop(Action<Game> onDrop)
+
+        internal async Task CloseConnection()
         {
-            _hubConnection.On<Game>("Drop", (game) => onDrop(game));
+            await _hubConnection.StopAsync();
+        }
+
+        internal void ConnectOnReady(Action onReady)
+        {
+            _hubConnection.On("Ready", () => onReady());
+        }
+
+        internal async Task ConnectOnDrop(Action<Game> onDrop)
+        {
+            _hubConnection.On<string>("Drop", (game) => {
+                Game deserializedGame = JsonConvert.DeserializeObject<Game>(game);
+                onDrop(deserializedGame);
+             });
+        }
+
+        internal async void ConnectQuit(Action onQuit)
+        {
+            _hubConnection.On("Quit", () => onQuit());
         }
 
         internal async Task DropShape(Game game)
         {
-            await _hubConnection.SendAsync("DropShape", game);
+            await _hubConnection.SendAsync("DropShape", 
+                JsonConvert.SerializeObject(game));
         }
 
-        internal async Task Ready(int seed)
+        internal async Task Ready()
         {
-            await _hubConnection.SendAsync("Ready", seed);
+            await _hubConnection.SendAsync("ReadyUp");
+        }
+
+        internal async Task Quit()
+        {
+            await _hubConnection.SendAsync("QuitGame");
         }
 
     }
