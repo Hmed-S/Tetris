@@ -17,7 +17,7 @@ namespace TetrisClient
     {
         private TetrisEngine _tetrisEngine;
         private DispatcherTimer _timer;
-        public string GameMode { get; internal set; }
+        private string _gameMode = GameMode.GetGameMode();
 
         public MainWindow()
         {
@@ -28,15 +28,32 @@ namespace TetrisClient
         
         private void Init()
         {
+            if (_gameMode == "MultiPlayer")
+            {
+                TetrisGridPlayer2.Visibility = Visibility.Visible;
+                Player2Status.Visibility = Visibility.Visible;
+                Pause.Visibility = Visibility.Hidden;
+            }
+
             DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
             PreviewKeyDown += KeyDownControls;
             _timer = new DispatcherTimer();
             _timer.Tick += DropTetromino;
             _timer.Interval = TimeSpan.FromSeconds(0.4);
+            Quit.Click += QuitGame;
+            _timer.Start();
             Pause.Click += PauseTimer;
+        }
+
+        private void QuitGame(object sender, EventArgs args)
+        {
+            var homepage = new HomePage();
+            Close();
+            homepage.Show();
         }
         
         private void PauseTimer(object sender, EventArgs args) =>_timer.IsEnabled = !_timer.IsEnabled;
+        
         public void RedrawPreview()
         {
             PreviewGrid.Children.Clear();
