@@ -21,7 +21,7 @@
             <Label x:Name="R_Copy" Content="I" HorizontalAlignment="Left" Margin="171,10,0,0" VerticalAlignment="Top" Height="73" Width="39" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Red"/>
             <Label x:Name="R_Copy1" Content="S" HorizontalAlignment="Left" Margin="190,10,0,0" VerticalAlignment="Top" Height="73" Width="40" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Orange"/>
             <Button x:Name="SinglePlayer" Content="SinglePlayer&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,206,0,0" VerticalAlignment="Top" Width="132" Height="54" RenderTransformOrigin="0.507,0.406"/>
-            <Button x:Name="Multiplayer" Content="Multiplayer" HorizontalAlignment="Center" Margin="0,310,0,0" VerticalAlignment="Top" Width="132" Height="54"/>
+            <Button x:Name="MultiPlayer" Content="Multiplayer" HorizontalAlignment="Center" Margin="0,310,0,0" VerticalAlignment="Top" Width="132" Height="54"/>
         </Grid>
         <Rectangle HorizontalAlignment="Left" Height="386" Margin="109,14,0,0" Stroke="#FF962222" VerticalAlignment="Top" Width="254" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
             <Rectangle.RenderTransform>
