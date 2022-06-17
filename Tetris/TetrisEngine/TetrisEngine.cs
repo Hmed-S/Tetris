@@ -2,7 +2,7 @@
 
 public class TetrisEngine
 {
-    private Board _board;
+    private readonly Board _board;
     public int[,] Board { get => _board.Values; }
     public virtual Tetromino CurrentTetromino {get; private set;}
     public Tetromino Preview { get; private set; }

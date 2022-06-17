@@ -5,9 +5,9 @@ namespace Engine
     
     public class Point
     {
-        public int Row { get; set; }
-        public int Column { get; set; }
-        public int Value { get; set; }
+        public int Row { get; init; }
+        public int Column { get; init; }
+        public int Value { get; init; }
         
 
         public static List<Point> Of(int x, int y, Tetromino tetromino)

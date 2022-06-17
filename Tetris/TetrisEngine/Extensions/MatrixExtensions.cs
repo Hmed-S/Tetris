@@ -9,26 +9,8 @@ public static class MatrixExtensions
             .ToArray();
     }
 
-    public static int[] GetColumn(this int[,] matrix, int columnNumber)
-    {
-        return Enumerable.Range(0, matrix.RowCount())
-            .Select(i => matrix[i, columnNumber])
-            .ToArray();
-    }
 
     public static int RowCount(this int[,] matrix) => matrix.GetLength(0);
     public static int ColumnCount(this int[,] matrix) => matrix.GetLength(1);
     
-    public static void SetRow(this int[,] matrix, int rowNumber,int column, Func<int, int> value)
-    {
-        Enumerable.Range(0,column).ToList().ForEach(i=> matrix[rowNumber, i] = value(i));
-    }
-    
-    public static int[,] SubMatrix(this int[,] matrix, int rowNumber, int columnNumber)
-    {
-        int[,] jagged = new int[rowNumber,columnNumber];
-        for (int row = 0; row < rowNumber; row++) 
-            jagged.SetRow(row, columnNumber, i=>matrix[row, i]);
-        return jagged;
-    }
 }

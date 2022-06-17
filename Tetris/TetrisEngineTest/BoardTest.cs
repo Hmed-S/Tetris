@@ -14,7 +14,7 @@ namespace TetrisEngineTest
             {   
                 new TestCaseData(1,2, 0, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(1,5, 0, Tetromino.FromShape(Shapes.JShape)),
-                new TestCaseData(1,7, 0, Tetromino.FromShape(Shapes.JShape)),
+                new TestCaseData(1,7, -1, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(1,8, -1, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(1,9, -1, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(1,10,-1, Tetromino.FromShape(Shapes.JShape)),
@@ -301,7 +301,7 @@ namespace TetrisEngineTest
         [TestCaseSource(nameof(DrawCases))]
         public void BoardAppliesRightCoordinates(int x, int y, int dropstatus, Tetromino tetromino)
         {
-            Board board = new Board(10, 10);
+            Board board = new (10, 10);
 
             int result = board.ShiftCoordinates(x, y, tetromino);
             Assert.AreEqual(dropstatus, result);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -113,7 +112,6 @@ namespace TetrisClient
                 await _connectionService.CloseConnection();
                 _gameMode = "SinglePlayer";
             }
-           // if(_gameMode == "SinglePlayer") Close();
         }
 
         private async void Ready(object o, EventArgs e)
@@ -182,19 +180,16 @@ namespace TetrisClient
             {
                 case Key.Up:
                 case Key.X:_tetrisEngine.RotateRight();break;
-                case Key.Space: Trace.WriteLine("harddrop"); break;
                 case Key.RightShift:
-                case Key.C: Trace.WriteLine("hold"); break;
                 case Key.LeftCtrl: 
                 case Key.Z: _tetrisEngine.RotateLeft(); break;
                 case Key.Escape:
                 case Key.F1: PauseTimer(sender,e); break;
                 case Key.Left: _tetrisEngine.ShiftToLeft(); break;
                 case Key.Right: _tetrisEngine.ShiftToRight(); break;
-                case Key.Down: Trace.WriteLine("softdrop"); break;
             }
         }
-        
+
         private void DrawTetromino(int[,] values, Grid grid)
         {
             
