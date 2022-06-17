@@ -8,6 +8,8 @@ namespace Engine
         public int XPosition { get; set; }
         public int YPosition { get; set; }
         public Matrix Shape { get; set; }
+        public int Value { get; set; }
+        public int[] Points { get; set; }
 
         private bool isEmpty(int[] array) => Array.TrueForAll(array, i => i==0);
 

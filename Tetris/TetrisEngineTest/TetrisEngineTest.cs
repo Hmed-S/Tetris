@@ -44,13 +44,13 @@ namespace TetrisEngineTest
         public void DropTetrominoReturnsRightRows(int numberOfDrops, int yPosition)
         {
             var engineMock = new Mock<TetrisEngine>(new Board(10,10));
-            engineMock.Setup(engine => engine.CurrentTetromino()).Returns(Tetromino.FromShape(Shapes.LShape));
+            engineMock.Setup(engine => engine.CurrentTetromino).Returns(Tetromino.FromShape(Shapes.LShape));
             TetrisEngine engine = engineMock.Object;
 
             for (int i = 0; i < numberOfDrops-1; i++) 
                 engine.DropTetromino();
             engine.DropTetromino();
-            Tetromino tetromino = engine.CurrentTetromino();
+            Tetromino tetromino = engine.CurrentTetromino;
             
             Assert.AreEqual(yPosition, tetromino.YPosition);
         }
@@ -59,13 +59,13 @@ namespace TetrisEngineTest
         public void CanShiftToRight(int numberOfShifts, int xPosition)
         {
             var engineMock = new Mock<TetrisEngine>(new Board(10,10));
-            engineMock.Setup(engine => engine.CurrentTetromino()).Returns(Tetromino.FromShape(Shapes.LShape));
+            engineMock.Setup(engine => engine.CurrentTetromino).Returns(Tetromino.FromShape(Shapes.LShape));
             TetrisEngine engine = engineMock.Object;
 
             for (int i = 0; i < numberOfShifts - 1; i++)
                 engine.ShiftToRight();
             engine.ShiftToRight();
-            Tetromino tetromino = engine.CurrentTetromino();
+            Tetromino tetromino = engine.CurrentTetromino;
             
             Assert.AreEqual(xPosition, tetromino.XPosition);
         }
