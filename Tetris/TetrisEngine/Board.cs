@@ -36,6 +36,7 @@ namespace Engine
         public virtual int CountLines()
         {
             int numberOfLinesDetected = 0;
+
             foreach (var row in Enumerable.Range(0, Values.RowCount()))
             {
                 bool full = Array.TrueForAll(Values.GetRow(row), i => i != 0);
@@ -49,7 +50,7 @@ namespace Engine
             return numberOfLinesDetected;
         }
 
-        public void Replace(int rowFrom, int rowTo,
+        private void Replace(int rowFrom, int rowTo,
             int columnFrom, int columnTo, Func<int, int, int> action)
         {
             var m = 0;
@@ -63,8 +64,6 @@ namespace Engine
         public bool CanFit(List<Point> points)
         {
             bool canFit = true;
-
-
 
             foreach (var point in points)
             {
@@ -105,7 +104,6 @@ namespace Engine
             var previousPoints = Point.Of(tetromino.XPosition, tetromino.YPosition, tetromino);
             var desiredPoints = Point.Of(x, y, tetromino);
 
-            var columns = desiredPoints.Select(i => i.Column);
             var rows = desiredPoints.Select(i => i.Row);
 
             EraseTetromino(previousPoints);
