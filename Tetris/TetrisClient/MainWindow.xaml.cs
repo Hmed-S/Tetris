@@ -24,7 +24,6 @@ namespace TetrisClient
 
         public MainWindow()
         {
-            Trace.WriteLine("GameMode = " + _gameMode);
             InitializeComponent();
             _tetrisEngine = new(new Board(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count));
             Init();
@@ -204,7 +203,7 @@ namespace TetrisClient
                 
                 for (int j = 0; j < values.GetLength(1); j++)
                 {
-                    if (values[i, j] != 1) continue;
+                    if (values[i, j] == 0) continue;
                     
                     Label rectangle = new ()
                     {

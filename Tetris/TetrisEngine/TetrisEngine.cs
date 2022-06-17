@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Engine;
+﻿namespace Engine;
 
 public class TetrisEngine
 {
@@ -22,9 +20,8 @@ public class TetrisEngine
 
     private void PutTetromino(int x, int y)
     {
-        int draw = _board.ShiftCoordinates(x, y, CurrentTetromino);
+        int draw = _board.ShiftCoordinates(x, y, CurrentTetromino);;
         CurrentTetromino.DropStatus = draw;
-        if(CurrentTetromino.DropStatus == -1) Next();
     }
 
     public void Next()
@@ -34,10 +31,20 @@ public class TetrisEngine
         Preview = Tetromino.Random();
     }
 
-        
-    public void ShiftToLeft() => PutTetromino(CurrentTetromino.XPosition-1, CurrentTetromino.YPosition);
-        
-    public void ShiftToRight() => PutTetromino(CurrentTetromino.XPosition+1, CurrentTetromino.YPosition);
+
+    public void ShiftToLeft() => PutTetromino(CurrentTetromino.XPosition - 1, CurrentTetromino.YPosition);
+
+    public void ShiftToRight() => PutTetromino(CurrentTetromino.XPosition + 1, CurrentTetromino.YPosition);
+
+    
+    public void DropTetromino()
+    {
+        int draw = _board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition + 1, CurrentTetromino);
+        CurrentTetromino.DropStatus = draw;
+        if (CurrentTetromino.DropStatus == -1) Next();
+    }
+
+
 
     private int GetIncrement(int linesGained)
     {
@@ -53,41 +60,41 @@ public class TetrisEngine
 
     public void RotateRight()
     {
-        Tetromino RotatedTetromino = new() {
-            XPosition = CurrentTetromino.XPosition,
-            YPosition = CurrentTetromino.YPosition,
-            DropStatus = CurrentTetromino.DropStatus,
-            Shape = CurrentTetromino.Shape.Rotate90()
-        };
+        if(CurrentTetromino.XPosition< _board.Width - 2)
+        {
+            Tetromino RotatedTetromino = CurrentTetromino.RotateClockWise();
+            var currentPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+            var rotatedPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
 
-        _board.EraseTetromino(CurrentTetromino);
-        bool fit = _board.CanFit(RotatedTetromino.XPosition, RotatedTetromino.YPosition, RotatedTetromino);
-        Trace.WriteLine(fit);
 
-        if (fit) CurrentTetromino = RotatedTetromino;
-        
-        _board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+            _board.EraseTetromino(currentPoints);
+            bool fit = _board.CanFit(rotatedPoints);
+
+
+            if (fit) CurrentTetromino = RotatedTetromino;
+
+            _board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+        }
+ 
     }
 
     public void RotateLeft()
     {
-        Tetromino RotatedTetromino = new()
+        if (CurrentTetromino.XPosition< _board.Width - 2)
         {
-            XPosition = CurrentTetromino.XPosition,
-            YPosition = CurrentTetromino.YPosition,
-            DropStatus = CurrentTetromino.DropStatus,
-            Shape = CurrentTetromino.Shape.Rotate90CounterClockwise()
-        };
+            Tetromino RotatedTetromino = CurrentTetromino.RotateCounterClockWise();
+            var currentPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+            var rotatedPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
 
-        _board.EraseTetromino(CurrentTetromino);
-        bool fit = _board.CanFit(RotatedTetromino.XPosition, RotatedTetromino.YPosition, RotatedTetromino);
-        Trace.WriteLine(fit);
+            _board.EraseTetromino(currentPoints);
+            bool fit = _board.CanFit(rotatedPoints);
 
-        if (fit) CurrentTetromino = RotatedTetromino;
 
-        _board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+            if (fit) CurrentTetromino = RotatedTetromino;
+
+            _board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+        }
+
     }
-        
-    public void DropTetromino() => PutTetromino(CurrentTetromino.XPosition, CurrentTetromino.YPosition+1);
 
 }

@@ -23,13 +23,13 @@ namespace TetrisEngineTest
                 new TestCaseData(5,1, 0, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(7,1, 0, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(8,1, 0, Tetromino.FromShape(Shapes.JShape)),
-                new TestCaseData(9,1, -2, Tetromino.FromShape(Shapes.JShape)),
-                new TestCaseData(10,1,-2, Tetromino.FromShape(Shapes.JShape)),
-                new TestCaseData(11,1,-2, Tetromino.FromShape(Shapes.JShape)),
+                new TestCaseData(9,1, -1, Tetromino.FromShape(Shapes.JShape)),
+                new TestCaseData(10,1,-1, Tetromino.FromShape(Shapes.JShape)),
+                new TestCaseData(11,1,-1, Tetromino.FromShape(Shapes.JShape)),
                 new TestCaseData(1,2, 0, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(1,5, 0, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(1,7, 0, Tetromino.FromShape(Shapes.LShape)),
-                new TestCaseData(1,8, 0, Tetromino.FromShape(Shapes.LShape)),
+                new TestCaseData(1,8, -1, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(1,9, -1, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(1,10,-1, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(1,11,-1, Tetromino.FromShape(Shapes.LShape)),
@@ -37,10 +37,10 @@ namespace TetrisEngineTest
                 new TestCaseData(5,1, 0, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(6,1, 0, Tetromino.FromShape(Shapes.LShape)),
                 new TestCaseData(7,1, 0, Tetromino.FromShape(Shapes.LShape)),
-                new TestCaseData(8,1, -2, Tetromino.FromShape(Shapes.LShape)),
-                new TestCaseData(9,1, -2, Tetromino.FromShape(Shapes.LShape)),
-                new TestCaseData(10,1, -2, Tetromino.FromShape(Shapes.LShape)),
-                new TestCaseData(11,1, -2, Tetromino.FromShape(Shapes.LShape))
+                new TestCaseData(8,1, -1, Tetromino.FromShape(Shapes.LShape)),
+                new TestCaseData(9,1, -1, Tetromino.FromShape(Shapes.LShape)),
+                new TestCaseData(10,1, -1, Tetromino.FromShape(Shapes.LShape)),
+                new TestCaseData(11,1, -1, Tetromino.FromShape(Shapes.LShape))
             };
         }
 

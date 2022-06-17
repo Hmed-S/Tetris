@@ -17,9 +17,9 @@ namespace TetrisEngineTest
                new object[]{5,5},
                new object[]{6,6},
                new object[]{7,7},
-               new object[]{8,8},
-               new object[]{9,8},
-               new object[]{10,8},
+               new object[]{8,7},
+               new object[]{9,7},
+               new object[]{10,7},
             };
         }
 
