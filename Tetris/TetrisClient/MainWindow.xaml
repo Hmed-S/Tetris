@@ -46,12 +46,10 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Rectangle HorizontalAlignment="Left" Height="122" Stroke="Black" VerticalAlignment="Top" Width="206" Margin="10,41,0,0"/>
-            <Label x:Name="Level" Content="Level&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,168,0,0" VerticalAlignment="Top" Height="44" Width="70"/>
-            <Label x:Name="Score" Content="Score&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,212,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.RowSpan="2"/>
-            <Label x:Name="Lines" Content="Lines&#xD;&#xA;&#xA;" HorizontalAlignment="Left" Margin="10,49,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.Row="1"/>
-            <Label x:Name="Level_Value" Content="1&#xD;&#xA;" HorizontalAlignment="Right" Margin="0,172,10,0" VerticalAlignment="Top" Height="40" Width="45" RenderTransformOrigin="1.252,0.463"/>
-            <Label x:Name="Score_Value" Content="35&#xD;&#xA;&#xA;" HorizontalAlignment="Right" Margin="0,212,10,0" VerticalAlignment="Top" Height="44" Width="45" RenderTransformOrigin="1.889,0.545" Grid.RowSpan="2"/>
-            <Label x:Name="Lines_Value" Content="0" HorizontalAlignment="Right" Margin="0,53,10,0" VerticalAlignment="Top" Height="44" Width="45" Grid.Row="1" RenderTransformOrigin="1.934,0.475"/>
+            <Label x:Name="Score" Content="Score&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,186,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.RowSpan="2"/>
+            <Label x:Name="Lines" Content="Lines&#xD;&#xA;&#xA;" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.Row="1"/>
+            <Label x:Name="Score_Value" Content="35&#xD;&#xA;&#xA;" HorizontalAlignment="Right" Margin="0,186,10,0" VerticalAlignment="Top" Height="44" Width="45" RenderTransformOrigin="1.889,0.545" Grid.RowSpan="2"/>
+            <Label x:Name="Lines_Value" Content="0" HorizontalAlignment="Right" Margin="0,31,10,0" VerticalAlignment="Top" Height="44" Width="45" Grid.Row="1" RenderTransformOrigin="1.934,0.475"/>
             <Button x:Name="Quit" Content="Quit" HorizontalAlignment="Left" Margin="11,117,0,0" VerticalAlignment="Top" Height="35" Width="69" Grid.Row="1" RenderTransformOrigin="0.447,0.126"/>
             <Button x:Name="Pause" Content="Pause" HorizontalAlignment="Left" Margin="136,117,0,0" VerticalAlignment="Top" Height="35" Width="68" Grid.Row="1"/>
             <Grid x:Name="PreviewGrid" HorizontalAlignment="Center" Height="76" VerticalAlignment="Center" Width="75">
@@ -108,12 +106,10 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Rectangle x:Name="RectanglePlayer2" HorizontalAlignment="Left" Height="122" Stroke="Black" VerticalAlignment="Top" Width="206" Margin="10,24,0,0"/>
-            <Label x:Name="LevelPlayer2" Content="Level&#xA;" HorizontalAlignment="Left" Margin="10,168,0,0" VerticalAlignment="Top" Height="44" Width="70"/>
-            <Label x:Name="ScorePlayer2" Content="Score&#xA;" HorizontalAlignment="Left" Margin="10,212,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.RowSpan="2"/>
-            <Label x:Name="LinesPlayer2" Content="Lines&#xA;&#xA;" HorizontalAlignment="Left" Margin="10,49,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.Row="1"/>
-            <Label x:Name="Level_ValuePlayer2" Content="1&#xA;" HorizontalAlignment="Right" Margin="0,172,10,0" VerticalAlignment="Top" Height="40" Width="45" RenderTransformOrigin="1.252,0.463"/>
-            <Label x:Name="Score_ValuePayer2" Content="35&#xA;&#xA;" HorizontalAlignment="Right" Margin="0,212,10,0" VerticalAlignment="Top" Height="44" Width="45" RenderTransformOrigin="1.889,0.545" Grid.RowSpan="2"/>
-            <Label x:Name="Lines_ValuePlayer2" Content="0" HorizontalAlignment="Right" Margin="0,48,10,0" VerticalAlignment="Top" Height="44" Width="45" Grid.Row="1" RenderTransformOrigin="1.934,0.475"/>
+            <Label x:Name="ScorePlayer2" Content="Score&#xA;" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top" Height="44" Width="70" Grid.RowSpan="2"/>
+            <Label x:Name="LinesPlayer2" Content="Lines&#xA;&#xA;" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="45" Width="70" Grid.Row="1"/>
+            <Label x:Name="Score_ValuePayer2" Content="35&#xA;&#xA;" HorizontalAlignment="Right" Margin="0,166,10,0" VerticalAlignment="Top" Height="44" Width="45" RenderTransformOrigin="1.889,0.545" Grid.RowSpan="2"/>
+            <Label x:Name="Lines_ValuePlayer2" Content="0" HorizontalAlignment="Right" Margin="0,6,10,0" VerticalAlignment="Top" Height="44" Width="45" Grid.Row="1" RenderTransformOrigin="1.934,0.475"/>
             <Grid x:Name="PreviewGridPlayer2" HorizontalAlignment="Center" Height="74" Margin="0,58,0,0" VerticalAlignment="Top" Width="76">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>

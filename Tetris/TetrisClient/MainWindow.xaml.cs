@@ -43,9 +43,8 @@ namespace TetrisClient
             {
                 _timer.Stop();
                 _gameMode = "SinglePlayer";
-                await _connectionService.CloseConnection();
-
                 MessageBox.Show("Player 2 has quit");
+                await _connectionService.CloseConnection();
 
                 TetrisGridPlayer2.Visibility = Visibility.Hidden;
                 Player2Status.Visibility = Visibility.Hidden;
