@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Engine;
 using TetrisClient.SignalR;
@@ -22,7 +21,6 @@ namespace TetrisClient
         private string _gameMode = GameMode.GetGameMode();
         private TetrisHubConnectionService _connectionService = new();
         private string _readyUpState = "notReady";
-        private int _ocupiedCells;
 
         public MainWindow()
         {
@@ -40,6 +38,7 @@ namespace TetrisClient
             ReadyUpMessage.Visibility = Visibility.Hidden;
 
             LoadMessage.Visibility = Visibility.Visible;
+            
             await _connectionService.MakeConnection();
 
             _connectionService.ConnectQuit(async () =>
@@ -53,7 +52,6 @@ namespace TetrisClient
                 TetrisGridPlayer2.Visibility = Visibility.Hidden;
                 Player2Status.Visibility = Visibility.Hidden;
                 Pause.Visibility = Visibility.Visible;
-
             });
 
             await _connectionService.ConnectOnDrop((game) =>
@@ -63,8 +61,8 @@ namespace TetrisClient
 
                 Lines_ValuePlayer2.Content = game.Lines;
                 ScorePlayer2.Content = game.Score;
-                DrawTetromino(1,1 game.Preview, PreviewGridPlayer2);
-                DrawTetromino(1,1,game.Board, TetrisGridPlayer2);
+                DrawTetromino(game.Preview, PreviewGridPlayer2);
+                DrawTetromino(game.Board, TetrisGridPlayer2);
             });
 
             _connectionService.ConnectOnReady(() =>
@@ -73,7 +71,17 @@ namespace TetrisClient
                 if (_readyUpState == ReadyUpMessage.Content) _timer.Start();
             });
 
-            await _connectionService.StartConnection();
+            try
+            {
+                await _connectionService.StartConnection();
+            }
+            catch
+            {
+                _gameMode = "SinglePlayer";
+                MessageBox.Show("Unable to Connect to the server");
+                QuitGame(null, null);
+            }
+            
             LoadMessage.Visibility = Visibility.Hidden;
             ReadyUpMessage.Visibility = Visibility.Visible;
 
@@ -85,8 +93,7 @@ namespace TetrisClient
 
         private void Init()
         {
-
-            DrawTetromino(1,1,_tetrisEngine.Preview.Shape.Value, PreviewGrid);
+            DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
             
             PreviewKeyDown += KeyDownControls;
             _timer = new DispatcherTimer();
@@ -94,7 +101,7 @@ namespace TetrisClient
             _timer.Interval = TimeSpan.FromSeconds(0.5);
             Quit.Click += QuitGame;
             Pause.Click += PauseTimer;
-            
+
             if (_gameMode == "MultiPlayer") InitMultiPlayer();
             if (_gameMode == "SinglePlayer")_timer.Start();
         }
@@ -107,6 +114,7 @@ namespace TetrisClient
                 await _connectionService.CloseConnection();
                 _gameMode = "SinglePlayer";
             }
+           // if(_gameMode == "SinglePlayer") Close();
         }
 
         private async void Ready(object o, EventArgs e)
@@ -119,7 +127,7 @@ namespace TetrisClient
 
 
 
-        private async void QuitGame(object o, EventArgs e)
+        private async void QuitGame(object? o, EventArgs? e)
         {
             if (_gameMode == "MultiPlayer")
             {
@@ -132,36 +140,30 @@ namespace TetrisClient
             Close();
             homepage.Show();
         }
-        
-        private void PauseTimer(object sender, EventArgs args) =>_timer.IsEnabled = !_timer.IsEnabled;
+
+        private void PauseTimer(object sender, EventArgs args) 
+        {
+            
+            _timer.IsEnabled = !_timer.IsEnabled;
+            Pause.Content = _timer.IsEnabled ? "Pause" : "Resume"; 
+        }
         
         public void RedrawPreview()
         {
             PreviewGrid.Children.Clear();
-            DrawTetromino(1,1,_tetrisEngine.Preview.Shape.Value, PreviewGrid);
+            DrawTetromino(_tetrisEngine.Preview.Shape.Value, PreviewGrid);
         }
 
-        private void SmartRemove(int amount)
-        {
-            for (int i = TetrisGrid.Children.Count - 1; i >= amount; i--)
-            {
-                TetrisGrid.Children.RemoveAt(i);
-            }
-        }
 
         private async void DropTetromino(object sender, EventArgs args)
         {
-            _ocupiedCells = 0;
             _tetrisEngine.DropTetromino();
             Lines_Value.Content = _tetrisEngine.Lines;
             Score_Value.Content = _tetrisEngine.Score;
             RedrawPreview();
-            // TetrisGrid.Children.Clear();
-            SmartRemove(_ocupiedCells);
+            TetrisGrid.Children.Clear();
             DrawTetromino(
-                _tetrisEngine.CurrentTetromino().YPosition,
-                _tetrisEngine.CurrentTetromino().XPosition,
-                _tetrisEngine.CurrentTetromino().Shape.Value, TetrisGrid); 
+                _tetrisEngine.Board, TetrisGrid); 
             
             if (_gameMode == "MultiPlayer")
             {
@@ -194,7 +196,7 @@ namespace TetrisClient
             }
         }
         
-        private void DrawTetromino(int offsetY, int offsetX, int[,] values, Grid grid)
+        private void DrawTetromino(int[,] values, Grid grid)
         {
             
             for (int i = 0; i < values.GetLength(0); i++)
@@ -204,18 +206,18 @@ namespace TetrisClient
                 {
                     if (values[i, j] != 1) continue;
                     
-                    Rectangle rectangle = new Rectangle()
+                    Label rectangle = new ()
                     {
                         Width = 25, 
                         Height = 25, 
-                        Stroke = Brushes.White, 
-                        StrokeThickness = 1, 
-                        Fill = Brushes.Red, 
+                        BorderBrush = Brushes.White, 
+                        BorderThickness = new Thickness(1), 
+                        Background = Brushes.Red, 
                     };
-                    _ocupiedCells++;
+
                     grid.Children.Add(rectangle); 
-                    Grid.SetRow(rectangle, i+offsetY); 
-                    Grid.SetColumn(rectangle, j+offsetX); 
+                    Grid.SetRow(rectangle, i); 
+                    Grid.SetColumn(rectangle, j); 
                 }
             }
 
