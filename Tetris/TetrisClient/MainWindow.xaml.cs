@@ -190,6 +190,20 @@ namespace TetrisClient
             }
         }
 
+        private SolidColorBrush ColorConverter(int value)
+        {
+            return value switch
+            {
+                1 => Brushes.Orange,
+                2 => Brushes.Purple,
+                3 => Brushes.LightBlue,
+                4 => Brushes.Green,
+                5 => Brushes.MediumPurple,
+                6 => Brushes.Red,
+                7 => Brushes.Yellow,
+            };
+        }
+
         private void DrawTetromino(int[,] values, Grid grid)
         {
             
@@ -206,7 +220,7 @@ namespace TetrisClient
                         Height = 25, 
                         BorderBrush = Brushes.White, 
                         BorderThickness = new Thickness(1), 
-                        Background = Brushes.Red, 
+                        Background = ColorConverter(values[i,j]), 
                     };
 
                     grid.Children.Add(rectangle); 
