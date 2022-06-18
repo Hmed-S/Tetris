@@ -64,7 +64,7 @@ public class TetrisEngine
         {
             Tetromino RotatedTetromino = CurrentTetromino.RotateClockWise();
             var currentPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
-            var rotatedPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+            var rotatedPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, RotatedTetromino);
 
 
             _board.EraseTetromino(currentPoints);
@@ -84,7 +84,7 @@ public class TetrisEngine
         {
             Tetromino RotatedTetromino = CurrentTetromino.RotateCounterClockWise();
             var currentPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
-            var rotatedPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+            var rotatedPoints = Point.Of(CurrentTetromino.XPosition, CurrentTetromino.YPosition, RotatedTetromino);
 
             _board.EraseTetromino(currentPoints);
             bool fit = _board.CanFit(rotatedPoints);
