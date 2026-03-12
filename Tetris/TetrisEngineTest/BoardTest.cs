@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using Engine;
+using TetrisEngine.Board;
 
 namespace TetrisEngineTest
 {
@@ -295,13 +295,13 @@ namespace TetrisEngineTest
         [TestCase(0, 0)]
         [TestCase(-4, -9)]
         public void ThrowsExeptionWithValuesBelowTen(int rowCount, int columnCount) =>
-            Assert.Throws<ArgumentException>(()=> new Board(rowCount, columnCount));
+            Assert.Throws<ArgumentException>(()=> new TetrisBoard(rowCount, columnCount));
         
 
         [TestCaseSource(nameof(DrawCases))]
         public void BoardAppliesRightCoordinates(int x, int y, int dropstatus, Tetromino tetromino)
         {
-            Board board = new (10, 10);
+            TetrisBoard board = new (10, 10);
 
             int result = board.ShiftCoordinates(x, y, tetromino);
             Assert.AreEqual(dropstatus, result);
@@ -314,7 +314,7 @@ namespace TetrisEngineTest
             // ToDo: make mock work
             // var boardMock = new Mock<Board>(16,10);
             // boardMock.SetupGet(board => board.Values).Returns(givenBoard);
-            Board board = new(16,10);
+            TetrisBoard board = new(16,10);
             board.Values = givenBoard;
 
             board.CountLines();

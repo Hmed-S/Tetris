@@ -4,9 +4,10 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Engine;
 using TetrisClient.SignalR;
 using TetrisClient.Dto;
+using TetrisEngine.Board;
+using TetrisEngine;
 
 namespace TetrisClient
 {
@@ -15,7 +16,7 @@ namespace TetrisClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private TetrisEngine _tetrisEngine;
+        private Engine _tetrisEngine;
         private DispatcherTimer _timer;
         private string _gameMode = GameMode.GetGameMode();
         private TetrisHubConnectionService _connectionService = new();
@@ -24,7 +25,7 @@ namespace TetrisClient
         public MainWindow()
         {
             InitializeComponent();
-            _tetrisEngine = new(new Board(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count));
+            _tetrisEngine = new(new TetrisBoard(TetrisGrid.RowDefinitions.Count, TetrisGrid.ColumnDefinitions.Count));
             Init();
         }
 

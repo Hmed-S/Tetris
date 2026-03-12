@@ -1,4 +1,4 @@
-﻿namespace Engine
+﻿namespace TetrisEngine.Board
 {
 
     public class Tetromino

@@ -1,6 +1,6 @@
-﻿using Engine.Extensions;
+﻿using TetrisEngine.Extensions;
 
-namespace Engine
+namespace TetrisEngine.Board
 {
     
     public class Point
