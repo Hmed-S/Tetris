@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using Engine;
 using Moq;
+using TetrisEngine.Board;
 
 namespace TetrisEngineTest
 {
@@ -43,7 +43,7 @@ namespace TetrisEngineTest
         [TestCaseSource(nameof(DropCases))]
         public void DropTetrominoReturnsRightRows(int numberOfDrops, int yPosition)
         {
-            var engineMock = new Mock<TetrisEngine>(new Board(10,10));
+            var engineMock = new Mock<TetrisEngine>(new TetrisBoard(10,10));
             engineMock.Setup(engine => engine.CurrentTetromino).Returns(Tetromino.FromShape(Shapes.LShape));
             TetrisEngine engine = engineMock.Object;
 
@@ -58,7 +58,7 @@ namespace TetrisEngineTest
         [TestCaseSource(nameof(ShiftRightCases))]
         public void CanShiftToRight(int numberOfShifts, int xPosition)
         {
-            var engineMock = new Mock<TetrisEngine>(new Board(10,10));
+            var engineMock = new Mock<TetrisEngine>(new TetrisBoard(10,10));
             engineMock.Setup(engine => engine.CurrentTetromino).Returns(Tetromino.FromShape(Shapes.LShape));
             TetrisEngine engine = engineMock.Object;
 
@@ -79,7 +79,7 @@ namespace TetrisEngineTest
         [TestCase(5, 0)]
         public void EngineCalculatesScoreCorrect(int numberOfLines, int score)
         {
-            var boardMock = new Mock<Board>(16,10);
+            var boardMock = new Mock<TetrisBoard>(16,10);
             boardMock.Setup(b => b.Values).Returns(new int[16, 10]);
             boardMock.Setup(b => b.CountLines()).Returns(numberOfLines);
             TetrisEngine engine = new(boardMock.Object);

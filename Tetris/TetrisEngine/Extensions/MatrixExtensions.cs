@@ -1,4 +1,4 @@
-﻿namespace Engine.Extensions;
+﻿namespace TetrisEngine.Extensions;
 
 public static class MatrixExtensions
 {

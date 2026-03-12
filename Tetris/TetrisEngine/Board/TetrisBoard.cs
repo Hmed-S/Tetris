@@ -1,8 +1,8 @@
-﻿using Engine.Extensions;
+﻿using TetrisEngine.Extensions;
 
-namespace Engine
+namespace TetrisEngine.Board
 {
-    public class Board
+    public class TetrisBoard
     {
         public int Height { get; }
         public int Width { get; }
@@ -10,7 +10,7 @@ namespace Engine
         public virtual int[,] Values { get; set; }
 
 
-        public Board(int rowCount, int columnCount)
+        public TetrisBoard(int rowCount, int columnCount)
         {
             if (rowCount < 10 || columnCount < 10)
                 throw new ArgumentException("row and column count must at least be ten");
