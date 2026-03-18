@@ -22,7 +22,7 @@ public class Engine
 
     private void PutTetromino(int x, int y)
     {
-        int draw = _board.ShiftCoordinates(x, y, CurrentTetromino);;
+        int draw = _board.ShiftCoordinates(x, y, CurrentTetromino);
         CurrentTetromino.DropStatus = draw;
     }
 

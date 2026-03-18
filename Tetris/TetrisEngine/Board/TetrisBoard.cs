@@ -61,11 +61,11 @@ namespace TetrisEngine.Board
                 }
         }
 
-        public bool CanFit(List<Point> points)
+        public bool CanFit(Tetromino tetromino)
         {
             bool canFit = true;
 
-            foreach (var point in points)
+            foreach (var point in tetromino.Points)
             {
                 if(point.Column<0 || point.Column > Width - 1)
                 {
@@ -83,9 +83,9 @@ namespace TetrisEngine.Board
         }
 
 
-        public void EraseTetromino(List<Point> points)
+        public void EraseTetromino(Tetromino tetromino)
         {
-            points.ForEach(point =>
+            tetromino.Points.ForEach(point =>
             {
                 Values[point.Row, point.Column] = 0;
             });
@@ -93,7 +93,6 @@ namespace TetrisEngine.Board
         
         private void PutTetromino(List<Point> points)
         {
-    
             points.ForEach(point => Values[point.Row, point.Column] = point.Value);
         }
 
@@ -101,15 +100,15 @@ namespace TetrisEngine.Board
         public int ShiftCoordinates(int x, int y, Tetromino tetromino)
         {
             int maxYValue = Height - 1;
-            var previousPoints = Point.Of(tetromino.XPosition, tetromino.YPosition, tetromino);
-            var desiredPoints = Point.Of(x, y, tetromino);
+            var previousPoints = tetromino.Points;
+            var desiredPoints = tetromino.ChangePosition(x, y).Points;
 
             var rows = desiredPoints.Select(i => i.Row);
 
-            EraseTetromino(previousPoints);
+            EraseTetromino(tetromino);
 
 
-            if (rows.Last() >=maxYValue || !CanFit(desiredPoints))
+            if (rows.Last() >=maxYValue || !CanFit(tetromino))
             {
                 PutTetromino(previousPoints);
                 return -1;
@@ -117,8 +116,6 @@ namespace TetrisEngine.Board
 
             PutTetromino(desiredPoints);
 
-            tetromino.YPosition = y;
-            tetromino.XPosition = x;
             return 0;
         }
     }
