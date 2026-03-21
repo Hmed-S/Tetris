@@ -8,7 +8,7 @@
                     { 1, 1, 1 },
                     { 0, 0, 0 }
                 }
-            );
+         );
 
         public readonly static Matrix JShape = new(new[,]
             {
@@ -58,6 +58,5 @@
             }
         );
 
-        public readonly static Matrix[] AllShapes = { LShape, JShape, IShape, SShape, TShape, ZShape, OShape };
     }
 }

@@ -2,12 +2,11 @@
 
 namespace TetrisEngine.Board
 {
-    
-    public class Point
+    public readonly struct Point
     {
-        public int Row { get; init; }
-        public int Column { get; init; }
-        public int Value { get; init; }
+        public int Row { get; private init; }
+        public int Column { get; private init; }
+        public int Value { get; private init; }
         
 
         public static List<Point> Of(int x, int y, Tetromino tetromino)

@@ -2,12 +2,12 @@
 {
     public enum Color
     {
-        LIGHT_BLUE,
-        DARK_BLUE,
-        PURPLE,
-        ORANGE,
-        YELLOW,
-        GREEN,
+        Blue,
+        Cyan,
+        Purple,
+        Orange,
+        Yellow,
+        Green,
         RED
     }
 }
