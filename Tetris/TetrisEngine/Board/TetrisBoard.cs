@@ -97,7 +97,7 @@ namespace TetrisEngine.Board
         }
 
 
-        public int ShiftCoordinates(int x, int y, Tetromino tetromino)
+        public DropStatus ShiftCoordinates(int x, int y, Tetromino tetromino)
         {
             int maxYValue = Height - 1;
             var previousPoints = tetromino.Points;
@@ -111,12 +111,12 @@ namespace TetrisEngine.Board
             if (rows.Last() >=maxYValue || !CanFit(tetromino))
             {
                 PutTetromino(previousPoints);
-                return -1;
+                return DropStatus.Landed;
             };
 
             PutTetromino(desiredPoints);
 
-            return 0;
+            return DropStatus.Falling;
         }
     }
 }
