@@ -1,4 +1,5 @@
 ﻿using TetrisEngine.Board;
+using TetrisEngine.Game.Moves;
 
 namespace TetrisEngine.Game
 {
@@ -9,82 +10,45 @@ namespace TetrisEngine.Game
         public Tetromino Preview { get; set; }
         public TetrisBoard Board { get; init; }
         public Score Score { get; set; }
-        private IGame? Game { get; init; }
-        public Random Random { get; set; }
+        public IMoveSet MoveSet { get; set; }
+        public IGame Game { get; init; }
+        public int Seed { get; set; }
+        public bool IsReady { get; set; }
+        public Random Random { get; init; }
 
-
-        private void PutTetromino(int x, int y)
+        public void Domove(Move move)
         {
-            DropStatus draw = Board.ShiftCoordinates(x, y, CurrentTetromino);
-            CurrentTetromino = CurrentTetromino.ChangeDropStatus(draw);
-        }
-
-        public void Next()
-        {
-            UpdateScore(Board.CountLines());
-            CurrentTetromino = Preview;
-            Preview = Tetromino.Random(Random);
-        }
-
-        public void ShiftToLeft() => PutTetromino(CurrentTetromino.XPosition - 1, CurrentTetromino.YPosition);
-
-        public void ShiftToRight() => PutTetromino(CurrentTetromino.XPosition + 1, CurrentTetromino.YPosition);
-
-        public void DropTetromino()
-        {
-            DropStatus draw = Board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition + 1, CurrentTetromino);
-            CurrentTetromino = CurrentTetromino.ChangeDropStatus(draw);
-            if (CurrentTetromino.DropStatus == DropStatus.Landed) Next();
-        }
-
-        private void UpdateScore(int linesGained)
-        {
-            Score = new Score(linesGained);
-        }
-
-        public void RotateRight()
-        {
-            if (CurrentTetromino.XPosition < Board.Width - 2)
+            switch (move)
             {
-                Tetromino rotatedTetromino = CurrentTetromino.RotateClockWise();
-
-                Board.EraseTetromino(CurrentTetromino);
-                bool fit = Board.CanFit(rotatedTetromino);
-
-
-                if (fit) CurrentTetromino = rotatedTetromino;
-
-                Board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
+                case Move.MoveToLeft:
+                    MoveSet.MoveLeft(this);
+                    break;
+                case Move.MoveToRight:
+                    MoveSet.MoveRight(this);
+                    break;
+                case Move.Drop:
+                    MoveSet.DropTetromino(this);
+                    break;
+                case Move.RotateRight:
+                    MoveSet.RotateRight(this);
+                    break;
+                case Move.RotateLeft:
+                    MoveSet.RotateLeft(this);
+                    break;
+                case Move.Next:
+                    MoveSet.Next(this);
+                    break;
+                case Move.Ready:
+                    MoveSet.Ready(this);
+                    break;
+                case Move.Quit:
+                    MoveSet.Quit(this);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(move), move, null);
             }
-
         }
 
-        public void RotateLeft()
-        {
-            if (CurrentTetromino.XPosition < Board.Width - 2)
-            {
-                Tetromino rotatedTetromino = CurrentTetromino.RotateCounterClockWise();
-
-                Board.EraseTetromino(CurrentTetromino);
-                bool fit = Board.CanFit(rotatedTetromino);
-
-
-                if (fit) CurrentTetromino = rotatedTetromino;
-
-                Board.ShiftCoordinates(CurrentTetromino.XPosition, CurrentTetromino.YPosition, CurrentTetromino);
-            }
-
-        }
-
-        public void Quit()
-        {
-
-        }
-
-        public void Ready()
-        {
-
-        }
 
     }
 }
