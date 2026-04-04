@@ -1,40 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace TetrisClient
 {
     /// <summary>
     /// Interaction logic for HomePage.xaml
     /// </summary>
-    public partial class HomePage
+    public partial class HomePage : Page
     {
         public HomePage()
         {
             InitializeComponent();
-            SinglePlayer.Click += SwitchScreens;
-            MultiPlayer.Click += SwitchScreens;
-        }
-
-        private void SwitchScreens(object o, EventArgs e)
-        {
-            var b = o as Button;
-            GameMode.SetGameMode(b.Name);
-
-            var gameWindow = new MainWindow();
-            var gameWindowPlayer2 = new MainWindow();
-            try
-            {
-                Close();
-                gameWindow.Show();
-                if (b.Name == "MultiPlayer") gameWindowPlayer2.Show();
-            }
-            catch
-            {
-                gameWindow.Close();
-                gameWindowPlayer2.Close();
-                MessageBox.Show("Could not connect to the server please try again later");
-            }
         }
     }
 }

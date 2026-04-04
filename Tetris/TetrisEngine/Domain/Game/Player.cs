@@ -1,7 +1,7 @@
-﻿using TetrisEngine.Board;
-using TetrisEngine.Game.Moves;
+﻿using TetrisEngine.Domain.Board;
+using TetrisEngine.Domain.Game.Moves;
 
-namespace TetrisEngine.Game
+namespace TetrisEngine.Domain.Game
 {
     public class Player
     {
@@ -11,7 +11,7 @@ namespace TetrisEngine.Game
         public TetrisBoard Board { get; init; }
         public Score Score { get; set; }
         public IMoveSet MoveSet { get; set; }
-        public IGame Game { get; init; }
+        public IGame Game { get; set; }
         public int Seed { get; set; }
         public bool IsReady { get; set; }
         public Random Random { get; set; }

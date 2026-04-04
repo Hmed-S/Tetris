@@ -1,4 +1,4 @@
-﻿namespace TetrisEngine.Board
+﻿namespace TetrisEngine.Domain.Board
 {
     public static class Shapes
     {

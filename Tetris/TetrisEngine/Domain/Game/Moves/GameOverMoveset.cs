@@ -1,4 +1,6 @@
-﻿namespace TetrisEngine.Game.Moves
+﻿using TetrisEngine.Domain.Game;
+
+namespace TetrisEngine.Domain.Game.Moves
 {
     internal class GameOverMoveset : IMoveSet
     {
