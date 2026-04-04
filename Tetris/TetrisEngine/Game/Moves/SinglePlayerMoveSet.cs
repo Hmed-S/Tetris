@@ -7,7 +7,7 @@ namespace TetrisEngine.Game.Moves
         public void Next(Player player)
         {
             player.CurrentTetromino = player.Preview;
-            player.Preview = Tetromino.Random(new Random()); // TODO: make this more deterministic for multiplayer
+            player.Preview = Tetromino.Random(new Random(player.Seed));
         }
 
         public void DropTetromino(Player player)
@@ -60,7 +60,7 @@ namespace TetrisEngine.Game.Moves
 
         public void Quit(Player player)
         {
-            
+            player.Game.Quit();
         }
 
         public void Ready(Player player)

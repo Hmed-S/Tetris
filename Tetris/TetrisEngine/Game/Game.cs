@@ -78,5 +78,7 @@
         }
 
         public static IGame GetGame() => _game;
+
+        public void Quit() => GameState = GameState.Quit;
     }
 }

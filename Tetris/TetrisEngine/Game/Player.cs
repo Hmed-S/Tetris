@@ -14,7 +14,7 @@ namespace TetrisEngine.Game
         public IGame Game { get; init; }
         public int Seed { get; set; }
         public bool IsReady { get; set; }
-        public Random Random { get; init; }
+        public Random Random { get; set; }
 
         public void Domove(Move move)
         {
