@@ -41,7 +41,8 @@
 
         public void Ready(Player player)
         {
-            throw new NotImplementedException("I don't know what to do with this in the domain layer.");
+            int seed = new Random().Next();
+            player.Seed = seed;
         }
 
         public void RotateLeft(Player player)

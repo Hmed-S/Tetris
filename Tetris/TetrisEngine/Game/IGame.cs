@@ -8,6 +8,6 @@
         public GameState GameState { get; set; }
         public abstract static IGame Start(GameMode gameMode, Player player);
         public abstract static IGame GetGame();
-
+        public void Quit();
     }
 }
