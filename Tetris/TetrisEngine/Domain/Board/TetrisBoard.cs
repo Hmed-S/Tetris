@@ -1,6 +1,6 @@
-﻿using TetrisEngine.Extensions;
+﻿using TetrisEngine.Domain.Extensions;
 
-namespace TetrisEngine.Board
+namespace TetrisEngine.Domain.Board
 {
     public class TetrisBoard
     {

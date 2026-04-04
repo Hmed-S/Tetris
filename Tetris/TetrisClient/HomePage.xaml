@@ -1,4 +1,4 @@
-﻿<Window x:Class="TetrisClient.HomePage"
+﻿<Page x:Class="TetrisClient.HomePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,33 +6,10 @@
       xmlns:local="clr-namespace:TetrisClient"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="HomePage" Width="800" Height="450">
-
-    <Grid x:Name="HomeGrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="167*"/>
-            <ColumnDefinition Width="633*"/>
-        </Grid.ColumnDefinitions>
-        <Grid Margin="107,10,269,13" Grid.Column="1">
-            <Label x:Name="T" Content="T&#xA;" HorizontalAlignment="Left" Margin="15,10,0,0" VerticalAlignment="Top" Height="73" Width="39" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Purple"/>
-            <Label x:Name="E" Content="E&#xA;" HorizontalAlignment="Left" Margin="54,10,0,0" VerticalAlignment="Top" Height="73" Width="39" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="#FF1455F3"/>
-            <Label x:Name="T_2" Content="T&#xA;" HorizontalAlignment="Left" Margin="93,10,0,0" VerticalAlignment="Top" Height="73" Width="39" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Purple"/>
-            <Label x:Name="R" Content="R&#xA;" HorizontalAlignment="Left" Margin="132,10,0,0" VerticalAlignment="Top" Height="73" Width="39" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Green"/>
-            <Label x:Name="R_Copy" Content="I" HorizontalAlignment="Left" Margin="171,10,0,0" VerticalAlignment="Top" Height="73" Width="39" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Red"/>
-            <Label x:Name="R_Copy1" Content="S" HorizontalAlignment="Left" Margin="190,10,0,0" VerticalAlignment="Top" Height="73" Width="40" FontSize="48" RenderTransformOrigin="-0.324,0.522" Foreground="Orange"/>
-            <Button x:Name="SinglePlayer" Content="SinglePlayer&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,206,0,0" VerticalAlignment="Top" Width="132" Height="54" RenderTransformOrigin="0.507,0.406"/>
-            <Button x:Name="MultiPlayer" Content="Multiplayer" HorizontalAlignment="Center" Margin="0,310,0,0" VerticalAlignment="Top" Width="132" Height="54"/>
-        </Grid>
-        <Rectangle HorizontalAlignment="Left" Height="386" Margin="109,14,0,0" Stroke="#FF962222" VerticalAlignment="Top" Width="254" RenderTransformOrigin="0.5,0.5" Grid.Column="1">
-            <Rectangle.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="-0.35"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="-1.22"/>
-                </TransformGroup>
-            </Rectangle.RenderTransform>
-        </Rectangle>
-
+      Title="HomePage">
+    <Grid x:Name="main_grid" Margin="0,24,0,96">
+        <Button Cursor="Hand" Content="Singleplayer" HorizontalAlignment="Center" Margin="0,101,0,0" VerticalAlignment="Top" Height="43" Width="88" Background="#FF001428" Foreground="White"/>
+        <Button Cursor="Hand" Content="Multiplayer" HorizontalAlignment="Center" Margin="0,157,0,0" VerticalAlignment="Top" Height="40" Width="88" RenderTransformOrigin="0.523,1.21" Foreground="White" Background="#FF001428"/>
+        <Label x:Name="Title" Content="Ahmed-S' Multiplayer Tetris" HorizontalAlignment="Center" Margin="0,26,0,0" VerticalAlignment="Top" Foreground="White" Width="453" FontSize="36" Height="56"/>
     </Grid>
-</Window>
+</Page>

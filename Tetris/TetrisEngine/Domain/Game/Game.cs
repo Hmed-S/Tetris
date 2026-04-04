@@ -1,4 +1,4 @@
-﻿namespace TetrisEngine.Game
+﻿namespace TetrisEngine.Domain.Game
 {
     public class Game
         (
@@ -73,6 +73,7 @@
                 throw new InvalidOperationException("A game is already in progress.");
             }
 
+            player.Game = _game;
 
             return _game;
         }

@@ -1,4 +1,4 @@
-﻿namespace TetrisEngine.Game
+﻿namespace TetrisEngine.Domain.Game
 {
     public enum GameState
     {

@@ -1,4 +1,4 @@
-﻿namespace TetrisEngine.Game.Moves
+﻿namespace TetrisEngine.Domain.Game.Moves
 {
     public enum Move
     {

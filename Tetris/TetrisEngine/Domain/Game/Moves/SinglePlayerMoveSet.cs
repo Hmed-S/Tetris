@@ -1,6 +1,6 @@
-﻿using TetrisEngine.Board;
+﻿using TetrisEngine.Domain.Board;
 
-namespace TetrisEngine.Game.Moves
+namespace TetrisEngine.Domain.Game.Moves
 {
     public class SinglePlayerMoveSet : IMoveSet
     {
