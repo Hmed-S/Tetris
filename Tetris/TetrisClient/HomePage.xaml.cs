@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TetrisEngine.Domain.Game;
 
 namespace TetrisClient
 {
@@ -21,6 +22,20 @@ namespace TetrisClient
         public HomePage()
         {
             InitializeComponent();
+        }
+
+        private void Start_Single_player_Game(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(
+                new GamePage(GameMode.SinglePlayer)
+                );
+        }
+
+        private void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
+        {
+            NavigationService.Navigate(
+                new GamePage(GameMode.MultiPlayer)
+                );
         }
     }
 }
