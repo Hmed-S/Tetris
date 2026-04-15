@@ -8,12 +8,16 @@
     
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.6" />
-      <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.0-preview.2.21154.6" />
-      <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     </ItemGroup>
     
     <ItemGroup>
       <ProjectReference Include="..\TetrisEngine\TetrisEngine.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Update="TetrisMenuButton.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </None>
     </ItemGroup>
 
 </Project>
