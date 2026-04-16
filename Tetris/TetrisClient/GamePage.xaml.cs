@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 using TetrisEngine.Domain.Game;
+using TetrisClient.Controls;
+using System.Windows.Threading;
 
 namespace TetrisClient
 {
@@ -26,15 +17,15 @@ namespace TetrisClient
             if (GameMode == GameMode.SinglePlayer)
             {
                 MainGrid.Children.Add(
-                    new GameBoard()
+                    new GameBoard(new TetrisGrid(18, 7), new TetrisGrid(4,4),  new DispatcherTimer())
                     );
             }
             if(GameMode == GameMode.MultiPlayer)
             {
-                GameBoard board1 = new GameBoard();
+                GameBoard board1 = new GameBoard(new TetrisGrid(18, 7), new TetrisGrid(3,3),  new DispatcherTimer());
                 Grid.SetColumn(board1, 0);
 
-                GameBoard board2 = new GameBoard();
+                GameBoard board2 = new GameBoard(new TetrisGrid(18,7), new TetrisGrid(3,3),  new DispatcherTimer());
                 Grid.SetColumn(board2, 1);
 
                 MainGrid.Children.Add(board1);
