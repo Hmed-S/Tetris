@@ -8,74 +8,49 @@
              d:DesignHeight="450" d:DesignWidth="400">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Name="GameArea" Width="205" />
+            <ColumnDefinition Name="GameArea" Width="200"/>
             <ColumnDefinition Name="GameInfo" Width="190"/>
         </Grid.ColumnDefinitions>
 
         <Grid Name="TetrisGrid">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="25"/>
-                
-            </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-                <ColumnDefinition Width="25"/>
-   
-            </Grid.ColumnDefinitions>
 
         </Grid>
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Name="PreviewArea" Height="150"/>
-                <RowDefinition Name="GameControlls"/>
+                <RowDefinition Name="GameControls"/>
             </Grid.RowDefinitions>
 
-            <Grid x:Name="PreviewGrid" HorizontalAlignment="Center" Height="76" VerticalAlignment="Center" Width="75">
+            <Grid Grid.Row="0" x:Name="PreviewGrid" HorizontalAlignment="Center" Height="140" VerticalAlignment="Center" Width="180">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="25"/>
+                    <RowDefinition Name="Title" Height="30"/>
+                    <RowDefinition Name="NextPiece"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"/>
-                    <ColumnDefinition Width="25"/>
-                    <ColumnDefinition Width="25"/>
-                </Grid.ColumnDefinitions>
+
+                
+
+                <Label Grid.Row="0" Content="Next Piece" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Foreground="White"/>
+                <WrapPanel Name="Preview" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
 
-            <Grid Grid.Row="1">
-                <Button Name="Pause" Content="Pause" HorizontalAlignment="Center" Margin="0,108,0,0" VerticalAlignment="Top" Height="43" Width="88" Background="#FF001428" Foreground="White" Cursor="Hand"/>
-                <Button Name="Quit" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="88" Background="#FF001428" Foreground="White" RenderTransformOrigin="0.506,0.894" Margin="0,60,0,0" Cursor="Hand"/>
-                <Button Name="Ready" Content="Ready" HorizontalAlignment="Center" VerticalAlignment="Top" Height="43" Width="88" Background="#FF001428" Foreground="White" Margin="0,156,0,0" Cursor="Hand"/>
+            <Grid Grid.Row="1" xmlns:local="clr-namespace:TetrisClient.Controls">
+                <Grid.RowDefinitions>
+                    <RowDefinition Name="PlayerNameArea" Height="35"/>
+                    <RowDefinition Name="ScoreArea" Height="35"/>
+                    <RowDefinition Name="Control1Area" Height="60"/>
+                    <RowDefinition Name="Control2Area" Height="60"/>
+                    <RowDefinition Name="Control3Area" Height="60"/>
+                </Grid.RowDefinitions>
+                
+                <Label Grid.Row="0" Name="PlayerHandle" Content="John Doe" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
+                <Label Grid.Row="1" Name="Score" Content="Score: 0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
+               
+                <local:TetrisMenuButton Grid.Row="2" Content="Pause" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                <local:TetrisMenuButton Grid.Row="3" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                <local:TetrisMenuButton Grid.Row="4" Content="Ready" HorizontalAlignment="Center" VerticalAlignment="Top" />
             </Grid>
         </Grid>
-        
+
     </Grid>
 </UserControl>
