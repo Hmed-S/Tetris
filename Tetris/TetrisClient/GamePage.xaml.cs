@@ -10,27 +10,26 @@ namespace TetrisClient
     /// </summary>
     public partial class GamePage : Page
     {
-        public GamePage(GameMode GameMode)
+        public GamePage(GameBoard gameboard, GameBoard opponentGameBoard)
         {
             InitializeComponent();
 
-            if (GameMode == GameMode.SinglePlayer)
-            {
-                MainGrid.Children.Add(
-                    new GameBoard(new TetrisGrid(18, 7), new TetrisGrid(4,4),  new DispatcherTimer())
-                    );
-            }
-            if(GameMode == GameMode.MultiPlayer)
-            {
-                GameBoard board1 = new GameBoard(new TetrisGrid(18, 7), new TetrisGrid(3,3),  new DispatcherTimer());
-                Grid.SetColumn(board1, 0);
+            MainGrid.Children.Add(
+                gameboard
+                );
 
-                GameBoard board2 = new GameBoard(new TetrisGrid(18,7), new TetrisGrid(3,3),  new DispatcherTimer());
-                Grid.SetColumn(board2, 1);
+            MainGrid.Children.Add(opponentGameBoard);
 
-                MainGrid.Children.Add(board1);
-                MainGrid.Children.Add(board2);
-            }
+            Grid.SetColumn(gameboard, 0);
+            Grid.SetColumn(opponentGameBoard, 1);
+
+        }
+
+        public GamePage(GameBoard gameboard)
+        {
+            InitializeComponent();
+
+            MainGrid.Children.Add(gameboard);
         }
     }
 }
