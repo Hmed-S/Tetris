@@ -10,6 +10,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using TetrisClient.Controls;
 using TetrisEngine.Domain.Game;
 
 namespace TetrisClient
@@ -27,15 +29,21 @@ namespace TetrisClient
         private void Start_Single_player_Game(object sender, RoutedEventArgs e)
         {
             NavigationService.Navigate(
-                new GamePage(GameMode.SinglePlayer)
+                new GamePage(new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer()))
                 );
         }
 
         private void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(
-                new GamePage(GameMode.MultiPlayer)
-                );
+            NavigationService.Navigate(new GamePage(new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer()), new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer())));
+        }
+
+        public void  ShowPlayerHandleInput(object sender, RoutedEventArgs e)
+        {
+            MultiplayerButton.Visibility = Visibility.Collapsed;
+            PlayerNameLabel.Visibility = Visibility.Visible;
+            PlayerNameInput.Visibility = Visibility.Visible;
+            StartMultiPlayerGameButton.Visibility = Visibility.Visible;
         }
     }
 }

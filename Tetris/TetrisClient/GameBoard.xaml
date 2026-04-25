@@ -43,7 +43,7 @@
                     <RowDefinition Name="Control3Area" Height="60"/>
                 </Grid.RowDefinitions>
                 
-                <Label Grid.Row="0" Name="PlayerHandle" Content="John Doe" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
+                <Label Grid.Row="0" Name="PlayerNameLabel" Content="John Doe" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
                 <Label Grid.Row="1" Name="Score" Content="Score: 0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
                
                 <local:TetrisMenuButton Grid.Row="2" Content="Pause" HorizontalAlignment="Center" VerticalAlignment="Top"/>

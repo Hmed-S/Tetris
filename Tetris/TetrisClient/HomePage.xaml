@@ -11,7 +11,14 @@
           xmlns:local="clr-namespace:TetrisClient.Controls"
           >
 
-        <Label x:Name="Title" Content="Ahmed-S' Multiplayer Tetris" HorizontalAlignment="Center" Margin="0,26,0,0" VerticalAlignment="Top" Foreground="White" Width="453" FontSize="36" Height="56"/>
+        <Label x:Name="Title" 
+               Content="Ahmed-S'Multiplayer Tetris"
+               HorizontalAlignment="Center"
+               Margin="0,26,0,0" VerticalAlignment="Top"
+               Foreground="White"
+               Width="453"
+               FontSize="36"
+               Height="56"/>
 
         <local:TetrisMenuButton
             Content="Singleplayer"
@@ -21,13 +28,41 @@
            />
 
         <local:TetrisMenuButton
+            x:Name="MultiplayerButton"
             Content="Multiplayer"
             HorizontalAlignment="Center"
             Margin="0,157,0,0" VerticalAlignment="Top"
-            Click="Start_MultiPlayer_Game"
+            Click="ShowPlayerHandleInput"
            />
 
 
-        
+        <Label
+            Visibility="Collapsed"
+            Name="PlayerNameLabel"
+            Content="name:"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Foreground="White"
+            Height="38"
+            FontSize="20" Margin="0,157,0,0"
+            />
+
+        <TextBox
+            Visibility="Collapsed"
+            x:Name="PlayerNameInput"
+            Height="20"
+            Margin="356,196,356,0" VerticalAlignment="Top" RenderTransformOrigin="0.528,0.075"
+        />
+
+        <local:TetrisMenuButton
+            Visibility="Collapsed"
+            x:Name="StartMultiPlayerGameButton"
+            Content="Join Game"
+            HorizontalAlignment="Center"
+            Margin="0,231,0,0" VerticalAlignment="Top"
+            Click="Start_MultiPlayer_Game"
+          />
+
+
     </Grid>
 </Page>
