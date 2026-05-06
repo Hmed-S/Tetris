@@ -28,14 +28,24 @@ namespace TetrisClient
 
         private void Start_Single_player_Game(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(
-                new GamePage(new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer()))
-                );
+            GameBoard gameboard = new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
+            
+            gameboard.ReadyButton.Visibility = Visibility.Collapsed;
+            NavigationService.Navigate(new GamePage(gameboard));
         }
 
         private void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
         {
-            NavigationService.Navigate(new GamePage(new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer()), new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer())));
+            GameBoard gameeboard = new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
+            GameBoard opponentBoard = new GameBoard("Some opponent", new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
+
+            gameeboard.PauseButton.Visibility = Visibility.Collapsed;
+
+            opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
+            opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
+            opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
+
+            NavigationService.Navigate(new GamePage(gameeboard,opponentBoard));
         }
 
         public void  ShowPlayerHandleInput(object sender, RoutedEventArgs e)
