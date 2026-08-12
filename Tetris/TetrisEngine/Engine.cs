@@ -1,5 +1,6 @@
 ﻿using TetrisEngine.Domain.Board;
 using TetrisEngine.Domain.Game;
+using TetrisEngine.Domain.Game.Player;
 
 namespace TetrisEngine;
 
