@@ -1,15 +1,17 @@
-﻿namespace TetrisEngine.Domain.Game
+﻿using TetrisEngine.Domain.Game.Player;
+
+namespace TetrisEngine.Domain.Game
 {
     public class Game
         (
           GameMode GameMode,
-          Player Player,
+          IPlayer Player,
           GameState GameState
         ) : IGame
     {
-        public Player Player { get; init; }
+        public IPlayer Player { get; init; }
         public GameMode Mode { get; init; }
-        public Player Opponent
+        public IPlayer Opponent
         {
             get
             {               
@@ -47,7 +49,7 @@
         }
         private static IGame _game;
 
-        public static IGame Start(GameMode gameMode, Player player)
+        public static IGame Start(GameMode gameMode, IPlayer player)
         {
 
             if(_game == null)
