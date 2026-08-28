@@ -2,7 +2,7 @@
 
 namespace TetrisEngine.Domain.Board
 {
-    public readonly struct Tetromino
+    public class Tetromino
     {
         public DropStatus DropStatus { get; private init; }
         public Matrix Shape { get; private init; }
