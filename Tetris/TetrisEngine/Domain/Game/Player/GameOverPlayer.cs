@@ -16,6 +16,10 @@ namespace TetrisEngine.Domain.Game.Player
         public int Seed { get; set; } = player.Seed;
         public bool IsReady { get; set; } = player.IsReady;
         public Random Random { get; set; } = player.Random;
+        public List<Action<int>> OnLineClear { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<Tetromino>> OnDrop { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<Score>> OnScoreChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<Tetromino>> OnPreviewChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void DropTetromino()
         {
