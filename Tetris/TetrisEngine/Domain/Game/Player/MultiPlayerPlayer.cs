@@ -20,7 +20,7 @@ namespace TetrisEngine.Domain.Game.Player
         public bool IsReady { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public Random Random { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<int>> OnLineClear { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<Tetromino>> OnDrop { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<Tetromino, Tetromino>> OnDrop { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Score>> OnScoreChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Tetromino>> OnPreviewChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

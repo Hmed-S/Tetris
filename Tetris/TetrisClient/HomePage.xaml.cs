@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using TetrisClient.Controls;
 using TetrisEngine.Domain.Game;
+using TetrisEngine;
 
 namespace TetrisClient
 {
@@ -21,6 +22,8 @@ namespace TetrisClient
     /// </summary>
     public partial class HomePage : Page
     {
+        private Engine _engine = new();
+
         public HomePage()
         {
             InitializeComponent();
@@ -28,7 +31,8 @@ namespace TetrisClient
 
         private void Start_Single_player_Game(object sender, RoutedEventArgs e)
         {
-            GameBoard gameboard = new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
+            IGame game = _engine.StartSinglePlayerGame(PlayerNameInput.Text, 20,10);
+            GameBoard gameboard = new GameBoard(game.Player, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
             
             gameboard.ReadyButton.Visibility = Visibility.Collapsed;
             NavigationService.Navigate(new GamePage(gameboard));
@@ -36,16 +40,16 @@ namespace TetrisClient
 
         private void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
         {
-            GameBoard gameeboard = new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
-            GameBoard opponentBoard = new GameBoard("Some opponent", new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
+            //GameBoard gameeboard = new GameBoard(PlayerNameInput.Text, new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
+            //GameBoard opponentBoard = new GameBoard("Some opponent", new TetrisGrid(18, 7), new TetrisGrid(4, 4), new DispatcherTimer());
 
-            gameeboard.PauseButton.Visibility = Visibility.Collapsed;
+            //gameeboard.PauseButton.Visibility = Visibility.Collapsed;
 
-            opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
-            opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
-            opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
+            //opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
+            //opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
+            //opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
 
-            NavigationService.Navigate(new GamePage(gameeboard,opponentBoard));
+            //NavigationService.Navigate(new GamePage(gameeboard,opponentBoard));
         }
 
         public void  ShowPlayerHandleInput(object sender, RoutedEventArgs e)

@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:TetrisClient"
       mc:Ignorable="d" 
       d:DesignHeight="500" d:DesignWidth="800"
-      Title="Ahmed-S' Multiplayer Tetris" Width="800" Height="450" WindowStyle="None" Background="#FF001428" Foreground="White" WindowStartupLocation="CenterScreen">
+      Title="Ahmed-S' Multiplayer Tetris" Width="980" Height="450" WindowStyle="None" Background="#FF001428" Foreground="White" WindowStartupLocation="CenterScreen">
 
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="30" />

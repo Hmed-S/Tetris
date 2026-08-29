@@ -15,7 +15,7 @@ namespace TetrisEngine.Domain.Game.Player
         public Random Random { get; set; }
 
         public List<Action<int>> OnLineClear { get; set; }
-        public List<Action<Tetromino>> OnDrop { get; set; }
+        public List<Action<Tetromino, Tetromino>> OnDrop { get; set; }
         public List<Action<Score>> OnScoreChange { get; set; }
         public List<Action<Tetromino>> OnPreviewChange { get; set; }
 

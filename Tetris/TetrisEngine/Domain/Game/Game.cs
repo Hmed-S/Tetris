@@ -2,20 +2,15 @@
 
 namespace TetrisEngine.Domain.Game
 {
-    public class Game
-        (
-          GameMode GameMode,
-          IPlayer Player,
-          GameState GameState
-        ) : IGame
+    public class Game : IGame
     {
-        public IPlayer Player { get; init; }
-        public GameMode Mode { get; init; }
+        public required IPlayer Player { get; init; }
+        public required GameMode Mode { get; init; }
         public IPlayer Opponent
         {
             get
             {               
-                if (GameMode == GameMode.SinglePlayer)
+                if (Mode == GameMode.SinglePlayer)
                 {
                     throw new InvalidOperationException("Cannot get opponent in single player mode.");
                 }
@@ -26,7 +21,7 @@ namespace TetrisEngine.Domain.Game
             }
             set
             {
-                if (GameMode == GameMode.SinglePlayer)
+                if (Mode == GameMode.SinglePlayer)
                 {
                     throw new InvalidOperationException("Cannot set opponent in single player mode.");
                 }
@@ -51,24 +46,24 @@ namespace TetrisEngine.Domain.Game
 
         public static IGame Start(GameMode gameMode, IPlayer player)
         {
-
             if(_game == null)
             {
                 _game = new Game
-                    (
-                    gameMode,
-                    player,
-                    GameState.Playing
-                    );
+                {
+                    Mode = gameMode,
+                    GameState = GameState.Playing,
+                    Player = player
+                };
+
             }
             else if (_game.GameState == GameState.Quit | _game.GameState == GameState.GameOver)
             {
                 _game = new Game
-                    (
-                    gameMode,
-                    player,
-                    GameState.Playing
-                    );
+                {
+                    Mode = gameMode,
+                    GameState = GameState.Playing,
+                    Player = player
+                };
             }
             else if(_game.GameState == GameState.Playing)
             {

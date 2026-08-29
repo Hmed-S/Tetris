@@ -50,7 +50,7 @@ namespace TetrisEngine.Domain.Board
 
             foreach (var point in tetromino.Points)
             {
-                if(point.Column < 0 || point.Column > Width - 1)
+                if(point.Column < 0 || point.Column > Width - 1 || point.Row < 0 || point.Row > Height - 1)
                 {
                     canFit = false;
                     break;
@@ -67,7 +67,7 @@ namespace TetrisEngine.Domain.Board
 
         public void WriteTetromino(Tetromino tetromino) => tetromino
             .Points
-            .ForEach(point => Values[point.Row, point.Column] = point.Value);
+            .ForEach(point => Values[point.Row, point.Column] = 1);
 
 
        
