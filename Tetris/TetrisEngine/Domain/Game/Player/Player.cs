@@ -5,18 +5,18 @@ namespace TetrisEngine.Domain.Game.Player
     public class Player : IPlayer
     {
         public string Name { get; set; }
-        public Tetromino CurrentTetromino { get; set; }
-        public Tetromino Preview { get; set; }
+        public Tetromino CurrentTetromino { get; set; } = Tetromino.Random(new Random());
+        public Tetromino Preview { get; set; } = Tetromino.Random(new Random());
         public TetrisBoard Board { get; set; }
         public Score Score { get; set; }
         public IGame Game { get; set; }
-        public int Seed { get; set; }
+        public int Seed { get; set; } = 0;
         public bool IsReady { get; set; }
-        public Random Random { get; set; }
-        public List<Action<int>> OnLineClear { get; set; } = new();
-        public List<Action<Tetromino>> OnDrop { get; set; } = new();
-        public List<Action<Score>> OnScoreChange { get; set; } = new();
-        public List<Action<Tetromino>> OnPreviewChange { get; set; } = new();
+        public Random Random { get; set; } = new Random();
+        public List<Action<int>> OnLineClear { get; set; } = [];
+        public List<Action<Tetromino, Tetromino>> OnDrop { get; set; } = [];
+        public List<Action<Score>> OnScoreChange { get; set; } = [];
+        public List<Action<Tetromino>> OnPreviewChange { get; set; } = [];
 
         public void Next()
         {
@@ -32,15 +32,16 @@ namespace TetrisEngine.Domain.Game.Player
 
             if (Board.CanFit(tetromino))
             {
-                Board.WriteTetromino(tetromino);
+                
+                OnDrop.ForEach(ondrop => ondrop(CurrentTetromino, tetromino));
                 CurrentTetromino = tetromino;
-                OnDrop.ForEach(ondrop => ondrop(CurrentTetromino));
             }
             else // when it can no longer be dropped it should have landed.
             {
-                CurrentTetromino.ChangeDropStatus(DropStatus.Landed);
-                CurrentTetromino = tetromino;
-                OnDrop.ForEach(ondrop => ondrop(CurrentTetromino));
+                tetromino = CurrentTetromino.ChangeDropStatus(DropStatus.Landed);
+
+                Board.WriteTetromino(tetromino);
+                OnDrop.ForEach(ondrop => ondrop(tetromino, tetromino));
                 Board.Clearlines(OnLineClear);
                 Next();
             }
@@ -90,7 +91,6 @@ namespace TetrisEngine.Domain.Game.Player
 
             if (Board.CanFit(tetromino))
             {
-                Board.WriteTetromino(tetromino);
                 CurrentTetromino = tetromino;
             }
         }

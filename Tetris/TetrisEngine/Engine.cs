@@ -6,20 +6,13 @@ namespace TetrisEngine;
 
 public class Engine
 {
-    private readonly TetrisBoard _board;
-    public int[,] Board { get => _board.Values; }
-    public virtual Tetromino CurrentTetromino {get; private set;}
-    public Tetromino Preview { get; private set; }
-    public int Lines { get=> _board.Lines; }
     
-    public int Score { get; private set; }
-    
-    public IGame StartSinglePlayerGame(string initials)
+    public IGame StartSinglePlayerGame(string initials, int rowCount, int columnCount)
     {
-        Player player = new Player
+        IPlayer player = new Player
         {
             Name = initials,
-            Board = new TetrisBoard(10, 10),
+            Board = new TetrisBoard(rowCount, columnCount),
         };
 
         IGame game = Game.Start(GameMode.SinglePlayer, player);

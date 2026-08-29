@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,27 +10,33 @@ namespace TetrisClient.Controls
 {
     public class TetrisGrid : Grid
     {
+        private int _rowCount;
+        private int _columnCount;
         public TetrisGrid(int rowCount, int columnCount)
         {
- 
-            for (int i = 0; i < rowCount; i++)
+            _rowCount = rowCount;
+            _columnCount = columnCount;
+
+            for (int i = 0; i < _rowCount; i++)
             {
                 RowDefinitions.Add(new RowDefinition());
             }
-            for (int j = 0; j < columnCount; j++)
+            for (int j = 0; j < _columnCount; j++)
             {
                 ColumnDefinitions.Add(new ColumnDefinition());
             }
 
-            for (int i = 0; i < rowCount; i++)
+            for (int i = 0; i < _rowCount; i++)
             {
-                for (int j = 0; j < columnCount; j++)
+                for (int j = 0; j < _columnCount; j++)
                 {
                     Label cell = new ()
                     {
                         BorderThickness = new Thickness(1),
                         BorderBrush = Brushes.Transparent,
-                        Background = Brushes.Transparent
+                        Background = Brushes.Transparent,
+                        Width = 30,
+                        Height = 30,
                     };
 
                     SetRow(cell, i);
@@ -79,5 +86,18 @@ namespace TetrisClient.Controls
 
         }
 
+        public void Clear()
+        {
+            for (int i = 0; i < _rowCount; i++)
+            {
+                for (int j = 0; j < _columnCount; j++)
+                {
+                    Label label = Children.OfType<Label>()
+                    .First(label => GetRow(label) ==  i && GetColumn(label) == j);
+                    label.Background = Brushes.Transparent;
+                    label.BorderBrush = Brushes.Transparent;
+                }
+            }
+        }
     }
 }

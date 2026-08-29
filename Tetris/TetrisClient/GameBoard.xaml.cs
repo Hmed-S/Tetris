@@ -1,7 +1,12 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 using TetrisClient.Controls;
 using TetrisEngine.Domain.Board;
+using TetrisEngine.Domain.Game.Player;
 
 namespace TetrisClient
 {
@@ -13,13 +18,14 @@ namespace TetrisClient
         private TetrisGrid _tetrisGrid;
         private TetrisGrid _preview;
         private DispatcherTimer _timer;
-        private string _playerName;
+        private IPlayer _player;
+        private Queue<Action> _pendingMoves = new(); 
 
-        public GameBoard(string playerName, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
+        public GameBoard(IPlayer player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
         {
             InitializeComponent();
 
-            _playerName = playerName;
+            _player = player;
             _tetrisGrid = tetrisGrid;
             _preview = preview;
             _timer = timer;
@@ -30,21 +36,71 @@ namespace TetrisClient
             Grid.SetRow(_preview, 1);
 
 
-            _preview.Put(Tetromino.FromShape(ShapeType.TSHAPE));
-            _tetrisGrid.Put(Tetromino.FromShape(ShapeType.LSHAPE));
-
-            if (_playerName != null)
+            if (_player.Name != null)
             {
-                PlayerNameLabel.Content = _playerName;
+                PlayerNameLabel.Content = _player.Name;
 
             }
             else
             {
                 PlayerNameLabel.Visibility = System.Windows.Visibility.Collapsed;
             }
+
+            HandleEvents();
+
+            _timer.Tick += GameLoop;
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.IsEnabled = true;
+            _preview.Put(_player.Preview);
         }
+
+        private void HandleEvents()
+        {
+            _player.OnDrop = [ (previous, next) => { _tetrisGrid.Erase(previous); _tetrisGrid.Put(next); } ];
+            _player.OnPreviewChange = [ (preview) => { _preview.Clear(); _preview.Put(preview); } ];
+            _player.OnLineClear = [];
+            _player.OnScoreChange = [];
+        }
+
+        private void GameLoop(object sender, EventArgs args)
+        {
+            if (_pendingMoves.Count > 0)
+            {
+                _pendingMoves.Dequeue()();
+            }
+            else
+            {
+                _player.DropTetromino();
+            }
+        }
+
+        private void PauseTimer(object sender, KeyEventArgs e) => _timer.IsEnabled = !_timer.IsEnabled;
+
+        private void KeyDownControls(object sender, KeyEventArgs e)
+        {
+            if (e.IsRepeat) return;
+            switch (e.Key)
+            {
+                case Key.Up:
+                case Key.X:
+                    _pendingMoves.Enqueue(_player.RotateRight); break;
+                case Key.RightShift:
+                case Key.LeftCtrl:
+                case Key.Z:
+                case Key.Down:
+                    _pendingMoves.Enqueue(_player.RotateLeft); break;
+                case Key.Escape:
+                case Key.F1: PauseTimer(sender, e); break;
+                case Key.Left:
+                    _pendingMoves.Enqueue(_player.MoveLeft); break;
+                case Key.Right: _pendingMoves.Enqueue(_player.MoveRight); break;
+            }
+        }
+
+        
     }
-}
+
+ }
 
 
 
