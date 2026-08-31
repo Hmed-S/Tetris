@@ -21,7 +21,7 @@ namespace TetrisEngine.Domain.Game.Player
         public void Next()
         {
             CurrentTetromino = Preview;
-            Preview = Tetromino.Random(new Random(Seed));
+            Preview = Tetromino.Random(new Random());
             OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
         }
 
@@ -58,7 +58,7 @@ namespace TetrisEngine.Domain.Game.Player
 
             if (Board.CanFit(rotatedTetromino))
             {
-                Board.WriteTetromino(rotatedTetromino);
+                OnDrop.ForEach(ondrop => ondrop(CurrentTetromino, rotatedTetromino));
                 CurrentTetromino = rotatedTetromino;
             }
 
@@ -70,7 +70,7 @@ namespace TetrisEngine.Domain.Game.Player
 
             if (Board.CanFit(rotatedTetromino))
             {
-                Board.WriteTetromino(rotatedTetromino);
+                OnDrop.ForEach(ondrop => ondrop(CurrentTetromino, rotatedTetromino));
                 CurrentTetromino = rotatedTetromino;
             }
         }
@@ -91,6 +91,7 @@ namespace TetrisEngine.Domain.Game.Player
 
             if (Board.CanFit(tetromino))
             {
+                OnDrop.ForEach(ondrop => ondrop(CurrentTetromino, tetromino));
                 CurrentTetromino = tetromino;
             }
         }
