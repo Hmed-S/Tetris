@@ -46,17 +46,7 @@ namespace TetrisEngine.Domain.Game
 
         public static IGame Start(GameMode gameMode, IPlayer player)
         {
-            if(_game == null)
-            {
-                _game = new Game
-                {
-                    Mode = gameMode,
-                    GameState = GameState.Playing,
-                    Player = player
-                };
-
-            }
-            else if (_game.GameState == GameState.Quit | _game.GameState == GameState.GameOver)
+            if (_game == null || _game.GameState == GameState.Quit | _game.GameState == GameState.GameOver)
             {
                 _game = new Game
                 {

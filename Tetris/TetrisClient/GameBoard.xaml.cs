@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -49,10 +50,21 @@ namespace TetrisClient
             HandleEvents();
 
             _timer.Tick += GameLoop;
-            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Interval = TimeSpan.FromSeconds(0.3);
             _timer.IsEnabled = true;
             _preview.Put(_player.Preview);
+
+            PauseButton.Click += PauseTimer;
+
         }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            var window = Window.GetWindow(this);
+            window.KeyDown += KeyDownControls;
+        }
+
+
 
         private void HandleEvents()
         {
@@ -74,7 +86,11 @@ namespace TetrisClient
             }
         }
 
-        private void PauseTimer(object sender, KeyEventArgs e) => _timer.IsEnabled = !_timer.IsEnabled;
+        private void PauseTimer(object sender, RoutedEventArgs e)
+        {
+            _timer.IsEnabled = !_timer.IsEnabled;
+            PauseButton.Content = _timer.IsEnabled? "Pause" : "Resume" ;
+        }
 
         private void KeyDownControls(object sender, KeyEventArgs e)
         {
