@@ -99,5 +99,35 @@ namespace TetrisClient.Controls
                 }
             }
         }
+
+        internal void ClearLine(int row)
+        {
+            for (int j = 0; j < _columnCount; j++)
+            {
+                Label label = Children.OfType<Label>()
+                .First(label => GetRow(label) == row && GetColumn(label) == j);
+                label.Background = Brushes.Transparent;
+                label.BorderBrush = Brushes.Transparent;
+            }
+        }
+
+        internal void SwitchRows(int row1, int row2)
+        {
+
+            for (int j = 0; j < _columnCount; j++)
+            {
+                Label label1 = Children.OfType<Label>()
+                .First(label => GetRow(label) == row1 && GetColumn(label) == j);
+
+                Label label2 = Children.OfType<Label>()
+                    .First(label => GetRow(label) == row2 && GetColumn(label) == j);
+
+                SetRow(label1, row2);
+                //SetColumn(label1, j);
+                SetRow(label2, row1);
+                //SetColumn(label2, j);
+            }
+            
+        }
     }
 }

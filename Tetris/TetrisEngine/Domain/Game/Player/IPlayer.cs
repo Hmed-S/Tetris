@@ -18,6 +18,7 @@ namespace TetrisEngine.Domain.Game.Player
         public List<Action<Tetromino, Tetromino>> OnDrop { get; set; }
         public List<Action<Score>> OnScoreChange { get; set; }
         public List<Action<Tetromino>> OnPreviewChange { get; set; }
+        public List<Action<int, int>> OnLineSwab { get; set; }
 
 
         public void Next();
