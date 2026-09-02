@@ -28,17 +28,35 @@ namespace TetrisEngine.Domain.Board
             }
         }
 
-        public void Clearlines(List<Action<int>> onEraseLineActions)
+        private void ShiftDown(int rowNumber, List<Action<int, int>> onRowSwab)
+        {
+            for (int i = rowNumber-1; i >= 0; i--)
+            {
+                for (int j = 0; j < Width; j++)
+                {
+                    int emptyCel = Values[i+1, j];
+                    Values[i+1, j] = Values[i, j];
+                    Values[i, j] = emptyCel;
+                }
+
+                onRowSwab.ForEach(onrowSwab => onrowSwab(i+1, i));
+            }
+        }
+
+        public void Clearlines(List<Action<int>> onEraseLineActions, List<Action<int, int>> onRowSwab)
         {
           
-            for (int i =0; i < Height; i++)
+            for (int i = 0; i < Height; i++)
             {
                 int[] row = Values.GetRow(i);
 
-                if (Array.TrueForAll(row, x => x > 1))
+                if (Array.TrueForAll(row, x => x == 1))
                 {
-                    Array.ForEach(row, (col) => col = 0);
+                    for (int j = 0; j < row.Length; j++) Values[i, j] = 0;
+
                     onEraseLineActions.ForEach(onEraseLineAction => onEraseLineAction(i));
+
+                    ShiftDown(i, onRowSwab);
                 }
             }
             

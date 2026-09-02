@@ -70,7 +70,8 @@ namespace TetrisClient
         {
             _player.OnDrop = [ (previous, next) => { _tetrisGrid.Erase(previous); _tetrisGrid.Put(next); } ];
             _player.OnPreviewChange = [ (preview) => { _preview.Clear(); _preview.Put(preview); } ];
-            _player.OnLineClear = [];
+            _player.OnLineClear = [ (row) => _tetrisGrid.ClearLine(row) ];
+            _player.OnLineSwab = [ (row1, row2) => _tetrisGrid.SwitchRows(row1, row2) ];
             _player.OnScoreChange = [];
         }
 

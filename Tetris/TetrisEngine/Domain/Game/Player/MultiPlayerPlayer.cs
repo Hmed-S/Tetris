@@ -23,6 +23,7 @@ namespace TetrisEngine.Domain.Game.Player
         public List<Action<Tetromino, Tetromino>> OnDrop { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Score>> OnScoreChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Tetromino>> OnPreviewChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<int, int>> OnLineSwab { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void DropTetromino()
         {

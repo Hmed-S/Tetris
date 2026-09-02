@@ -17,6 +17,7 @@ namespace TetrisEngine.Domain.Game.Player
         public List<Action<Tetromino, Tetromino>> OnDrop { get; set; } = [];
         public List<Action<Score>> OnScoreChange { get; set; } = [];
         public List<Action<Tetromino>> OnPreviewChange { get; set; } = [];
+        public List<Action<int, int>> OnLineSwab { get; set; } = [];
 
         public void Next()
         {
@@ -42,7 +43,7 @@ namespace TetrisEngine.Domain.Game.Player
 
                 Board.WriteTetromino(tetromino);
                 OnDrop.ForEach(ondrop => ondrop(tetromino, tetromino));
-                Board.Clearlines(OnLineClear);
+                Board.Clearlines(OnLineClear, OnLineSwab);
                 Next();
             }
 
