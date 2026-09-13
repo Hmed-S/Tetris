@@ -72,7 +72,7 @@ namespace TetrisClient
             _player.OnPreviewChange = [ (preview) => { _preview.Clear(); _preview.Put(preview); } ];
             _player.OnLineClear = [ (row) => _tetrisGrid.ClearLine(row) ];
             _player.OnLineSwab = [ (row1, row2) => _tetrisGrid.SwitchRows(row1, row2) ];
-            _player.OnScoreChange = [];
+            _player.OnScoreChange = [ (score) => Score.Content = $"Score: {score.Value}" ];
         }
 
         private void GameLoop(object sender, EventArgs args)

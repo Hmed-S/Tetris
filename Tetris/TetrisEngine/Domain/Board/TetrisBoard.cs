@@ -43,8 +43,9 @@ namespace TetrisEngine.Domain.Board
             }
         }
 
-        public void Clearlines(List<Action<int>> onEraseLineActions, List<Action<int, int>> onRowSwab)
+        public int Clearlines(List<Action<int>> onEraseLineActions, List<Action<int, int>> onRowSwab)
         {
+            int linesCleared = 0;
           
             for (int i = 0; i < Height; i++)
             {
@@ -55,11 +56,13 @@ namespace TetrisEngine.Domain.Board
                     for (int j = 0; j < row.Length; j++) Values[i, j] = 0;
 
                     onEraseLineActions.ForEach(onEraseLineAction => onEraseLineAction(i));
+                    linesCleared += 1;
 
                     ShiftDown(i, onRowSwab);
                 }
             }
-            
+
+            return linesCleared;
         }
 
         public bool CanFit(Tetromino tetromino)

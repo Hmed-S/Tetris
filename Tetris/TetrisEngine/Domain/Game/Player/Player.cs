@@ -8,7 +8,7 @@ namespace TetrisEngine.Domain.Game.Player
         public Tetromino CurrentTetromino { get; set; } = Tetromino.Random(new Random());
         public Tetromino Preview { get; set; } = Tetromino.Random(new Random());
         public TetrisBoard Board { get; set; }
-        public Score Score { get; set; }
+        public Score Score { get; set; } = new Score();
         public IGame Game { get; set; }
         public int Seed { get; set; } = 0;
         public bool IsReady { get; set; }
@@ -43,7 +43,9 @@ namespace TetrisEngine.Domain.Game.Player
 
                 Board.WriteTetromino(tetromino);
                 OnDrop.ForEach(ondrop => ondrop(tetromino, tetromino));
-                Board.Clearlines(OnLineClear, OnLineSwab);
+                int linesCleared = Board.Clearlines(OnLineClear, OnLineSwab);
+                Score += linesCleared;
+                OnScoreChange.ForEach(onScoreChange => onScoreChange(Score));
                 Next();
             }
 
