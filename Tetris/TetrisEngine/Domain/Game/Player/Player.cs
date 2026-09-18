@@ -13,11 +13,15 @@ namespace TetrisEngine.Domain.Game.Player
         public int Seed { get; set; } = 0;
         public bool IsReady { get; set; }
         public Random Random { get; set; } = new Random();
+        public Lines Lines { get; set; } = new Lines();
+        public Level Level { get; set; } = new Level();
         public List<Action<int>> OnLineClear { get; set; } = [];
         public List<Action<Tetromino, Tetromino>> OnDrop { get; set; } = [];
         public List<Action<Score>> OnScoreChange { get; set; } = [];
         public List<Action<Tetromino>> OnPreviewChange { get; set; } = [];
         public List<Action<int, int>> OnLineSwab { get; set; } = [];
+        public List<Action<Level>> OnLevelChange { get; set; } = [];
+        public List<Action<Lines>> OnLineCountChange { get; set; } = [];
 
         public void Next()
         {
@@ -44,8 +48,16 @@ namespace TetrisEngine.Domain.Game.Player
                 Board.WriteTetromino(tetromino);
                 OnDrop.ForEach(ondrop => ondrop(tetromino, tetromino));
                 int linesCleared = Board.Clearlines(OnLineClear, OnLineSwab);
-                Score += linesCleared;
+
+                Lines += linesCleared; // this is the total lines cleared in the entire game
+                OnLineCountChange.ForEach(onlineChange => onlineChange(Lines));
+
+                Score += linesCleared; // score only increments with the total lines cleared at this exact moment
                 OnScoreChange.ForEach(onScoreChange => onScoreChange(Score));
+
+                Level += Lines;
+                OnLevelChange.ForEach(OnLevelChange => OnLevelChange(Level));
+
                 Next();
             }
 

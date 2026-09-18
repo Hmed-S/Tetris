@@ -13,13 +13,16 @@ namespace TetrisEngine.Domain.Game.Player
         public int Seed { get; set; }
         public bool IsReady { get; set; }
         public Random Random { get; set; }
+        public Level Level { get; set; }
+        public Lines Lines { get; set; }
 
         public List<Action<int>> OnLineClear { get; set; }
         public List<Action<Tetromino, Tetromino>> OnDrop { get; set; }
         public List<Action<Score>> OnScoreChange { get; set; }
         public List<Action<Tetromino>> OnPreviewChange { get; set; }
         public List<Action<int, int>> OnLineSwab { get; set; }
-
+        public List<Action<Level>> OnLevelChange { get; set; }
+        public List<Action<Lines>> OnLineCountChange { get; set; }
 
         public void Next();
         public void DropTetromino();
