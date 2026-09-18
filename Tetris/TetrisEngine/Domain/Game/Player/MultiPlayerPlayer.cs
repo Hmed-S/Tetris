@@ -24,6 +24,10 @@ namespace TetrisEngine.Domain.Game.Player
         public List<Action<Score>> OnScoreChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Tetromino>> OnPreviewChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<int, int>> OnLineSwab { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Level Level { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Lines Lines { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<Level>> OnLevelChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<Action<Lines>> OnLineCountChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void DropTetromino()
         {

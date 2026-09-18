@@ -29,7 +29,7 @@
                     <RowDefinition Name="NextPiece"/>
                 </Grid.RowDefinitions>
 
-                
+
 
                 <Label Grid.Row="0" Content="Next Piece" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Foreground="White"/>
                 <WrapPanel Name="Preview" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
@@ -43,10 +43,12 @@
                     <RowDefinition Name="Control2Area" Height="60"/>
                     <RowDefinition Name="Control3Area" Height="60"/>
                 </Grid.RowDefinitions>
-                
+
                 <Label Grid.Row="0" Name="PlayerNameLabel" Content="John Doe" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
                 <Label Grid.Row="1" Name="Score" Content="Score: 0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
-               
+                <Label Grid.Row="0" Name="Lines" Content="Lines: 0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="White" Margin="10,4,0,0"/>
+                <Label Grid.Row="1" Name="Level" Content="Level: 1" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="White" Margin="10,4,0,0"/>
+                
                 <local:TetrisMenuButton Grid.Row="2" x:Name="PauseButton" Content="Pause" HorizontalAlignment="Center" VerticalAlignment="Top"/>
                 <local:TetrisMenuButton Grid.Row="3" x:Name="QuitButton" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Top" />
                 <local:TetrisMenuButton Grid.Row="4" x:Name="ReadyButton" Content="Ready" HorizontalAlignment="Center" VerticalAlignment="Top" />

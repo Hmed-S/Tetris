@@ -73,6 +73,8 @@ namespace TetrisClient
             _player.OnLineClear = [ (row) => _tetrisGrid.ClearLine(row) ];
             _player.OnLineSwab = [ (row1, row2) => _tetrisGrid.SwitchRows(row1, row2) ];
             _player.OnScoreChange = [ (score) => Score.Content = $"Score: {score.Value}" ];
+            _player.OnLineCountChange = [ (lines) => Lines.Content = $"Lines: {lines.Value}" ];
+            _player.OnLevelChange = [ (level) => Level.Content = $"Level: {level.Value}" ];
         }
 
         private void GameLoop(object sender, EventArgs args)
