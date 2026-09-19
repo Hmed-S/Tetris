@@ -50,7 +50,7 @@ namespace TetrisClient
             HandleEvents();
 
             _timer.Tick += GameLoop;
-            _timer.Interval = TimeSpan.FromSeconds(0.3);
+            _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
             _timer.IsEnabled = true;
             _preview.Put(_player.Preview);
 
@@ -74,7 +74,12 @@ namespace TetrisClient
             _player.OnLineSwab = [ (row1, row2) => _tetrisGrid.SwitchRows(row1, row2) ];
             _player.OnScoreChange = [ (score) => Score.Content = $"Score: {score.Value}" ];
             _player.OnLineCountChange = [ (lines) => Lines.Content = $"Lines: {lines.Value}" ];
-            _player.OnLevelChange = [ (level) => Level.Content = $"Level: {level.Value}" ];
+            _player.OnLevelChange = [ 
+                (level) => {
+                Level.Content = $"Level: {level.Value}";
+                _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
+                } 
+            ];
         }
 
         private void GameLoop(object sender, EventArgs args)

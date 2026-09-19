@@ -28,6 +28,7 @@ namespace TetrisEngine.Domain.Game.Player
         public Lines Lines { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Level>> OnLevelChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<Action<Lines>> OnLineCountChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public Interval Interval { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public void DropTetromino()
         {
