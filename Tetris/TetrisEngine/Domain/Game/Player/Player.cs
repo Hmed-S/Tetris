@@ -15,6 +15,8 @@ namespace TetrisEngine.Domain.Game.Player
         public Random Random { get; set; } = new Random();
         public Lines Lines { get; set; } = new Lines();
         public Level Level { get; set; } = new Level();
+        public Interval Interval { get; set; } = new Interval();
+
         public List<Action<int>> OnLineClear { get; set; } = [];
         public List<Action<Tetromino, Tetromino>> OnDrop { get; set; } = [];
         public List<Action<Score>> OnScoreChange { get; set; } = [];
@@ -57,6 +59,8 @@ namespace TetrisEngine.Domain.Game.Player
 
                 Level += Lines;
                 OnLevelChange.ForEach(OnLevelChange => OnLevelChange(Level));
+
+                Interval += Level;
 
                 Next();
             }

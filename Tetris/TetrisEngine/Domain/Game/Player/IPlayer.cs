@@ -15,6 +15,7 @@ namespace TetrisEngine.Domain.Game.Player
         public Random Random { get; set; }
         public Level Level { get; set; }
         public Lines Lines { get; set; }
+        public Interval Interval { get; set; }
 
         public List<Action<int>> OnLineClear { get; set; }
         public List<Action<Tetromino, Tetromino>> OnDrop { get; set; }
