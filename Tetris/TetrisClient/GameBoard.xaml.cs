@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +22,6 @@ namespace TetrisClient
         private DispatcherTimer _timer;
         private DispatcherTimer _holdTimer;
         private IPlayer _player;
-        private Queue<Action> _pendingMoves = new(); 
 
         public GameBoard(IPlayer player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer, DispatcherTimer holdTimer)
         {
@@ -89,14 +89,7 @@ namespace TetrisClient
 
         private void GameLoop(object sender, EventArgs args)
         {
-            if (_pendingMoves.Count > 0)
-            {
-                _pendingMoves.Dequeue()();
-            }
-            else
-            {
-                _player.DropTetromino();
-            }
+            _player.DropTetromino();
         }
 
         private void PauseTimer(object sender, RoutedEventArgs e)
@@ -123,17 +116,17 @@ namespace TetrisClient
             {
                 case Key.Up:
                 case Key.X:
-                    _pendingMoves.Enqueue(_player.RotateRight); break;
+                    _player.RotateRight(); break;
                 case Key.RightShift:
                 case Key.LeftCtrl:
                 case Key.Z:
                 case Key.Down:
-                    _pendingMoves.Enqueue(_player.RotateLeft); break;
+                    _player.RotateLeft(); break;
                 case Key.Escape:
                 case Key.F1: PauseTimer(sender, e); break;
                 case Key.Left:
-                    _pendingMoves.Enqueue(_player.MoveLeft); break;
-                case Key.Right: _pendingMoves.Enqueue(_player.MoveRight); break;
+                    _player.MoveLeft(); break;
+                case Key.Right: _player.MoveRight(); break;
                 case Key.Space:
                     HardDrop(sender, e);
                     break;
