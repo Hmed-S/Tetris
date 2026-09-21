@@ -32,7 +32,7 @@ namespace TetrisClient
         private void Start_Single_player_Game(object sender, RoutedEventArgs e)
         {
             IGame game = _engine.StartSinglePlayerGame(PlayerNameInput.Text, 20,10);
-            GameBoard gameboard = new GameBoard(game.Player, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
+            GameBoard gameboard = new GameBoard(game.Player, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer(), new DispatcherTimer());
             
             gameboard.ReadyButton.Visibility = Visibility.Collapsed;
             NavigationService.Navigate(new GamePage(gameboard));

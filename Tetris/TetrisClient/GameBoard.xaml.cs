@@ -19,10 +19,11 @@ namespace TetrisClient
         private TetrisGrid _tetrisGrid;
         private TetrisGrid _preview;
         private DispatcherTimer _timer;
+        private DispatcherTimer _holdTimer;
         private IPlayer _player;
         private Queue<Action> _pendingMoves = new(); 
 
-        public GameBoard(IPlayer player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
+        public GameBoard(IPlayer player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer, DispatcherTimer holdTimer)
         {
             InitializeComponent();
 
@@ -30,6 +31,7 @@ namespace TetrisClient
             _tetrisGrid = tetrisGrid;
             _preview = preview;
             _timer = timer;
+            _holdTimer = holdTimer;
 
             TetrisGrid.Children.Add(_tetrisGrid);
             Preview.Children.Add(_preview);
@@ -51,6 +53,8 @@ namespace TetrisClient
 
             _timer.Tick += GameLoop;
             _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
+            _holdTimer.Interval = TimeSpan.FromMilliseconds(50);
+            _holdTimer.Tick += (object sender, EventArgs args) => _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.HardDrop.MiliSeconds);
             _timer.IsEnabled = true;
             _preview.Put(_player.Preview);
 
@@ -62,6 +66,7 @@ namespace TetrisClient
         {
             var window = Window.GetWindow(this);
             window.KeyDown += KeyDownControls;
+            window.KeyUp += KeyUpControls;
         }
 
 
@@ -100,6 +105,17 @@ namespace TetrisClient
             PauseButton.Content = _timer.IsEnabled? "Pause" : "Resume" ;
         }
 
+        private void HardDrop(object sender, RoutedEventArgs e)
+        {
+
+            _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.HardDrop.MiliSeconds);
+        }
+
+        private void QuitHardDrop(object sender, RoutedEventArgs e)
+        {
+            _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
+        }
+
         private void KeyDownControls(object sender, KeyEventArgs e)
         {
             if (e.IsRepeat) return;
@@ -118,10 +134,27 @@ namespace TetrisClient
                 case Key.Left:
                     _pendingMoves.Enqueue(_player.MoveLeft); break;
                 case Key.Right: _pendingMoves.Enqueue(_player.MoveRight); break;
+                case Key.Space:
+                    HardDrop(sender, e);
+                    break;
             }
         }
 
-        
+        private void KeyUpControls(object sender, KeyEventArgs e)
+        {
+            if (e.IsRepeat) return;
+
+            switch(e.Key)
+            {
+                case Key.Space:
+                    QuitHardDrop(sender, e); 
+                    break;
+
+            }
+
+        }
+
+
     }
 
  }
