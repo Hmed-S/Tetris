@@ -57,6 +57,7 @@ namespace TetrisClient
             _holdTimer.Tick += (object sender, EventArgs args) => _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.HardDrop.MiliSeconds);
             _timer.IsEnabled = true;
             _preview.Put(_player.Preview);
+            _tetrisGrid.Put(_player.CurrentTetromino);
 
             PauseButton.Click += PauseTimer;
 
