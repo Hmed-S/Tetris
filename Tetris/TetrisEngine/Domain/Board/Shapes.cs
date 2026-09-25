@@ -13,16 +13,17 @@
         public readonly static Matrix JShape = new(new[,]
             {
                 { 1, 0, 0 },
-                { 1, 0, 0 },
-                { 1, 1, 0 }
+                { 1, 1, 1 },
+                { 0, 0, 0 }
             }
         );
 
         public readonly static Matrix IShape = new(new[,]
             {
-                { 1, 0, 0 },
-                { 1, 0, 0 },
-                { 1, 0, 0 }
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 1, 1, 1, 1 },
+                { 0, 0, 0, 0 }
             }
         );
 
@@ -36,9 +37,9 @@
 
         public readonly static Matrix TShape = new(new[,]
             {
-                { 1, 1, 1 },
                 { 0, 1, 0 },
-                { 0, 1, 0 }
+                { 1, 1, 1 },
+                { 0, 0, 0 }
             }
         );
 
@@ -52,9 +53,8 @@
 
         public readonly static Matrix OShape = new(new[,]
             {
-                { 1, 1, 0 },
-                { 1, 1, 0 },
-                { 0, 0, 0 }
+                { 1, 1 },
+                { 1, 1 },
             }
         );
 
