@@ -48,7 +48,7 @@ namespace TetrisClient.Controls
         }
 
         public void Put(Tetromino tetromino)
-        {
+         {
             int[,] values = tetromino.Shape.Value;
 
             for (int i = 0; i < values.GetLength(0); i++)
