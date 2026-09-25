@@ -1,4 +1,5 @@
 ﻿using TetrisEngine.Domain.Board;
+using TetrisEngine.Domain.Extensions;
 
 namespace TetrisEngine.Domain.Game.Player
 {
@@ -29,6 +30,9 @@ namespace TetrisEngine.Domain.Game.Player
         {
             CurrentTetromino = Preview;
             Preview = Tetromino.Random(new Random());
+
+            CurrentTetromino = 
+                CurrentTetromino.ChangePosition((Board.Width - Preview.Shape.Value.ColumnCount()) / 2,0);
             OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
         }
 
