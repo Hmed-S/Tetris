@@ -65,6 +65,20 @@ namespace TetrisEngine.Domain.Board
             return linesCleared;
         }
 
+        public bool IsToppedOut(Tetromino tetromino)
+        {
+            foreach (var point in tetromino.Points)
+            {
+                if (point.Row < 0)
+                    continue;
+
+                if (Values[point.Row, point.Column] != 0)
+                    return true;
+            }
+
+            return false;
+        }
+
         public bool CanFit(Tetromino tetromino)
         {
             bool canFit = true;
@@ -83,6 +97,7 @@ namespace TetrisEngine.Domain.Board
                     break;
                 }
             }
+
             return canFit;
         }
 

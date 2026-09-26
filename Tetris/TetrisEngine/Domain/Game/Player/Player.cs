@@ -32,8 +32,13 @@ namespace TetrisEngine.Domain.Game.Player
             Preview = Tetromino.Random(new Random());
 
             CurrentTetromino = 
-                CurrentTetromino.ChangePosition((Board.Width - Preview.Shape.Value.ColumnCount()) / 2,0);
+                CurrentTetromino.ChangePosition((Board.Width - CurrentTetromino.Shape.Value.ColumnCount()) / 2,0);
             OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
+
+            if(Board.IsToppedOut(CurrentTetromino))
+            {
+                Game.Over();
+            }
         }
 
         public void DropTetromino()
@@ -43,7 +48,7 @@ namespace TetrisEngine.Domain.Game.Player
 
             if (Board.CanFit(tetromino))
             {
-                
+
                 OnDrop.ForEach(ondrop => ondrop(CurrentTetromino, tetromino));
                 CurrentTetromino = tetromino;
             }

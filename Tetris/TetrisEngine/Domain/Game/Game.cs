@@ -4,7 +4,7 @@ namespace TetrisEngine.Domain.Game
 {
     public class Game : IGame
     {
-        public required IPlayer Player { get; init; }
+        public required IPlayer Player { get; set; }
         public required GameMode Mode { get; init; }
         public IPlayer Opponent
         {
@@ -34,14 +34,12 @@ namespace TetrisEngine.Domain.Game
         public GameState GameState
         {
             get;
-            set
-            {
-                if (value != GameState.Playing)
-                {
-                    throw new InvalidOperationException("You can only change the GameState when the Game is playing");
-                }
-            }
+            set;
         }
+
+        public List<Action> OnGameOver { get; } = [];
+
+
         private static IGame _game;
 
         public static IGame Start(GameMode gameMode, IPlayer player)
@@ -67,6 +65,21 @@ namespace TetrisEngine.Domain.Game
 
         public static IGame GetGame() => _game;
 
-        public void Quit() => GameState = GameState.Quit;
+
+        private void SetGameOverPlayer() => Player = new GameOverPlayer(Player);
+
+        public void Quit()
+        {
+            GameState = GameState.Quit;
+            SetGameOverPlayer();
+        }
+
+        public void Over()
+        {
+            GameState = GameState.GameOver;
+            SetGameOverPlayer();
+            OnGameOver.ForEach(onGameOver => onGameOver());
+        }
+        
     }
 }
