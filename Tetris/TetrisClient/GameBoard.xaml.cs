@@ -22,6 +22,7 @@ namespace TetrisClient
         private DispatcherTimer _timer;
         private DispatcherTimer _holdTimer;
         private IPlayer _player;
+        public event EventHandler GameOver;
 
         public GameBoard(IPlayer player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer, DispatcherTimer holdTimer)
         {
@@ -61,7 +62,7 @@ namespace TetrisClient
             _tetrisGrid.Put(_player.CurrentTetromino);
 
             PauseButton.Click += PauseTimer;
-
+            QuitButton.Click += StopGame;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -71,10 +72,9 @@ namespace TetrisClient
             window.KeyUp += KeyUpControls;
         }
 
-
-
         private void HandleEvents()
         {
+
             _player.OnDrop = [ (previous, next) => { _tetrisGrid.Erase(previous); _tetrisGrid.Put(next); } ];
             _player.OnPreviewChange = [ (preview) => { _preview.Clear(); _preview.Put(preview); _tetrisGrid.Put(_player.CurrentTetromino); } ];
             _player.OnLineClear = [ (row) => _tetrisGrid.ClearLine(row) ];
@@ -87,6 +87,16 @@ namespace TetrisClient
                 _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
                 } 
             ];
+
+            _player.Game.OnGameOver.Add(
+                () => {
+
+                    _timer.Stop();
+                    GameOverLabel.Visibility = Visibility.Visible;
+                    QuitButton.Content = "Main Menu";
+
+                 }
+                );
         }
 
         private void GameLoop(object sender, EventArgs args)
@@ -98,6 +108,18 @@ namespace TetrisClient
         {
             _timer.IsEnabled = !_timer.IsEnabled;
             PauseButton.Content = _timer.IsEnabled? "Pause" : "Resume" ;
+        }
+
+        private void StopGame(object sender, RoutedEventArgs e)
+        {
+            if (_player.Game.GameState != TetrisEngine.Domain.Game.GameState.GameOver)
+            {
+                _timer.Stop();
+                _player.Game.Quit();
+
+            }
+
+            GameOver.Invoke(this, EventArgs.Empty);
         }
 
         private void HardDrop(object sender, RoutedEventArgs e)
