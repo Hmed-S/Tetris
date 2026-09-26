@@ -56,6 +56,7 @@ namespace TetrisEngine.Domain.Board
                 YPosition = y,
                 DropStatus = DropStatus,
                 Shape = Shape,
+                Color = Color,
             };
         }
 
@@ -68,6 +69,7 @@ namespace TetrisEngine.Domain.Board
                 YPosition = YPosition,
                 DropStatus = DropStatus,
                 Shape = Shape.Rotate90(),
+                Color = Color,
             };
         }
 
@@ -80,6 +82,7 @@ namespace TetrisEngine.Domain.Board
                 YPosition = YPosition,
                 DropStatus = DropStatus,
                 Shape = Shape.Rotate90CounterClockwise(),
+                Color = Color,
             };
         }
 
@@ -92,6 +95,7 @@ namespace TetrisEngine.Domain.Board
                 YPosition = YPosition,
                 DropStatus = dropStatus,
                 Shape = Shape,
+                Color = Color,
             };
         }
 
