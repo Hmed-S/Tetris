@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using TetrisEngine.Domain.Board;
+using Color = TetrisEngine.Domain.Board.Color;
 
 
 namespace TetrisClient.Controls
@@ -47,9 +48,23 @@ namespace TetrisClient.Controls
 
         }
 
+        private Brush GetColor(Tetromino tetromino) => tetromino.Color switch
+        {
+            Color.Blue => Brushes.Blue,
+            Color.Cyan => Brushes.Cyan,
+            Color.Purple => Brushes.Purple,
+            Color.Orange => Brushes.Orange,
+            Color.Yellow => Brushes.Yellow,
+            Color.Green => Brushes.Green,
+            Color.RED => Brushes.Red,
+            _ => Brushes.Black,
+        };
+
         public void Put(Tetromino tetromino)
          {
             int[,] values = tetromino.Shape.Value;
+
+            Brush color = GetColor(tetromino);
 
             for (int i = 0; i < values.GetLength(0); i++)
             {
@@ -61,7 +76,7 @@ namespace TetrisClient.Controls
                     Label label = Children.OfType<Label>()
                     .First(label => GetRow(label) == tetromino.YPosition + i && GetColumn(label) == tetromino.XPosition + j);
 
-                    label.Background = Brushes.Red;
+                    label.Background = color;
                     label.BorderBrush = Brushes.White;
 
                 }
