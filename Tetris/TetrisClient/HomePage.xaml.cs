@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using TetrisClient.Controls;
 using TetrisEngine.Domain.Game;
-using TetrisEngine;
+using TetrisEngine.Sdk;
 
 namespace TetrisClient
 {
