@@ -1,9 +1,8 @@
-﻿namespace TetrisEngine.Domain.Game
+﻿namespace TetrisEngine.Domain.Game;
+
+public enum GameState
 {
-    public enum GameState
-    {
-        Playing,
-        Quit,
-        GameOver
-    }
+    Playing,
+    Quit,
+    GameOver
 }

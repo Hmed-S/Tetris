@@ -1,89 +1,65 @@
 ﻿using TetrisEngine.Domain.Board;
 
-namespace TetrisEngine.Domain.Game.Player
+namespace TetrisEngine.Domain.Game.Player;
+
+public class MultiPlayerPlayer : Player
 {
-    public class MultiPlayerPlayer(
-        IPlayer player
-        
-        ) : IPlayer
+    public MultiPlayerPlayer(int seed, Random random, TetrisBoard board, Score score, Level level, Interval interval) : base(seed, random, board, score, level, interval)
     {
-        public required IPlayer Player { get; init; }
-        public required IGame Game { get; set; } = player.Game;
-
-        // TODO: implement when implmeenting Multiplayer.
-        public string Name { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Tetromino CurrentTetromino { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Tetromino Preview { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public TetrisBoard Board { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Score Score { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int Seed { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public bool IsReady { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Random Random { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<int>> OnLineClear { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<Tetromino, Tetromino>> OnDrop { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<Score>> OnScoreChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<Tetromino>> OnPreviewChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<int, int>> OnLineSwab { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Level Level { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Lines Lines { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<Level>> OnLevelChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<Action<Lines>> OnLineCountChange { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public Interval Interval { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public void DropTetromino()
-        {
-            if (!Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-            Player.DropTetromino();
-        }
-
-        public void MoveLeft()
-        {
-            if (!Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-            Player.MoveLeft();
-        }
-
-        public void MoveRight()
-        {
-            if (!Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-            Player.MoveRight();
-        }
-
-        public void Next()
-        {
-            if (!Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-            Player.Next();
-        }
-
-        public void Quit()
-        {
-            if (!Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-            Player.Quit();
-        }
-
-        public void Ready()
-        {
-            int seed = new Random().Next();
-            Player.Seed = seed;
-        }
-
-        public void RotateLeft()
-        {
-            if (!Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-
-            Player.RotateLeft();
-        }
-
-        public void RotateRight()
-        {
-            if (Player.Game.Opponent.IsReady)
-                throw new InvalidOperationException("Opponent is not ready.");
-            Player.RotateRight();
-        }
+       
     }
+
+    public override void Next()
+    {
+        if (!Game.Opponent.IsReady)
+            throw new InvalidOperationException("Opponent is not ready.");
+
+        base.Next();
+    }
+
+    public override void DropTetromino()
+    {
+        if (!Game.Opponent.IsReady)
+            throw new InvalidOperationException("Opponent is not ready.");
+
+        base.DropTetromino();
+    }
+
+    public override void MoveLeft()
+    {
+        if (!Game.Opponent.IsReady)
+            throw new InvalidOperationException("Opponent is not ready.");
+        
+        base.MoveLeft();
+    }
+
+    public override void MoveRight()
+    {
+        if (!Game.Opponent.IsReady)
+            throw new InvalidOperationException("Opponent is not ready.");
+        
+        base.MoveRight();
+    }
+    public override void RotateRight()
+    {
+        if (!Game.Opponent.IsReady)
+            throw new InvalidOperationException("Opponent is not ready.");
+
+        base.RotateRight();
+    }
+
+    public override void RotateLeft()
+    {
+        if (!Game.Opponent.IsReady)
+            throw new InvalidOperationException("Opponent is not ready.");
+
+        base.RotateLeft();
+    }
+
+    public override void Ready()
+    {
+        int seed = new Random().Next();
+        Seed = seed;
+    }
+
 }

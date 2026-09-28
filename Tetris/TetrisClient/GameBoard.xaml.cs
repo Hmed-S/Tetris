@@ -75,7 +75,7 @@ namespace TetrisClient
         private void HandleEvents()
         {
 
-            _player.OnDrop = [ (previous, next) => { _tetrisGrid.Erase(previous); _tetrisGrid.Put(next); } ];
+            _player.OnTetrominoPositionChange = [ (previous, next) => { _tetrisGrid.Erase(previous); _tetrisGrid.Put(next); } ];
             _player.OnPreviewChange = [ (preview) => { _preview.Clear(); _preview.Put(preview); _tetrisGrid.Put(_player.CurrentTetromino); } ];
             _player.OnLineClear = [ (row) => _tetrisGrid.ClearLine(row) ];
             _player.OnLineSwab = [ (row1, row2) => _tetrisGrid.SwitchRows(row1, row2) ];
