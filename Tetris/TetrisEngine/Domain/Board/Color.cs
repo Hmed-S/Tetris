@@ -1,13 +1,12 @@
-﻿namespace TetrisEngine.Domain.Board
+﻿namespace TetrisEngine.Domain.Board;
+
+public enum Color
 {
-    public enum Color
-    {
-        Blue,
-        Cyan,
-        Purple,
-        Orange,
-        Yellow,
-        Green,
-        RED
-    }
+    Blue,
+    Cyan,
+    Purple,
+    Orange,
+    Yellow,
+    Green,
+    RED
 }

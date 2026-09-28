@@ -1,8 +1,7 @@
-﻿namespace TetrisEngine.Domain.Board
+﻿namespace TetrisEngine.Domain.Board;
+
+public enum DropStatus
 {
-    public enum DropStatus
-    {
-        Falling,
-        Landed
-    }
+    Falling,
+    Landed
 }

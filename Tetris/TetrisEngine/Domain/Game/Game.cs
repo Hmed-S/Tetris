@@ -1,85 +1,82 @@
 ﻿using TetrisEngine.Domain.Game.Player;
 
-namespace TetrisEngine.Domain.Game
+namespace TetrisEngine.Domain.Game;
+
+public class Game : IGame
 {
-    public class Game : IGame
+    public required IPlayer Player { get; set; }
+    public required GameMode Mode { get; init; }
+    public IPlayer Opponent
     {
-        public required IPlayer Player { get; set; }
-        public required GameMode Mode { get; init; }
-        public IPlayer Opponent
-        {
-            get
-            {               
-                if (Mode == GameMode.SinglePlayer)
-                {
-                    throw new InvalidOperationException("Cannot get opponent in single player mode.");
-                }
-                else
-                {
-                    return field;
-                }
-            }
-            set
+        get
+        {               
+            if (Mode == GameMode.SinglePlayer)
             {
-                if (Mode == GameMode.SinglePlayer)
-                {
-                    throw new InvalidOperationException("Cannot set opponent in single player mode.");
-                }
-                else
-                {
-                    field = value;
-                }
+                throw new InvalidOperationException("Cannot get opponent in single player mode.");
             }
-        }
-        public GameState GameState
-        {
-            get;
-            set;
-        }
-
-        public List<Action> OnGameOver { get; } = [];
-
-
-        private static IGame _game;
-
-        public static IGame Start(GameMode gameMode, IPlayer player)
-        {
-            if (_game == null || _game.GameState == GameState.Quit | _game.GameState == GameState.GameOver)
+            else
             {
-                _game = new Game
-                {
-                    Mode = gameMode,
-                    GameState = GameState.Playing,
-                    Player = player
-                };
+                return field;
             }
-            else if(_game.GameState == GameState.Playing)
+        }
+        set
+        {
+            if (Mode == GameMode.SinglePlayer)
             {
-                throw new InvalidOperationException("A game is already in progress.");
+                throw new InvalidOperationException("Cannot set opponent in single player mode.");
             }
-
-            player.Game = _game;
-
-            return _game;
+            else
+            {
+                field = value;
+            }
         }
-
-        public static IGame GetGame() => _game;
-
-
-        private void SetGameOverPlayer() => Player = new GameOverPlayer(Player);
-
-        public void Quit()
-        {
-            GameState = GameState.Quit;
-            SetGameOverPlayer();
-        }
-
-        public void Over()
-        {
-            GameState = GameState.GameOver;
-            SetGameOverPlayer();
-            OnGameOver.ForEach(onGameOver => onGameOver());
-        }
-        
     }
+    public GameState GameState
+    {
+        get;
+        set;
+    }
+
+    public List<Action> OnGameOver { get; } = [];
+
+    private static IGame _game;
+
+    public static IGame Start(GameMode gameMode, IPlayer player)
+    {
+        if (_game == null || _game.GameState == GameState.Quit | _game.GameState == GameState.GameOver)
+        {
+            _game = new Game
+            {
+                Mode = gameMode,
+                GameState = GameState.Playing,
+                Player = player
+            };
+        }
+        else if(_game.GameState == GameState.Playing)
+        {
+            throw new InvalidOperationException("A game is already in progress.");
+        }
+
+        player.Game = _game;
+
+        return _game;
+    }
+
+    public static IGame GetGame() => _game;
+
+    private void SetGameOverPlayer() => Player = new GameOverPlayer(Player);
+
+    public void Quit()
+    {
+        GameState = GameState.Quit;
+        SetGameOverPlayer();
+    }
+
+    public void Over()
+    {
+        GameState = GameState.GameOver;
+        SetGameOverPlayer();
+        OnGameOver.ForEach(onGameOver => onGameOver());
+    }
+    
 }

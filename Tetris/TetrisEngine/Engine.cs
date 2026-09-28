@@ -7,13 +7,18 @@ namespace TetrisEngine;
 public class Engine
 {
     
-    public IGame StartSinglePlayerGame(string initials, int rowCount, int columnCount)
+    public IGame StartSinglePlayerGame(int rowCount, int columnCount)
     {
+        int seed = new Random().Next();
         IPlayer player = new Player
-        {
-            Name = initials,
-            Board = new TetrisBoard(rowCount, columnCount),
-        };
+        (
+            seed,
+            new Random(seed),
+            new TetrisBoard(rowCount, columnCount),
+            new Score(),
+            new Level(),
+            new Interval()
+        );
 
         IGame game = Game.Start(GameMode.SinglePlayer, player);
 

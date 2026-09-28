@@ -1,13 +1,12 @@
-﻿namespace TetrisEngine.Domain.Board
+﻿namespace TetrisEngine.Domain.Board;
+
+public enum ShapeType
 {
-    public enum ShapeType
-    {
-        LSHAPE,
-        JSHAPE,
-        ISHAPE,
-        S_SHAPE,
-        TSHAPE,
-        ZSHAPE,
-        OSHAPE
-    }
+    LSHAPE,
+    JSHAPE,
+    ISHAPE,
+    S_SHAPE,
+    TSHAPE,
+    ZSHAPE,
+    OSHAPE
 }

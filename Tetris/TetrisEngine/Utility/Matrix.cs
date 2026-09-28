@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 
-namespace TetrisEngine.Domain.Board
+namespace TetrisEngine.Utility
 {
     /// <summary>
     /// Represents a matrix.

@@ -1,8 +1,7 @@
-﻿namespace TetrisEngine.Domain.Game
+﻿namespace TetrisEngine.Domain.Game;
+
+public enum GameMode
 {
-    public enum GameMode
-    {
-        SinglePlayer,
-        MultiPlayer
-    }
+    SinglePlayer,
+    MultiPlayer
 }

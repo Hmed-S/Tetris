@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace TetrisEngine.Domain.Game;
 
-namespace TetrisEngine.Domain.Game
+public readonly struct Level
 {
-    public readonly struct Level
+    public readonly int Value { get; }
+    
+    public Level()
     {
-        public int Value { get; } = 1;
-        
-        public Level() { }
-
-        private Level(int level)
-        {
-            if(level > 4) Value = level;
-            Value = level;
-        }
-
-        public static Level operator +(Level level, Lines lines) => new(lines.Value/10+1);
-        
+        Value = 1;
     }
+
+    private Level(int level)
+    {
+        Value = level;
+    }
+
+    public static Level operator +(Level level, Lines lines) => new(lines.Value/10+1);
 }
