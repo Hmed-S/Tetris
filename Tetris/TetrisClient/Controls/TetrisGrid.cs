@@ -3,8 +3,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using TetrisEngine.Domain.Board;
-using Color = TetrisEngine.Domain.Board.Color;
+using TetrisEngine.Sdk;
+using Color = TetrisEngine.Sdk.Color;
 
 
 namespace TetrisClient.Controls
@@ -62,7 +62,7 @@ namespace TetrisClient.Controls
 
         public void Put(Tetromino tetromino)
          {
-            int[,] values = tetromino.Shape.Value;
+            int[,] values = tetromino.Shape;
 
             Brush color = GetColor(tetromino);
 
@@ -86,7 +86,7 @@ namespace TetrisClient.Controls
 
         public void Erase(Tetromino tetromino)
         {
-            int[,] values = tetromino.Shape.Value;
+            int[,] values = tetromino.Shape;
             for (int i = 0; i < values.GetLength(0); i++)
             {
                 for (int j = 0; j < values.GetLength(1); j++)

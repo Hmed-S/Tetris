@@ -3,7 +3,7 @@
 public class Player
 {
     public string Name { get; set; }
-
+    public Board Board { get; set; }
     private Tetromino _currentTetromino;
     public Tetromino CurrentTetromino 
     {
@@ -13,7 +13,7 @@ public class Player
         }
         set
         {
-            OnTetrominoPositionChange.Invoke(_currentTetromino, value);
+            OnTetrominoPositionChange?.Invoke(_currentTetromino, value);
             _currentTetromino = value;
         }
     }
@@ -26,7 +26,7 @@ public class Player
         set
         {
             _preview = value;
-            OnPreviewChange(_preview);
+            OnPreviewChange?.Invoke(_preview);
         }
     }
     public Interval Interval { get; set; }
@@ -36,12 +36,12 @@ public class Player
     {
         get
         {
-            return Score;
+            return _score;
         }
         set
         {
-            Score = value;
-            OnScoreChange.Invoke(_score);
+            _score = value;
+            OnScoreChange?.Invoke(_score);
         }
     }
     private int _level;
@@ -54,7 +54,7 @@ public class Player
        set
        {
             _level = value;
-            OnLevelChange.Invoke(_level);
+            OnLevelChange?.Invoke(_level);
        }
     }
     private int _lineCount;
@@ -67,7 +67,7 @@ public class Player
         set
         {
             _lineCount = value;
-            OnLineCountChange.Invoke(_lineCount);
+            OnLineCountChange?.Invoke(_lineCount);
         }
     }
 

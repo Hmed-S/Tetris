@@ -70,6 +70,7 @@ public class Game : IGame
     {
         GameState = GameState.Quit;
         SetGameOverPlayer();
+        OnGameOver.ForEach(onGameOver => onGameOver());
     }
 
     public void Over()

@@ -12,7 +12,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using TetrisClient.Controls;
-using TetrisEngine.Domain.Game;
 using TetrisEngine.Sdk;
 
 namespace TetrisClient
@@ -31,8 +30,8 @@ namespace TetrisClient
 
         private void Start_Single_player_Game(object sender, RoutedEventArgs e)
         {
-            IGame game = _engine.StartSinglePlayerGame(20,10);
-            GameBoard gameboard = new GameBoard(game.Player, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer(), new DispatcherTimer());
+            Game game = _engine.StartSinglePlayerGame(20,10);
+            GameBoard gameboard = new GameBoard(_engine, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
             
             gameboard.ReadyButton.Visibility = Visibility.Collapsed;
             NavigationService.Navigate(new GamePage(gameboard));
