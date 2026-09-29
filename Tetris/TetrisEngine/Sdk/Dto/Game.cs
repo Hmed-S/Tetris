@@ -2,7 +2,7 @@
 
 public class Game
 {
-   public Player Player { get; set;}
+   public Player Player { get; set; }
    public Player Oponent { get; set; }
 
    public GameState State { get; set; }

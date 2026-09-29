@@ -39,21 +39,32 @@ public class Player : IPlayer
         Preview = Tetromino.Random(Random);
         CurrentTetromino = Tetromino.Random(Random);
         OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
+        
+        CenterTetromino();
+        OnTetrominoPositionChange.ForEach(
+        onTetrominoChange => onTetrominoChange(CurrentTetromino, CurrentTetromino));
     }
 
     public virtual void Next()
     {
         CurrentTetromino = Preview;
         Preview = Tetromino.Random(Random);
-
-        CurrentTetromino = 
-            CurrentTetromino.ChangePosition((Board.Width - CurrentTetromino.Shape.Value.ColumnCount()) / 2,0);
+        CenterTetromino();
         OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
 
-        if(Board.IsToppedOut(CurrentTetromino))
+        OnTetrominoPositionChange.ForEach(
+            onTetrominoChange => onTetrominoChange(CurrentTetromino, CurrentTetromino));
+
+        if (Board.IsToppedOut(CurrentTetromino))
         {
             Game.Over();
         }
+    }
+
+    private void CenterTetromino()
+    {
+        CurrentTetromino =
+                    CurrentTetromino.ChangePosition((Board.Width - CurrentTetromino.Shape.Value.ColumnCount()) / 2, 0);
     }
 
     public virtual void DropTetromino()
