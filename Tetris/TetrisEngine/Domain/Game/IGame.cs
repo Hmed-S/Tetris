@@ -15,4 +15,5 @@ public interface IGame
     public abstract static IGame GetGame();
     public void Quit();
     void Over();
+
 }
