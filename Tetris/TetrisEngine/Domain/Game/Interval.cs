@@ -4,7 +4,7 @@ public readonly struct Interval
 {
     public readonly double Seconds { get; }
     public readonly double MiliSeconds { get => Seconds * 1000; }
-    public readonly Interval HardDrop { get => new(0.1); }
+    public readonly Interval FastDrop { get => new(0.05); }
 
     public Interval()
     {
@@ -18,7 +18,7 @@ public readonly struct Interval
 
     private Interval(double seconds)
     {
-        Seconds = 0.1;
+        Seconds = seconds;
     }
 
     public static Interval operator +(Interval interval, Level level) => new Interval(level);
