@@ -12,11 +12,11 @@
           >
 
         <Label x:Name="Title" 
-               Content="Ahmed-S'Multiplayer Tetris"
+               Content="Hmed-S/Tetris&#xD;&#xA;ayer Tetris"
                HorizontalAlignment="Center"
-               Margin="0,26,0,0" VerticalAlignment="Top"
+               Margin="0,22,0,0" VerticalAlignment="Top"
                Foreground="White"
-               Width="453"
+               Width="244"
                FontSize="36"
                Height="56"/>
 
