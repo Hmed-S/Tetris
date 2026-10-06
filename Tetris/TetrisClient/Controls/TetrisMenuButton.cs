@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace TetrisClient.Controls
+namespace TetrisClient.Controls;
+
+public partial class TetrisMenuButton : Button
 {
-    public partial class TetrisMenuButton : Button
+    static TetrisMenuButton()
     {
-        static TetrisMenuButton()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(
-                typeof(TetrisMenuButton),
-                new FrameworkPropertyMetadata(typeof(TetrisMenuButton)));
-        }
+        DefaultStyleKeyProperty.OverrideMetadata(
+            typeof(TetrisMenuButton),
+            new FrameworkPropertyMetadata(typeof(TetrisMenuButton)));
     }
+
 }
