@@ -22,4 +22,5 @@ public readonly struct Interval
     }
 
     public static Interval operator +(Interval interval, Level level) => new Interval(level);
+
 }

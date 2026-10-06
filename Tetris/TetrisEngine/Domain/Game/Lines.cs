@@ -15,4 +15,5 @@ public readonly struct Lines
     }
 
     public static Lines operator +(Lines line, int lines) => new (line.Value + lines);
+
 }

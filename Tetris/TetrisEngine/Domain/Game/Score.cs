@@ -27,4 +27,5 @@ public readonly struct Score
 
         return new Score(score.Value + newScore);
     }
+
 }

@@ -33,4 +33,5 @@ public interface IPlayer
     public void RotateLeft();
     public void Ready();
     public void Quit();
+
 }

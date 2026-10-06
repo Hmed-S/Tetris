@@ -15,4 +15,5 @@ public readonly struct Level
     }
 
     public static Level operator +(Level level, Lines lines) => new(lines.Value/10+1);
+
 }
