@@ -131,7 +131,7 @@ namespace TetrisClient
         private void HardDrop(object sender, RoutedEventArgs e)
         {
 
-            _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.HardDropMiliSeconds);
+            _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.FastDropMiliSeconds);
         }
 
         private void QuitHardDrop(object sender, RoutedEventArgs e)

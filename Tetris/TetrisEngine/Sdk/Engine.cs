@@ -76,8 +76,8 @@ public class Engine
                 },
                 Interval = new Interval
                 {
-                    HardDropSeconds = _game.Player.Interval.HardDrop.Seconds,
-                    HardDropMiliSeconds = _game.Player.Interval.HardDrop.MiliSeconds,
+                    FastDropSeconds = _game.Player.Interval.FastDrop.Seconds,
+                    FastDropMiliSeconds = _game.Player.Interval.FastDrop.MiliSeconds,
                     Seconds = _game.Player.Interval.Seconds,
                     MiliSeconds = _game.Player.Interval.MiliSeconds,
                 },
