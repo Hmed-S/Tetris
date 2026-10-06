@@ -162,6 +162,7 @@ public partial class GameBoard : UserControl
     private void KeyDownControls(object sender, KeyEventArgs e)
     {
         if (e.IsRepeat) return;
+        
         switch (e.Key)
         {
             case Key.Up:
@@ -179,6 +180,7 @@ public partial class GameBoard : UserControl
             case Key.Right: _engine.MoveRight(); break;
             case Key.Space:
                 HardDrop(sender, e);
+                e.Handled = true;
                 break;
         }
     }
