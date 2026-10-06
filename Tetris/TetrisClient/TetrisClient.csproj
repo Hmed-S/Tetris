@@ -9,8 +9,15 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.6" />
     </ItemGroup>
-    
-    <ItemGroup>
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<ApplicationIcon>Assets\app.ico</ApplicationIcon>
+	</PropertyGroup>
+
+	<ItemGroup>
       <ProjectReference Include="..\TetrisEngine\TetrisEngine.csproj" />
     </ItemGroup>
     
