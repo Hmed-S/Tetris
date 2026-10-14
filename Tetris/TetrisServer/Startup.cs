@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using TetrisServer.Consumers;
+using TetrisServer.Data;
 using TetrisServer.Hubs;
+using TetrisServer.Producers;
+using StackExchange.Redis.Extensions.Newtonsoft;
 
 namespace TetrisServer
 {
@@ -21,6 +25,22 @@ namespace TetrisServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IPlayerProducer, RedisStreamPlayerProducer>();
+            services.AddTransient<IPlayerConsumer, RedisPlayerConsumer>();
+            services.AddTransient<IPlayerRepository, RedisPlayerRepository>();
+            services.AddTransient<IPlayerConsumer, RedisPlayerConsumer>();
+
+            var redisConfig = Configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+            services.AddStackExchangeRedisExtensions<NewtonsoftSerializer>(redisConfig);
+
+            services.AddCap(cap =>
+            {
+                cap.UseRedis("localhost:6379");
+
+                cap.UseInMemoryStorage();
+            });
+
             services.AddSignalR(config =>
             {
                 config.EnableDetailedErrors = true;
@@ -38,10 +58,6 @@ namespace TetrisServer
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
                 endpoints.MapHub<TetrisHub>("/tetrisHub");
             });
         }

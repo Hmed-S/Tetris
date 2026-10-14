@@ -1,4 +1,6 @@
-﻿namespace TetrisServer.Model;
+﻿using TetrisServer.Data.Entities;
+
+namespace TetrisServer.Model;
 
 public class Match
 {

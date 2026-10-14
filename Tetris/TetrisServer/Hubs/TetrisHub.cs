@@ -1,44 +1,84 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using TetrisServer.Data;
+using TetrisServer.Data.Entities;
+using TetrisServer.Producers;
 
 namespace TetrisServer.Hubs;
 
-public class TetrisHub : Hub
+public class TetrisHub
+    (
+     IPlayerProducer playerProducer,
+     IPlayerRepository playerRepository
+    ) : Hub
 {
 
-    public async Task ReadyUp(string clientId, int seed)
+    public override Task OnConnectedAsync()
     {
-        await Clients.Client(clientId).SendAsync("Ready", seed);
+        HttpContext httpContext = Context.GetHttpContext();
+        string name = httpContext.Request.Query["name"];
+
+        Player player = new()
+        {
+            Id = Context.ConnectionId,
+            Name = name,
+        };
+
+        playerProducer.Enqueue(player);
+
+        return base.OnConnectedAsync();
     }
 
-    public async Task Drop(string clientId)
+    public async Task ReadyUp(int seed)
     {
-        await Clients.Client(clientId).SendAsync("Drop");
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync("Ready", seed);
     }
 
-    public async Task RotateLeft(string clientId)
+    public async Task Drop()
     {
-        await Clients.Client(clientId).SendAsync(nameof(RotateLeft));
+        Console.WriteLine(Context.ConnectionId);
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync("Drop");
     }
 
-    public async Task RotateRight(string clientId)
+    public async Task RotateLeft()
     {
-        await Clients.Client(clientId).SendAsync(nameof(RotateRight));
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync(nameof(RotateLeft));
     }
 
-    public async Task MoveLeft(string clientId)
+    public async Task RotateRight()
     {
-        await Clients.Client(clientId).SendAsync(nameof(MoveLeft));
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync(nameof(RotateRight));
     }
 
-    public async Task MoveRight(string clientId)
+    public async Task MoveLeft()
     {
-        await Clients.Client(clientId).SendAsync(nameof(MoveRight));
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync(nameof(MoveLeft));
     }
 
-    public async Task QuitGame(string clientId)
+    public async Task MoveRight()
     {
-        await Clients.Client(clientId).SendAsync("Quit", clientId);
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync(nameof(MoveRight));
+    }
+
+    public async Task QuitGame()
+    {
+        Player player = await playerRepository.GetPlayerById(Context.ConnectionId);
+
+        await Clients.Client(player.Opponent.Id).SendAsync("Quit");
     }
 
 }
