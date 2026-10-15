@@ -11,6 +11,7 @@ internal static class GameMapper
         {
             Player = new Player
             {
+                Name = game.Player.Name,
                 Preview = game.Player.Preview.ToDto(),
                 CurrentTetromino = game.Player.CurrentTetromino.ToDto(),
                 Board = new Board
