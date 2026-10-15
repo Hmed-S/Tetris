@@ -7,8 +7,10 @@ using StackExchange.Redis.Extensions.Core.Configuration;
 using TetrisServer.Consumers;
 using TetrisServer.Data;
 using TetrisServer.Hubs;
-using TetrisServer.Producers;
 using StackExchange.Redis.Extensions.Newtonsoft;
+using TetrisServer.Service;
+using DotNetCore.CAP.Serialization;
+using TetrisServer.Utill;
 
 namespace TetrisServer
 {
@@ -25,10 +27,11 @@ namespace TetrisServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IPlayerProducer, RedisStreamPlayerProducer>();
-            services.AddTransient<IPlayerConsumer, RedisPlayerConsumer>();
             services.AddTransient<IPlayerRepository, RedisPlayerRepository>();
-            services.AddTransient<IPlayerConsumer, RedisPlayerConsumer>();
+            services.AddTransient<RedisPlayerConsumer>();
+            services.AddSingleton<MatchService>();
+
+            services.AddSingleton<ISerializer, NewtonSoftCapSerializer>();
 
             var redisConfig = Configuration.GetSection("Redis").Get<RedisConfiguration>();
 
@@ -36,6 +39,8 @@ namespace TetrisServer
 
             services.AddCap(cap =>
             {
+                
+
                 cap.UseRedis("localhost:6379");
 
                 cap.UseInMemoryStorage();

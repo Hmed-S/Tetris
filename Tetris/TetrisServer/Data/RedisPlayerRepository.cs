@@ -1,5 +1,8 @@
 ﻿using StackExchange.Redis.Extensions.Core.Abstractions;
+using StackExchange.Redis.Extensions.Core.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TetrisServer.Data.Entities;
 
@@ -21,4 +24,23 @@ public class RedisPlayerRepository(IRedisDatabase redis) : IPlayerRepository
         return await Task.FromResult(player);
     }
 
+    public async Task AddToQueue(Player player)
+    {
+        await redis.SortedSetAddAsync("Players", player, player.TimeJoined.Microsecond);
+    }
+
+    public async Task<long> GetQueueLength()
+    {
+        return await redis.SortedSetLengthAsync("Players");
+    }
+
+    public async Task<Tuple<Player, Player>> Pop()
+    {
+        IEnumerable<ScoreRankResult<Player>> scoreRankResults = await redis.SortedSetPopAsync<Player>("Players", 2);
+        
+        Player player1 = scoreRankResults.ElementAt(0).Element;
+        Player player2 = scoreRankResults.ElementAt(1).Element;
+
+        return new Tuple<Player, Player>(player1, player2);
+    }
 }
