@@ -20,12 +20,13 @@ public class Player : IPlayer
     public Interval Interval { get; set; }
 
     public List<Action<int>> OnLineClear { get; set; } = [];
-    public List<Action<Tetromino, Tetromino>> OnTetrominoPositionChange { get; set; } = [];
+    public List<Action<PositionChangedEvent>> OnTetrominoPositionChange { get; set; } = [];
     public List<Action<Score>> OnScoreChange { get; set; } = [];
     public List<Action<Tetromino>> OnPreviewChange { get; set; } = [];
     public List<Action<int, int>> OnLineSwab { get; set; } = [];
     public List<Action<Level>> OnLevelChange { get; set; } = [];
     public List<Action<Lines>> OnLineCountChange { get; set; } = [];
+    public List<Action<int>> OnReady { get; set; } = [];
 
     public Player(int seed, Random random, TetrisBoard board, Score score, Level level, Interval interval)
     {
@@ -42,7 +43,7 @@ public class Player : IPlayer
         
         CenterTetromino();
         OnTetrominoPositionChange.ForEach(
-        onTetrominoChange => onTetrominoChange(CurrentTetromino, CurrentTetromino));
+        onTetrominoChange => onTetrominoChange(new PositionChangedEvent(CurrentTetromino, CurrentTetromino, Move.Drop)));
     }
 
     public virtual void Next()
@@ -53,7 +54,7 @@ public class Player : IPlayer
         OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
 
         OnTetrominoPositionChange.ForEach(
-            onTetrominoChange => onTetrominoChange(CurrentTetromino, CurrentTetromino));
+            onTetrominoChange => onTetrominoChange(new PositionChangedEvent(CurrentTetromino, CurrentTetromino, Move.Drop)));
 
         if (Board.IsToppedOut(CurrentTetromino))
         {
@@ -72,12 +73,12 @@ public class Player : IPlayer
         Tetromino tetromino = CurrentTetromino
             .ChangePosition(CurrentTetromino.XPosition, CurrentTetromino.YPosition +1);
 
-        if (!PutTetromino( () => tetromino)) // when it can no longer be dropped it should have landed.
+        if (!PutTetromino( () => new PositionChangedEvent(CurrentTetromino, tetromino, Move.Drop))) // when it can no longer be dropped it should have landed.
         {
             tetromino = CurrentTetromino.ChangeDropStatus(DropStatus.Landed);
 
             Board.WriteTetromino(tetromino);
-            OnTetrominoPositionChange.ForEach(ondrop => ondrop(tetromino, tetromino));
+            OnTetrominoPositionChange.ForEach(ondrop => ondrop(new PositionChangedEvent(CurrentTetromino, tetromino, Move.Drop)));
             int linesCleared = Board.Clearlines(OnLineClear, OnLineSwab);
 
             Lines += linesCleared; // this is the total lines cleared in the entire game
@@ -96,13 +97,32 @@ public class Player : IPlayer
 
     }
 
-    public virtual void MoveLeft() => PutTetromino(() => CurrentTetromino.ChangePosition(CurrentTetromino.XPosition - 1, CurrentTetromino.YPosition));
+    public virtual void MoveLeft()
+    {
+        PutTetromino(() =>
+        {
+            var xPosition = CurrentTetromino.XPosition;
+            var yPosition = CurrentTetromino.YPosition;
+            
+            return new PositionChangedEvent(CurrentTetromino, CurrentTetromino.ChangePosition(xPosition -1, yPosition), Move.MoveLeft);
+        });
+    }
+   
 
-    public virtual void MoveRight() => PutTetromino(() => CurrentTetromino.ChangePosition(CurrentTetromino.XPosition + 1, CurrentTetromino.YPosition));
+    public virtual void MoveRight()
+    {
+        PutTetromino(() =>
+        {
+            var xPosition = CurrentTetromino.XPosition;
+            var yPosition = CurrentTetromino.YPosition;
 
-    public virtual void RotateRight() => PutTetromino(() => CurrentTetromino.RotateClockWise());
+            return new PositionChangedEvent(CurrentTetromino, CurrentTetromino.ChangePosition(xPosition +1, yPosition), Move.MoveLeft);
+        });
+    }
 
-    public virtual void RotateLeft() => PutTetromino(() => CurrentTetromino.RotateCounterClockWise());
+    public virtual void RotateRight() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateLeft));
+
+    public virtual void RotateLeft() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateLeft));
 
     public virtual void Quit()
     {
@@ -114,16 +134,17 @@ public class Player : IPlayer
         throw new InvalidOperationException("You can't get ready if you aren't playing with someone else");
     }
 
-    private bool PutTetromino(Func<Tetromino> getTetromino)
+    private bool PutTetromino(Func<PositionChangedEvent> positionChanged)
     {
-        Tetromino changedTetromino = getTetromino();
-        bool canFit = Board.CanFit(changedTetromino);
+        PositionChangedEvent changedTetromino = positionChanged();
+        
+        bool canFit = Board.CanFit(changedTetromino.CurrentTetromino);
 
         if (canFit)
         {
             
-            OnTetrominoPositionChange.ForEach(OnTetrominoPositionChange => OnTetrominoPositionChange(CurrentTetromino, changedTetromino));
-            CurrentTetromino = changedTetromino;
+            OnTetrominoPositionChange.ForEach(OnTetrominoPositionChange => OnTetrominoPositionChange(changedTetromino));
+            CurrentTetromino = changedTetromino.CurrentTetromino;
         }
 
         return canFit;

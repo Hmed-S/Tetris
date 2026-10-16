@@ -23,9 +23,9 @@ public class Engine
     private void SetPlayerEvents(DomainIPlayer player, Player dto)
     {
 
-        player.OnTetrominoPositionChange.Add((previous, current) => dto.CurrentTetromino = current.ToDto());
+        player.OnTetrominoPositionChange.Add((position) => dto.CurrentTetromino = position.CurrentTetromino.ToDto());
         player.OnPreviewChange.Add((preview) => dto.Preview = preview.ToDto());
-        player.OnTetrominoPositionChange.Add((previous, current) => dto.Board.Values = dto.Board.Values);
+        player.OnTetrominoPositionChange.Add((position) => dto.Board.Values = _game.Player.Board.Values);
 
 
         player.OnLevelChange.Add((level) => {
@@ -138,11 +138,39 @@ public class Engine
         SetPlayerEvents(_game.Opponent, Game.Oponent);
     }
 
+    private void NotifyServer()
+    {
+        _game.Player.OnTetrominoPositionChange.Insert(0, (position)=>
+        {
+            switch (position.Move) 
+            {
+                case Move.MoveLeft:
+                    Server.NotifyMoveLeft();
+                    break;
+                case Move.MoveRight:
+                    Server.NotifyMoveRight();
+                    break;
+                case Move.RotateLeft: 
+                    Server.NotifyMoveLeft();
+                    break;
+                case Move.RotateRight:
+                    Server.NotifyMoveRight();
+                    break;
+            }
+        });
+
+        _game.Player.OnReady.Insert(0, (seed) => Server.NotifyReady(seed));
+
+
+    }
+
     public Game StartMultiPlayerGame(int rowCount, int columnCount, string name)
     {
         DoStartGame(rowCount, columnCount, name, GameMode.MultiPlayer);
         _game.Player = (MultiPlayerPlayer) _game.Player;
         InitServer();
+
+        NotifyServer();
 
         return Game;
     }

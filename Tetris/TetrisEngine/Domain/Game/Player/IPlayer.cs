@@ -18,12 +18,13 @@ public interface IPlayer
     public Interval Interval { get; set; }
 
     public List<Action<int>> OnLineClear { get; set; }
-    public List<Action<Tetromino, Tetromino>> OnTetrominoPositionChange { get; set; }
+    public List<Action<PositionChangedEvent>> OnTetrominoPositionChange { get; set; }
     public List<Action<Score>> OnScoreChange { get; set; }
     public List<Action<Tetromino>> OnPreviewChange { get; set; }
     public List<Action<int, int>> OnLineSwab { get; set; }
     public List<Action<Level>> OnLevelChange { get; set; }
     public List<Action<Lines>> OnLineCountChange { get; set; }
+    public List<Action<int>> OnReady { get; set; }
 
     public void Next();
     public void DropTetromino();
