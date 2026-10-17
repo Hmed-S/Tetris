@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TetrisClient"
              mc:Ignorable="d"
-             Loaded="UserControl_Loaded"
              >
     <Grid>
         <Grid.ColumnDefinitions>
@@ -44,7 +43,7 @@
                     <RowDefinition Name="Control3Area" Height="60"/>
                 </Grid.RowDefinitions>
 
-                <Label Grid.Row="0" Name="PlayerNameLabel" Content="John Doe" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
+                <Label Grid.Row="0" Visibility="Collapsed" Name="PlayerNameLabel" Content="John Doe" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
                 <Label Grid.Row="1" Name="Score" Content="Score: 0" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="16" Foreground="White"/>
                 <Label Grid.Row="0" Name="Lines" Content="Lines: 0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="White" Margin="10,4,0,0"/>
                 <Label Grid.Row="1" Name="Level" Content="Level: 1" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="White" Margin="10,4,0,0"/>

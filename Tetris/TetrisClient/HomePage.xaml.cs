@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -20,12 +21,48 @@ public partial class HomePage : Page
         InitializeComponent();
     }
 
+    public void ConfigureBoardEvents(GameBoard gameBoard, Player player)
+    {
+        player.OnTetrominoPositionChange += gameBoard.DrawTetromino;
+        player.OnPreviewChange += gameBoard.RedrawPreview;
+        player.Board.OnLineClear += gameBoard.ClearLine;
+        player.Board.OnRowSwap += gameBoard.SwapRow;
+        player.OnScoreChange += gameBoard.UpdateScore;
+        player.OnLineCountChange += gameBoard.UpdateLineCount;
+        player.OnLevelChange += gameBoard.UpdateLevel;
+        player.OnLevelChange += (level) => gameBoard.UpdateInterval(player.Interval.MiliSeconds);
+
+        gameBoard.UpdateInterval(player.Interval.MiliSeconds);
+    }
+
+
     private void Start_Single_player_Game(object sender, RoutedEventArgs e)
     {
-        Game game = _engine.StartSinglePlayerGame(20,10);
-        GameBoard gameboard = new (_engine, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
+        GameBoard gameboard = new (new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
+
+        _engine.StartSinglePlayerGame(20, 10);
+        _engine.Game.OnGameOver += gameboard.HandleGameover;
+
+        ConfigureBoardEvents(gameboard, _engine.Game.Player);
         
         gameboard.ReadyButton.Visibility = Visibility.Collapsed;
+        gameboard.FastDropMilliSeconds = _engine.Game.Player.Interval.FastDropMiliSeconds;
+        gameboard.GameLoop += _engine.Drop;
+        gameboard.StartOnLoaded();
+        gameboard.Quit += _engine.Quit;
+        
+
+        gameboard.EnableKeyControls(new Dictionary<int, Action>
+        {
+            {  0, _engine.RotateRight },
+            {  1, _engine.RotateLeft  },
+            {  2, _engine.MoveLeft    },
+            {  3, _engine.MoveRight   },
+        });
+
+        
+        gameboard.DrawTetromino(_engine.Game.Player.CurrentTetromino,_engine.Game.Player.CurrentTetromino);
+        gameboard.PutPreview(_engine.Game.Player.Preview);
         NavigationService.Navigate(new GamePage(gameboard));
     }
 

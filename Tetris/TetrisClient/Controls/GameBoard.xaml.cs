@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,16 +17,17 @@ public partial class GameBoard : UserControl
     private TetrisGrid _tetrisGrid;
     private TetrisGrid _preview;
     private DispatcherTimer _timer;
-    private Engine _engine;
-    private Player _player;
+    public double FastDropMilliSeconds { get; set; }
+    public double DropIntervalMilliseconds { get; private set; }
+    public Dictionary<int, Action> PlayerActions { get; private set; }
+    public event Action Quit;
     public event EventHandler GameOver;
+    public event Action GameLoop;
 
-    public GameBoard(Engine engine, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
+    public GameBoard(TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
     {
         InitializeComponent();
 
-        _engine = engine;
-        _player = engine.Game.Player;
         _tetrisGrid = tetrisGrid;
         _preview = preview;
         _timer = timer;
@@ -35,36 +37,17 @@ public partial class GameBoard : UserControl
 
         Grid.SetRow(_preview, 1);
 
-
-        if (_player.Name != null)
-        {
-            PlayerNameLabel.Content = _player.Name;
-
-        }
-        else
-        {
-            PlayerNameLabel.Visibility = System.Windows.Visibility.Collapsed;
-        }
-
-        HandleEvents();
-
-        _timer.Tick += GameLoop;
-        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
-
-        _preview.Put(_player.Preview);
-        _tetrisGrid.Put(_player.CurrentTetromino);
-
         PauseButton.Click += PauseTimer;
         QuitButton.Click += StopGame;
-
-        _timer.IsEnabled = true;
+        _timer.Tick += (sender, e) => GameLoop.Invoke();
     }
 
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    public void StartGameLoop() => _timer.IsEnabled = true;
+
+    public void PutPreview(Tetromino tetromino)
     {
-        var window = Window.GetWindow(this);
-        window.KeyDown += KeyDownControls;
-        window.KeyUp += KeyUpControls;
+        _preview.Clear();
+        _preview.Put(tetromino);
     }
 
     public void DrawTetromino(Tetromino previous, Tetromino next)
@@ -92,12 +75,12 @@ public partial class GameBoard : UserControl
     public void UpdateLevel(int level)
     {
         Level.Content = $"Level: {level}";
-        
     }
 
-    public void UpdateInterval(int interval)
+    public void UpdateInterval(double interval)
     {
-        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
+        DropIntervalMilliseconds = interval;
+        _timer.Interval = TimeSpan.FromMilliseconds(DropIntervalMilliseconds);
     }
 
     public void HandleGameover()
@@ -110,26 +93,6 @@ public partial class GameBoard : UserControl
         QuitButton.Content = "Main Menu";
     }
 
-    private void HandleEvents()
-    {
-
-        _player.OnTetrominoPositionChange += DrawTetromino;
-        _player.OnPreviewChange += RedrawPreview;
-        _player.Board.OnLineClear += ClearLine;
-        _player.Board.OnRowSwap += SwapRow;
-        _player.OnScoreChange += UpdateScore;
-        _player.OnLineCountChange += UpdateLineCount;
-        _player.OnLevelChange += UpdateLevel;
-        _player.OnLevelChange -= UpdateInterval;
-
-        _engine.Game.OnGameOver += HandleGameover;
-    }
-
-    private void GameLoop(object sender, EventArgs args)
-    {
-        _engine.Drop();
-    }
-
     private void PauseTimer(object sender, RoutedEventArgs e)
     {
         _timer.IsEnabled = !_timer.IsEnabled;
@@ -138,25 +101,34 @@ public partial class GameBoard : UserControl
 
     private void StopGame(object sender, RoutedEventArgs e)
     {
-        if (_engine.Game.State == GameState.Playing)
-        {
-            _timer.Stop();
-            _engine.Quit();
-
-        }
-
+        _timer.Stop();
+        if ((string)QuitButton.Content == "Quit") Quit.Invoke();
         GameOver.Invoke(this, EventArgs.Empty);
+        
     }
 
-    private void HardDrop(object sender, RoutedEventArgs e)
+    private void FastDrop(object sender, RoutedEventArgs e)
     {
 
-        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.FastDropMiliSeconds);
+        _timer.Interval = TimeSpan.FromMilliseconds(FastDropMilliSeconds);
     }
 
     private void QuitHardDrop(object sender, RoutedEventArgs e)
     {
-        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
+        _timer.Interval = TimeSpan.FromMilliseconds(DropIntervalMilliseconds);
+    }
+
+    public void EnableKeyControls(Dictionary<int, Action> playerActions)
+    {
+        PlayerActions = playerActions;
+        Loaded += (sender, e) => SetKeyEvents();
+    }
+
+    private void SetKeyEvents()
+    {
+        var window = Window.GetWindow(this);
+        window.KeyDown += KeyDownControls;
+        window.KeyUp += KeyUpControls;
     }
 
     private void KeyDownControls(object sender, KeyEventArgs e)
@@ -167,19 +139,19 @@ public partial class GameBoard : UserControl
         {
             case Key.Up:
             case Key.X:
-                _engine.RotateRight(); break;
+                PlayerActions[0](); break;
             case Key.RightShift:
             case Key.LeftCtrl:
             case Key.Z:
             case Key.Down:
-                _engine.RotateLeft(); break;
+                PlayerActions[1](); break;
             case Key.Escape:
             case Key.F1: PauseTimer(sender, e); break;
             case Key.Left:
-                _engine.MoveLeft(); break;
-            case Key.Right: _engine.MoveRight(); break;
+                PlayerActions[2](); break;
+            case Key.Right: PlayerActions[3](); break;
             case Key.Space:
-                HardDrop(sender, e);
+                FastDrop(sender, e);
                 break;
         }
     }
@@ -196,6 +168,11 @@ public partial class GameBoard : UserControl
 
         }
 
+    }
+
+    public void StartOnLoaded()
+    {
+        Loaded += (sender, e) => _timer.IsEnabled = true;
     }
 
 }
