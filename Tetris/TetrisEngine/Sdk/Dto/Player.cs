@@ -70,7 +70,20 @@ public class Player
             OnLineCountChange?.Invoke(_lineCount);
         }
     }
+    private bool _isReady = false;
+    public bool IsReady {
+        get
+        {
+            return _isReady; 
+        }
+        set 
+        {
+            _isReady = value;
+            OnReady?.Invoke();
+        }
+    }
 
+    public event Action OnReady;
     public event Action<Tetromino, Tetromino> OnTetrominoPositionChange;
     public event Action<Tetromino> OnPreviewChange;
     public event Action<int> OnScoreChange;

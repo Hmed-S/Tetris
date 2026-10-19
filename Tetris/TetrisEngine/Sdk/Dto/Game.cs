@@ -5,7 +5,7 @@ public class Game
    public Player Player { get; set; }
 
     private Player _opponent;
-   public Player Oponent 
+   public Player Opponent 
     {
         get
         {
@@ -21,6 +21,22 @@ public class Game
    public GameState State { get; set; }
 
    private bool _isOver = false;
+   private bool _bothReady = false;
+   
+   public bool BothReady
+    {
+        get 
+        {
+            return _bothReady;
+        }
+        set
+        {
+            _bothReady = value;
+            OnBothReady.Invoke();
+        }
+    }
+
+   public event Action OnBothReady;
    public event Action OnGameOver;
    public event Action OnMatchFound;
    public bool IsOver { 
@@ -31,7 +47,7 @@ public class Game
        set
        {
             _isOver = value;
-            OnGameOver.Invoke();
+            OnGameOver?.Invoke();
        } }
 
 }

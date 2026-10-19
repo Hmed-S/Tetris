@@ -11,7 +11,8 @@ public interface ITetrisServer
     public event Action OnMoveLeft;
     public event Action OnMoveRight;
 
-    public Task FindMatch(string name);
+    public void Listen();
+    public Task FindMatch();
     public Task NotifyReady(int seed);
     public Task NotifyDrop();
     public Task NotifyRotateRight();

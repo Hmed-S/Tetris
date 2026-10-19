@@ -13,7 +13,7 @@ public class Player : IPlayer
     public Score Score { get; set; }
     public IGame Game { get; set; }
     public int Seed { get; set; }
-    public bool IsReady { get; }
+    public bool IsReady { get; protected set; }
     public Random Random { get; set; }
     public Lines Lines { get; set; }
     public Level Level { get; set; }
@@ -116,11 +116,11 @@ public class Player : IPlayer
             var xPosition = CurrentTetromino.XPosition;
             var yPosition = CurrentTetromino.YPosition;
 
-            return new PositionChangedEvent(CurrentTetromino, CurrentTetromino.ChangePosition(xPosition +1, yPosition), Move.MoveLeft);
+            return new PositionChangedEvent(CurrentTetromino, CurrentTetromino.ChangePosition(xPosition +1, yPosition), Move.MoveRight);
         });
     }
 
-    public virtual void RotateRight() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateLeft));
+    public virtual void RotateRight() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateRight));
 
     public virtual void RotateLeft() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateLeft));
 

@@ -60,6 +60,12 @@ public class TetrisGrid : Grid
 
     private void DoPut(Tetromino tetromino, Brush background, Brush foreGround)
     {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => DoPut(tetromino, background, foreGround));
+            return;
+        }
+
         foreach (Points point in tetromino.Points)
         {
             Label label = Children.OfType<Label>()
@@ -76,6 +82,12 @@ public class TetrisGrid : Grid
 
     public void Clear()
     {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => Clear());
+            return;
+        }
+
         for (int i = 0; i < _rowCount; i++)
         {
             for (int j = 0; j < _columnCount; j++)

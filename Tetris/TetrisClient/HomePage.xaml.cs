@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -31,6 +32,7 @@ public partial class HomePage : Page
         player.OnLineCountChange += gameBoard.UpdateLineCount;
         player.OnLevelChange += gameBoard.UpdateLevel;
         player.OnLevelChange += (level) => gameBoard.UpdateInterval(player.Interval.MiliSeconds);
+        player.OnReady += gameBoard.Ready;
 
         gameBoard.UpdateInterval(player.Interval.MiliSeconds);
     }
@@ -62,13 +64,72 @@ public partial class HomePage : Page
 
         
         gameboard.DrawTetromino(_engine.Game.Player.CurrentTetromino,_engine.Game.Player.CurrentTetromino);
-        gameboard.PutPreview(_engine.Game.Player.Preview);
+        gameboard.RedrawPreview(_engine.Game.Player.Preview);
         NavigationService.Navigate(new GamePage(gameboard));
     }
 
-    private void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
+    private async void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException("This has yet to be implemented");
+        await _engine.StartMultiPlayerGame(20, 10, PlayerNameInput.Text);
+
+        GameBoard playerBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
+        GameBoard opponentBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
+        
+        playerBoard.PlayerNameLabel.Visibility = Visibility.Visible;
+        playerBoard.PlayerNameLabel.Content = PlayerNameInput.Text;
+       
+        ConfigureBoardEvents(playerBoard, _engine.Game.Player);        
+
+        playerBoard.PauseButton.Visibility = Visibility.Collapsed;
+        opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
+        playerBoard.GameLoop += _engine.Drop;
+        opponentBoard.GameLoop += _engine.Drop;
+
+        GamePage gamePage = new (playerBoard, opponentBoard);
+
+        _engine.Game.OnMatchFound += gamePage.ShowOpponentBoard;
+
+        playerBoard.ReadyAction += _engine.Ready;
+       
+
+        _engine.Game.OnBothReady += () =>
+        {
+            playerBoard.EnableKeyControls(new Dictionary<int, Action>
+            {
+                {  0, _engine.RotateRight },
+                {  1, _engine.RotateLeft  },
+                {  2, _engine.MoveLeft    },
+                {  3, _engine.MoveRight   },
+            });
+
+
+            playerBoard.DrawTetromino(_engine.Game.Player.CurrentTetromino, _engine.Game.Player.CurrentTetromino);
+            playerBoard.RedrawPreview(_engine.Game.Player.Preview);
+            opponentBoard.DrawTetromino(_engine.Game.Opponent.CurrentTetromino, _engine.Game.Opponent.CurrentTetromino);
+            opponentBoard.RedrawPreview(_engine.Game.Opponent.Preview);
+            playerBoard.StartGameLoop();
+            opponentBoard.StartGameLoop();
+
+
+        };
+
+        _engine.Game.OnMatchFound += () =>
+        {
+            ConfigureBoardEvents(opponentBoard, _engine.Game.Opponent);
+
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    opponentBoard.PlayerNameLabel.Visibility = Visibility.Visible;
+                    opponentBoard.PlayerNameLabel.Content = _engine.Game.Opponent.Name;
+                });
+                return;
+            }
+
+        };
+
+        NavigationService.Navigate(gamePage);
     }
 
     public void  ShowPlayerHandleInput(object sender, RoutedEventArgs e)

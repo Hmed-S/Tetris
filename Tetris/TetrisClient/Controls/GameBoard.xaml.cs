@@ -20,6 +20,7 @@ public partial class GameBoard : UserControl
     public double FastDropMilliSeconds { get; set; }
     public double DropIntervalMilliseconds { get; private set; }
     public Dictionary<int, Action> PlayerActions { get; private set; }
+    public event Action ReadyAction;
     public event Action Quit;
     public event EventHandler GameOver;
     public event Action GameLoop;
@@ -44,18 +45,29 @@ public partial class GameBoard : UserControl
 
     public void StartGameLoop() => _timer.IsEnabled = true;
 
-    public void PutPreview(Tetromino tetromino)
-    {
-        _preview.Clear();
-        _preview.Put(tetromino);
-    }
-
     public void DrawTetromino(Tetromino previous, Tetromino next)
     {
         if (!previous.Islanded)
             _tetrisGrid.Erase(previous);
 
         _tetrisGrid.Put(next);
+    }
+
+    public void Ready()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => Ready());
+            return;
+        }
+
+        ReadyButton.Content = "\r\n\tU+2713\r\n";
+        ReadyButton.IsEnabled = false;
+    }
+
+    public void ReadyClick(object sender, RoutedEventArgs e)
+    {
+        ReadyAction.Invoke();
     }
 
     public void RedrawPreview(Tetromino preview)
@@ -104,7 +116,6 @@ public partial class GameBoard : UserControl
         _timer.Stop();
         if ((string)QuitButton.Content == "Quit") Quit.Invoke();
         GameOver.Invoke(this, EventArgs.Empty);
-        
     }
 
     private void FastDrop(object sender, RoutedEventArgs e)
@@ -120,8 +131,15 @@ public partial class GameBoard : UserControl
 
     public void EnableKeyControls(Dictionary<int, Action> playerActions)
     {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => EnableKeyControls(playerActions));
+            return;
+        }
         PlayerActions = playerActions;
-        Loaded += (sender, e) => SetKeyEvents();
+
+        if (IsLoaded) SetKeyEvents();
+        else Loaded += (sender, e) => SetKeyEvents();
     }
 
     private void SetKeyEvents()
@@ -139,21 +157,22 @@ public partial class GameBoard : UserControl
         {
             case Key.Up:
             case Key.X:
-                PlayerActions[0](); break;
+                PlayerActions[0](); e.Handled = true; break;
             case Key.RightShift:
             case Key.LeftCtrl:
             case Key.Z:
             case Key.Down:
-                PlayerActions[1](); break;
+                PlayerActions[1](); e.Handled = true; break;
             case Key.Escape:
-            case Key.F1: PauseTimer(sender, e); break;
+            case Key.F1: PauseTimer(sender, e); e.Handled = true; break;
             case Key.Left:
-                PlayerActions[2](); break;
-            case Key.Right: PlayerActions[3](); break;
+                PlayerActions[2](); e.Handled = true; break;
+            case Key.Right: PlayerActions[3](); e.Handled = true; break;
             case Key.Space:
-                FastDrop(sender, e);
+                FastDrop(sender, e); e.Handled = true;
                 break;
         }
+
     }
 
     private void KeyUpControls(object sender, KeyEventArgs e)

@@ -59,7 +59,9 @@ public class MultiPlayerPlayer : Player
     public override void Ready()
     {
         int seed = new Random().Next();
+        IsReady = true;
         Seed = seed;
+        OnReady.ForEach(onReady => onReady(Seed));
     }
 
 }

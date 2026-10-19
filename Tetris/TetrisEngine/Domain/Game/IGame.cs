@@ -10,6 +10,7 @@ public interface IGame
     public GameState GameState { get; set; }
 
     public List<Action> OnGameOver { get; }
+    public List<Action> OnBothReady { get; }
 
     public abstract static IGame Start(GameMode gameMode, IPlayer player);
     public abstract static IGame GetGame();

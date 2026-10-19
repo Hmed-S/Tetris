@@ -15,21 +15,24 @@ public class TetrisServerService(HubConnection _hubConnection) : ITetrisServer
 
     private bool isConnected => _hubConnection.State == HubConnectionState.Connected;
 
-    public async Task FindMatch(string name)
+    public async Task FindMatch()
     {
         if (!isConnected)
         {
             await _hubConnection.StartAsync();
         }
 
-        _hubConnection.On<string>("MatchFound", OnMatchFound.Invoke);
-        _hubConnection.On<int>("ReadyUp", OnReady.Invoke);
-        _hubConnection.On("Drop", OnDrop.Invoke);
-        _hubConnection.On("RotateRight", OnDrop.Invoke);
-        _hubConnection.On("RotateLeft", OnDrop.Invoke);
-        _hubConnection.On("MoveLeft", OnDrop.Invoke);
-        _hubConnection.On("MoveRight", OnDrop.Invoke);
         
+    }
+
+    public void Listen()
+    {
+        _hubConnection.On<string>("MatchFound", (name) => OnMatchFound?.Invoke(name));
+        _hubConnection.On<int>("Ready", (seed) => OnReady?.Invoke(seed));
+        _hubConnection.On("RotateRight", () => OnRotateRight?.Invoke());
+        _hubConnection.On("RotateLeft", () => OnRotateLeft?.Invoke());
+        _hubConnection.On("MoveLeft", () => OnMoveLeft?.Invoke());
+        _hubConnection.On("MoveRight", () => OnMoveRight?.Invoke());
     }
 
     public async Task NotifyReady(int seed) => await _hubConnection.SendAsync("ReadyUp", seed);

@@ -1,10 +1,22 @@
-﻿using TetrisEngine.Domain.Game.Player;
+﻿using System.Data;
+using TetrisEngine.Domain.Game.Player;
 
 namespace TetrisEngine.Domain.Game;
 
 public class Game : IGame
 {
-    public required IPlayer Player { get; set; }
+    public required IPlayer Player
+    {
+        get
+        {
+            return field;
+        }
+        set
+        {
+            field = value;
+            value.OnReady.Add(CheckForBothReady);
+        }
+    }
     public required GameMode Mode { get; init; }
     public IPlayer Opponent
     {
@@ -28,6 +40,8 @@ public class Game : IGame
             else
             {
                 field = value;
+                value.Game = this;
+                value.OnReady.Add(CheckForBothReady);
             }
         }
     }
@@ -38,6 +52,8 @@ public class Game : IGame
     }
 
     public List<Action> OnGameOver { get; } = [];
+
+    public List<Action> OnBothReady { get; } = [];
 
     private static IGame _game;
 
@@ -65,6 +81,14 @@ public class Game : IGame
     public static IGame GetGame() => _game;
 
     private void SetGameOverPlayer() => Player = new GameOverPlayer(Player);
+
+    private void CheckForBothReady(int seed)
+    {
+        if (Player.IsReady && Opponent.IsReady)
+        {
+            OnBothReady.ForEach(onBothReady => onBothReady());
+        }
+    }
 
     public void Quit()
     {
