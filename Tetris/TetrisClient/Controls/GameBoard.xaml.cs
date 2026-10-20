@@ -61,8 +61,17 @@ public partial class GameBoard : UserControl
             return;
         }
 
-        ReadyButton.Content = "\r\n\tU+2713\r\n";
-        ReadyButton.IsEnabled = false;
+        if(ReadyButton.Visibility == Visibility.Collapsed)
+        {
+            ReadyLabel.ShowReadyIcon();
+        }
+        else
+        {
+            ReadyButton.Visibility = Visibility.Collapsed;
+            ReadyLabel.Visibility = Visibility.Visible;
+            ReadyLabel.ShowReadyIcon();
+        }
+        
     }
 
     public void ReadyClick(object sender, RoutedEventArgs e)

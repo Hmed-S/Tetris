@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -74,7 +73,12 @@ public partial class HomePage : Page
 
         GameBoard playerBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
         GameBoard opponentBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
-        
+
+        playerBoard.PauseButton.Visibility = Visibility.Collapsed;
+        opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
+
+        opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
+
         playerBoard.PlayerNameLabel.Visibility = Visibility.Visible;
         playerBoard.PlayerNameLabel.Content = PlayerNameInput.Text;
        
@@ -121,8 +125,10 @@ public partial class HomePage : Page
             {
                 Dispatcher.Invoke(() =>
                 {
+                    opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
                     opponentBoard.PlayerNameLabel.Visibility = Visibility.Visible;
                     opponentBoard.PlayerNameLabel.Content = _engine.Game.Opponent.Name;
+                    opponentBoard.ReadyLabel.Visibility = Visibility.Visible;
                 });
                 return;
             }

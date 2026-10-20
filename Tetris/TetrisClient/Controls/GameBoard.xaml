@@ -50,6 +50,8 @@
 
                 <local:TetrisMenuButton Grid.Row="2" x:Name="PauseButton" Content="Pause" HorizontalAlignment="Center" VerticalAlignment="Top" Focusable="False"/>
                 <local:TetrisMenuButton Grid.Row="3" x:Name="QuitButton" Content="Quit" HorizontalAlignment="Center" VerticalAlignment="Top" Focusable="False"/>
+
+                <local:Ready Grid.Row="4" Visibility="Collapsed" HorizontalAlignment="Center" x:Name="ReadyLabel" VerticalAlignment="Top" Height="43" Width="88"/>
                 <local:TetrisMenuButton Grid.Row="4" x:Name="ReadyButton" Content="Ready" HorizontalAlignment="Center" VerticalAlignment="Top" Focusable="False" Click="ReadyClick"/>
             </Grid>
         </Grid>
