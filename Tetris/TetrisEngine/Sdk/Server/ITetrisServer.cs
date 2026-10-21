@@ -3,8 +3,8 @@
 public interface ITetrisServer
 {
     
-    public event Action<string> OnMatchFound;
-    public event Action<int> OnReady;
+    public event Action<string, int> OnMatchFound;
+    public event Action OnReady;
     public event Action OnDrop;
     public event Action OnRotateRight;
     public event Action OnRotateLeft;
@@ -13,7 +13,7 @@ public interface ITetrisServer
 
     public void Listen();
     public Task FindMatch();
-    public Task NotifyReady(int seed);
+    public Task NotifyReady();
     public Task NotifyDrop();
     public Task NotifyRotateRight();
     public Task NotifyRotateLeft();

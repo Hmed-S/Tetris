@@ -1,4 +1,5 @@
-﻿using TetrisEngine.Domain.Board;
+﻿using System.Xml.Linq;
+using TetrisEngine.Domain.Board;
 using TetrisEngine.Utility;
 
 namespace TetrisEngine.Domain.Game.Player;
@@ -6,7 +7,7 @@ namespace TetrisEngine.Domain.Game.Player;
 
 public class Player : IPlayer
 {
-    public string Name { get; set; }
+    public Name Name { get; set; }
     public Tetromino CurrentTetromino { get; set; }
     public Tetromino Preview { get; set; }
     public TetrisBoard Board { get; set; }
@@ -26,7 +27,7 @@ public class Player : IPlayer
     public List<Action<int, int>> OnLineSwab { get; set; } = [];
     public List<Action<Level>> OnLevelChange { get; set; } = [];
     public List<Action<Lines>> OnLineCountChange { get; set; } = [];
-    public List<Action<int>> OnReady { get; set; } = [];
+    public List<Action> OnReady { get; set; } = [];
 
     public Player(int seed, Random random, TetrisBoard board, Score score, Level level, Interval interval)
     {
@@ -37,10 +38,24 @@ public class Player : IPlayer
         Level = level;
         Interval = interval;
 
+        Init();
+    }
+
+    public Player(Name name, TetrisBoard board, Score score, Level level, Interval interval)
+    {
+        Name = name;
+        Board = board;
+        Score = score;
+        Level = level;
+        Interval = interval;
+    }
+
+    public void Init()
+    {
         Preview = Tetromino.Random(Random);
         CurrentTetromino = Tetromino.Random(Random);
         OnPreviewChange.ForEach(onPreviewChange => onPreviewChange(Preview));
-        
+
         CenterTetromino();
         OnTetrominoPositionChange.ForEach(
         onTetrominoChange => onTetrominoChange(new PositionChangedEvent(CurrentTetromino, CurrentTetromino, Move.Drop)));

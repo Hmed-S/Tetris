@@ -5,7 +5,7 @@ namespace TetrisEngine.Domain.Game.Player;
 public interface IPlayer
 {
     public IGame Game { get; set; }
-    public string Name { get; set; }
+    public Name Name { get; set; }
     public Tetromino CurrentTetromino { get; set; }
     public Tetromino Preview { get; set; }
     public TetrisBoard Board { get; set; }
@@ -24,8 +24,9 @@ public interface IPlayer
     public List<Action<int, int>> OnLineSwab { get; set; }
     public List<Action<Level>> OnLevelChange { get; set; }
     public List<Action<Lines>> OnLineCountChange { get; set; }
-    public List<Action<int>> OnReady { get; set; }
+    public List<Action> OnReady { get; set; }
 
+    public void Init();
     public void Next();
     public void DropTetromino();
     public void MoveLeft();

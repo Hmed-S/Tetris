@@ -82,7 +82,7 @@ public class Game : IGame
 
     private void SetGameOverPlayer() => Player = new GameOverPlayer(Player);
 
-    private void CheckForBothReady(int seed)
+    private void CheckForBothReady()
     {
         if (Player.IsReady && Opponent.IsReady)
         {

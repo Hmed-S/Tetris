@@ -8,7 +8,7 @@ public class GameOverPlayer(
     ): IPlayer
 {
     public IGame Game { get; set; } = player.Game;
-    public string Name { get; set; } = player.Name;
+    public Name Name { get; set; } = player.Name;
     public Tetromino CurrentTetromino { get; set; } = player.CurrentTetromino;
     public Tetromino Preview { get; set; } = player.Preview;
     public TetrisBoard Board { get; set; } = player.Board;
@@ -19,7 +19,7 @@ public class GameOverPlayer(
     public Level Level { get; set; } = player.Level;
     public Lines Lines { get; set; } = player.Lines;
     public Interval Interval { get; set; } = player.Interval;
-    public List<Action<int>> OnReady { get; set; } = [];
+    public List<Action> OnReady { get; set; } = [];
 
     public List<Action<int>> OnLineClear { get; set; } = player.OnLineClear;
     public List<Action<PositionChangedEvent>> OnTetrominoPositionChange { get; set; } = player.OnTetrominoPositionChange;
@@ -29,6 +29,11 @@ public class GameOverPlayer(
     public List<Action<Level>> OnLevelChange { get; set; } = player.OnLevelChange;
     public List<Action<Lines>> OnLineCountChange { get; set; } = player.OnLineCountChange;
     
+    public void Init()
+    {
+        throw new InvalidOperationException("Can not initialize when the game is over.");
+    }
+
     public void DropTetromino()
     {
         throw new InvalidOperationException("Can not drop a tetromino when the game is over.");

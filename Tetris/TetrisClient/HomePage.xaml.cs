@@ -74,6 +74,9 @@ public partial class HomePage : Page
         GameBoard playerBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
         GameBoard opponentBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
 
+        _engine.Game.OnGameOver += playerBoard.HandleGameover;
+        _engine.Game.OnGameOver += opponentBoard.HandleGameover;
+
         playerBoard.PauseButton.Visibility = Visibility.Collapsed;
         opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
 

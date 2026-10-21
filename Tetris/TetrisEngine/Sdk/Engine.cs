@@ -26,7 +26,7 @@ public class Engine
         player.OnTetrominoPositionChange.Add((position) => dto.CurrentTetromino = position.CurrentTetromino.ToDto());
         player.OnPreviewChange.Add((preview) => dto.Preview = preview.ToDto());
         player.OnTetrominoPositionChange.Add((position) => dto.Board.Values = _game.Player.Board.Values);
-        player.OnReady.Add((ready) => dto.IsReady = true);
+        player.OnReady.Add(() => dto.IsReady = true);
 
         player.OnLevelChange.Add((level) => {
             dto.Level = level.Value;
@@ -44,11 +44,6 @@ public class Engine
     {
         _game.OnGameOver.Add(() => { Game.IsOver = true; Game.State = (_game.GameState == DomainGameState.GameOver) ? GameState.GameOver : GameState.Quit; });
         _game.OnBothReady.Add(()=> { Game.BothReady = true; });
-        _game.OnBothReady.Add(()=>
-        {
-            _game.Opponent.Random = new Random(123456789);
-            _game.Player.Random = new Random(123456789);
-        });
     }
 
     private void DoStartGame(int rowCount, int columnCount, string name = null, GameMode gameMode = GameMode.SinglePlayer)
@@ -70,8 +65,7 @@ public class Engine
         {
             player = new MultiPlayerPlayer
                 (
-                   seed,
-                   new Random(seed),
+                   new Name(name),
                    new TetrisBoard(rowCount, columnCount),
                    new Score(),
                    new Level(),
@@ -96,10 +90,7 @@ public class Engine
 
     private void SetServerEvents()
     {
-        Server.OnReady += (seed) =>
-        {
-            _game.Opponent.Ready();
-        };
+        Server.OnReady += _game.Opponent.Ready;
 
         Server.OnRotateRight += _game.Opponent.RotateRight;
         Server.OnRotateLeft += _game.Opponent.RotateLeft;
@@ -110,7 +101,7 @@ public class Engine
     private void InitServer()
     {
         IHubConnectionBuilder hubConnectionBuilder = new HubConnectionBuilder()
-             .WithUrl($"http://localhost:5000/tetrisHub?name={_game.Player.Name}");
+             .WithUrl($"http://localhost:5000/tetrisHub?name={_game.Player.Name.Value}");
 
         HubConnection hubConnection = hubConnectionBuilder.Build();
 
@@ -118,27 +109,35 @@ public class Engine
 
     }
 
-    private void SetOpponent(string name)
+    private void SetOpponent(string name, int seed)
     {
-        int seed = new Random().Next();
         DomainIPlayer player = new MultiPlayerPlayer
         (
-            seed,
-            new Random(seed),
-            new TetrisBoard(_game.Player.Board.Height, _game.Player.Board.Width), // change to player width
+            new Name(name),
+            new TetrisBoard(_game.Player.Board.Height, _game.Player.Board.Width),
             new Score(),
             new Level(),
             new DomainInterval()
         )
         {
-            Name = name
+            Seed = seed,
+            Random = new(seed)
         };
+
+        _game.Player.Seed = seed;
+        _game.Player.Random = new(seed);
 
         _game.Opponent = player;
 
+        _game.OnBothReady.Insert(0, () =>
+        {
+            _game.Player.Init();
+            _game.Opponent.Init();
+        });
+
         Game.Opponent = new Player // todo, make player mapper
         {
-            Name = _game.Opponent.Name,
+            Name = _game.Opponent.Name.Value,
             Preview = _game.Opponent.Preview.ToDto(),
             CurrentTetromino = _game.Opponent.CurrentTetromino.ToDto(),
             Board = new Board
@@ -161,6 +160,7 @@ public class Engine
         SetGameEvents();
         SetPlayerEvents(_game.Opponent, Game.Opponent);
         SetServerEvents();
+
     }
 
     private void NotifyServer()
@@ -184,14 +184,14 @@ public class Engine
             }
         });
 
-        _game.Player.OnReady.Insert(0, (seed) => Server.NotifyReady(seed));
+        _game.Player.OnReady.Insert(0, () => Server.NotifyReady());
 
     }
 
     public async Task<Game> StartMultiPlayerGame(int rowCount, int columnCount, string name)
     {
         DoStartGame(rowCount, columnCount, name, GameMode.MultiPlayer);
-        _game.Player.Name = name;
+
         InitServer();
 
         NotifyServer();
