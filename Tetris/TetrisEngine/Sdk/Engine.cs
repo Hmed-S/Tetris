@@ -206,12 +206,12 @@ public class Engine
 
     public void Drop()
     {
-        if (_game.Mode == GameMode.MultiPlayer)
-        {
-            _game.Opponent.DropTetromino();
-        }
-        
         _game.Player.DropTetromino();
+    }
+
+    public void OpponentDrop()
+    {
+        _game.Opponent.DropTetromino();
     }
 
     public void RotateRight() => _game.Player.RotateRight();

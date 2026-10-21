@@ -106,10 +106,10 @@ public partial class GameBoard : UserControl
 
     public void HandleGameover()
     {
+        _timer.Stop();
         Window.GetWindow(this).KeyDown -= KeyDownControls;
         Window.GetWindow(this).KeyUp -= KeyUpControls;
         PauseButton.IsEnabled = false;
-        _timer.Stop();
         GameOverLabel.Visibility = Visibility.Visible;
         QuitButton.Content = "Main Menu";
     }

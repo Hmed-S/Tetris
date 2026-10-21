@@ -90,7 +90,7 @@ public partial class HomePage : Page
         playerBoard.PauseButton.Visibility = Visibility.Collapsed;
         opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
         playerBoard.GameLoop += _engine.Drop;
-        opponentBoard.GameLoop += _engine.Drop;
+        opponentBoard.GameLoop += _engine.OpponentDrop;
 
         GamePage gamePage = new (playerBoard, opponentBoard);
 
