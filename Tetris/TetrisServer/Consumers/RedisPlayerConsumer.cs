@@ -13,10 +13,10 @@ namespace TetrisServer.Consumers;
 public class RedisPlayerConsumer(MatchService matchservice, IHubContext<TetrisHub> tetrisHub, ILogger<RedisPlayerConsumer> _logger) : Controller, ICapSubscribe
 {
 
-    private async Task NotifyMatch(Player player1, Player player2)
+    private async Task NotifyMatch(Player player1, Player player2, int seed)
     {
-        await tetrisHub.Clients.Client(player1.Id).SendAsync("MatchFound", player2.Name);
-        await tetrisHub.Clients.Client(player2.Id).SendAsync("MatchFound", player1.Name);
+        await tetrisHub.Clients.Client(player1.Id).SendAsync("MatchFound", player2.Name, seed);
+        await tetrisHub.Clients.Client(player2.Id).SendAsync("MatchFound", player1.Name, seed);
     }
 
     [CapSubscribe("Queue")]
@@ -28,7 +28,7 @@ public class RedisPlayerConsumer(MatchService matchservice, IHubContext<TetrisHu
     [CapSubscribe("MatchMade")]
     public async Task OnMatchMade(MatchEvent match)
     {
-        await NotifyMatch(match.Player1, match.Player2);
+        await NotifyMatch(match.Player1, match.Player2, match.seed);
     }
 
 }

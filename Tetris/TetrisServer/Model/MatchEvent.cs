@@ -1,7 +1,9 @@
-﻿using TetrisServer.Data.Entities;
+﻿using Newtonsoft.Json;
+using TetrisServer.Data.Entities;
 
 namespace TetrisServer.Model;
 
-public record MatchEvent(Player Player1, Player Player2)
+[JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+public record MatchEvent(Player Player1, Player Player2, int seed)
 {
 }

@@ -11,6 +11,7 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 using TetrisServer.Service;
 using DotNetCore.CAP.Serialization;
 using TetrisServer.Utill;
+using System;
 
 namespace TetrisServer
 {
@@ -29,6 +30,7 @@ namespace TetrisServer
         {
             services.AddTransient<IPlayerRepository, RedisPlayerRepository>();
             services.AddTransient<RedisPlayerConsumer>();
+            services.AddSingleton<Random>();
             services.AddSingleton<MatchService>();
 
             services.AddSingleton<ISerializer, NewtonSoftCapSerializer>();

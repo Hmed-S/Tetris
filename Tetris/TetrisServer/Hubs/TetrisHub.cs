@@ -19,11 +19,11 @@ public class TetrisHub(MatchService matchService) : Hub
         await base.OnConnectedAsync();
     }
 
-    public async Task ReadyUp(int seed)
+    public async Task Ready()
     {
         Player opponent = await matchService.GetOpponentByPlayerId(Context.ConnectionId);
 
-        await Clients.Client(opponent.Id).SendAsync("Ready", seed);
+        await Clients.Client(opponent.Id).SendAsync(nameof(Ready));
     }
 
     public async Task Drop()

@@ -1,6 +1,5 @@
 ﻿using DotNetCore.CAP;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System;
 using System.Threading.Tasks;
 using TetrisServer.Data;
@@ -9,8 +8,7 @@ using TetrisServer.Model;
 
 namespace TetrisServer.Service;
 
-[JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-public class MatchService(IPlayerRepository repository, ICapPublisher publisher, ILogger<MatchService> _logger)
+public class MatchService(IPlayerRepository repository, Random random, ICapPublisher publisher, ILogger<MatchService> _logger)
 {
 
     public async Task JoinQueue(string id, string name)
@@ -37,6 +35,7 @@ public class MatchService(IPlayerRepository repository, ICapPublisher publisher,
            return;
         }
 
+        int seed = random.Next();
         
         Tuple<Player, Player> players = await repository.Pop();
 
@@ -49,7 +48,7 @@ public class MatchService(IPlayerRepository repository, ICapPublisher publisher,
         await repository.SavePlayer(player1);
         await repository.SavePlayer(player2);
 
-        await publisher.PublishAsync("MatchMade", new MatchEvent(player1, player2));
+        await publisher.PublishAsync("MatchMade", new MatchEvent(player1, player2, seed));
     }
 
     public async Task<Player> GetOpponentByPlayerId(string id)
