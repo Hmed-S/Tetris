@@ -12,5 +12,7 @@ public interface IPlayerRepository
 
     public Task<Player> GetPlayerById(string id);
     public Task<Tuple<Player, Player>> Pop();
-  
+    public Task RemovePlayerFromQueue(string id);
+    public Task RemovePlayer(string id);
+    public Task<bool> PlayerIsQueued(string id);
 }

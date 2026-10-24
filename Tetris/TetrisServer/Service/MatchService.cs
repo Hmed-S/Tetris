@@ -58,4 +58,20 @@ public class MatchService(IPlayerRepository repository, Random random, ICapPubli
         return player.Opponent;
     }
 
+    public async Task DisconnectPlayer(string id)
+    {
+        Player player = await repository.GetPlayerById(id);
+
+        if (player.Opponent == null)
+        {
+            await repository.RemovePlayerFromQueue(player.Id);
+        }
+        else
+        {
+            await repository.RemovePlayer(player.Id);
+            await repository.RemovePlayer(player.Opponent.Id);
+            await publisher.PublishAsync("PlayerDisconnected", player.Opponent.Id);
+        }
+    }
+
 }

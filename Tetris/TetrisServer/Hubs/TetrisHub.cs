@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using System;
+using System.Threading.Tasks;
 using TetrisServer.Data.Entities;
 using TetrisServer.Service;
 
@@ -17,6 +18,13 @@ public class TetrisHub(MatchService matchService) : Hub
         await matchService.JoinQueue(Context.ConnectionId, name);
 
         await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        await matchService.DisconnectPlayer(Context.ConnectionId);
+
+        await base.OnDisconnectedAsync(exception);
     }
 
     public async Task Ready()
