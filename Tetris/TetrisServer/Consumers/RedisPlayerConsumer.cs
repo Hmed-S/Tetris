@@ -37,4 +37,10 @@ public class RedisPlayerConsumer(MatchService matchservice, IHubContext<TetrisHu
         await tetrisHub.Clients.Client(opponent).SendAsync("OpponentDisconnected");
     }
 
+    [CapSubscribe("Quit")]
+    public async void OnQuit(string opponent)
+    {
+        await tetrisHub.Clients.Client(opponent).SendAsync("Quit");
+    }
+
 }

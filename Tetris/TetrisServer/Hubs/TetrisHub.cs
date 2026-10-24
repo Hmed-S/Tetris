@@ -9,7 +9,6 @@ namespace TetrisServer.Hubs;
 
 public class TetrisHub(MatchService matchService) : Hub
 {
-
     public override async Task OnConnectedAsync()
     {
         HttpContext httpContext = Context.GetHttpContext();
@@ -71,9 +70,7 @@ public class TetrisHub(MatchService matchService) : Hub
 
     public async Task QuitGame()
     {
-        Player opponent = await matchService.GetOpponentByPlayerId(Context.ConnectionId);
-
-        await Clients.Client(opponent.Id).SendAsync("Quit");
+        await matchService.Quit(Context.ConnectionId);
     }
 
 }
