@@ -1,17 +1,19 @@
+using DotNetCore.CAP.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Newtonsoft;
+using System;
+using System.Net;
 using TetrisServer.Consumers;
 using TetrisServer.Data;
 using TetrisServer.Hubs;
-using StackExchange.Redis.Extensions.Newtonsoft;
 using TetrisServer.Service;
-using DotNetCore.CAP.Serialization;
 using TetrisServer.Utill;
-using System;
 
 namespace TetrisServer
 {
@@ -48,10 +50,31 @@ namespace TetrisServer
                 cap.UseInMemoryStorage();
             });
 
-            services.AddSignalR(config =>
-            {
-                config.EnableDetailedErrors = true;
-            });
+            services.AddSignalR()
+                    .AddStackExchangeRedis(o =>
+                    {
+                        o.ConnectionFactory = async writer =>
+                        {
+                            var config = new ConfigurationOptions
+                            {
+                                AbortOnConnectFail = false
+                            };
+                            config.EndPoints.Add(IPAddress.Loopback, 0);
+                            config.SetDefaultPorts();
+                            var connection = await ConnectionMultiplexer.ConnectAsync(config, writer);
+                            connection.ConnectionFailed += (_, e) =>
+                            {
+                                Console.WriteLine("Connection to Redis failed.");
+                            };
+
+                            if (!connection.IsConnected)
+                            {
+                                Console.WriteLine("Did not connect to Redis.");
+                            }
+
+                            return connection;
+                        };
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
