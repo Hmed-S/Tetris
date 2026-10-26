@@ -79,25 +79,27 @@ public partial class HomePage : Page
 
         playerBoard.PauseButton.Visibility = Visibility.Collapsed;
         opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
+        opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
 
         opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
 
         playerBoard.PlayerNameLabel.Visibility = Visibility.Visible;
         playerBoard.PlayerNameLabel.Content = PlayerNameInput.Text;
-       
-        ConfigureBoardEvents(playerBoard, _engine.Game.Player);        
+
+        ConfigureBoardEvents(playerBoard, _engine.Game.Player);
 
         playerBoard.PauseButton.Visibility = Visibility.Collapsed;
         opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
         playerBoard.GameLoop += _engine.Drop;
         opponentBoard.GameLoop += _engine.OpponentDrop;
+        playerBoard.Quit += _engine.Quit;
 
         GamePage gamePage = new (playerBoard, opponentBoard);
 
         _engine.Game.OnMatchFound += gamePage.ShowOpponentBoard;
 
         playerBoard.ReadyAction += _engine.Ready;
-       
+
 
         _engine.Game.OnBothReady += () =>
         {
@@ -128,7 +130,6 @@ public partial class HomePage : Page
             {
                 Dispatcher.Invoke(() =>
                 {
-                    opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
                     opponentBoard.PlayerNameLabel.Visibility = Visibility.Visible;
                     opponentBoard.PlayerNameLabel.Content = _engine.Game.Opponent.Name;
                     opponentBoard.ReadyLabel.Visibility = Visibility.Visible;

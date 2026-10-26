@@ -11,6 +11,7 @@ public partial class GamePage : Page
 {
     private GameBoard _playerBoard;
     private GameBoard _opponentBoard;
+
     public GamePage(GameBoard playerBoard, GameBoard opponentBoard)
     {
         _playerBoard = playerBoard;
@@ -18,11 +19,12 @@ public partial class GamePage : Page
 
         InitializeComponent();
 
+        _playerBoard.GameOver += (object sender, EventArgs e) => NavigationService.GoBack();
+
         MainGrid.Children.Add(_playerBoard);
         MainGrid.Children.Add(_opponentBoard);
 
         Grid.SetColumn(playerBoard, 0);
-       
     }
 
     public GamePage(GameBoard playerBoard)

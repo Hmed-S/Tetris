@@ -106,12 +106,20 @@ public partial class GameBoard : UserControl
 
     public void HandleGameover()
     {
-        _timer.Stop();
-        Window.GetWindow(this).KeyDown -= KeyDownControls;
-        Window.GetWindow(this).KeyUp -= KeyUpControls;
-        PauseButton.IsEnabled = false;
-        GameOverLabel.Visibility = Visibility.Visible;
-        QuitButton.Content = "Main Menu";
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() =>
+                {
+                    _timer.Stop();
+                    Window.GetWindow(this).KeyDown -= KeyDownControls;
+                    Window.GetWindow(this).KeyUp -= KeyUpControls;
+                    PauseButton.IsEnabled = false;
+                    GameOverLabel.Visibility = Visibility.Visible;
+                    QuitButton.Content = "Main Menu";
+                });
+
+        }
+
     }
 
     private void PauseTimer(object sender, RoutedEventArgs e)

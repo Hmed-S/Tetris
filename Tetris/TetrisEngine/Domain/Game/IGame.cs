@@ -15,6 +15,6 @@ public interface IGame
     public abstract static IGame Start(GameMode gameMode, IPlayer player);
     public abstract static IGame GetGame();
     public void Quit();
-    void Over();
+    public void Over();
 
 }

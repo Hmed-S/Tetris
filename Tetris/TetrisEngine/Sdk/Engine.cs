@@ -91,11 +91,12 @@ public class Engine
     private void SetServerEvents()
     {
         Server.OnReady += _game.Opponent.Ready;
-
         Server.OnRotateRight += _game.Opponent.RotateRight;
         Server.OnRotateLeft += _game.Opponent.RotateLeft;
         Server.OnMoveLeft += _game.Opponent.MoveLeft;
         Server.OnMoveRight += _game.Opponent.MoveRight;
+        Server.OnQuit += _game.Opponent.Quit;
+        Server.OnDisconnected += _game.Over;
     }
 
     private void InitServer()
@@ -184,8 +185,9 @@ public class Engine
             }
         });
 
-        _game.Player.OnReady.Insert(0, () => Server.NotifyReady());
+        _game.Player.OnReady.Insert(0, ()=> Server.NotifyReady());
 
+        _game.OnGameOver.Insert(0, ()=> Server.NotifyQuit());
     }
 
     public async Task<Game> StartMultiPlayerGame(int rowCount, int columnCount, string name)

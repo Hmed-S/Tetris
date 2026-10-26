@@ -10,6 +10,8 @@ public interface ITetrisServer
     public event Action OnRotateLeft;
     public event Action OnMoveLeft;
     public event Action OnMoveRight;
+    public event Action OnDisconnected;
+    public event Action OnQuit;
 
     public void Listen();
     public Task FindMatch();
@@ -19,5 +21,5 @@ public interface ITetrisServer
     public Task NotifyRotateLeft();
     public Task NotifyMoveLeft();
     public Task NotifyMoveRight();
-
+    public Task NotifyQuit();
 }

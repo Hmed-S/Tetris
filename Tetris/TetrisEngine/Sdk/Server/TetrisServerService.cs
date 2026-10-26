@@ -12,6 +12,8 @@ public class TetrisServerService(HubConnection _hubConnection) : ITetrisServer
     public event Action OnRotateLeft;
     public event Action OnMoveLeft;
     public event Action OnMoveRight;
+    public event Action OnDisconnected;
+    public event Action OnQuit;
 
     private bool isConnected => _hubConnection.State == HubConnectionState.Connected;
 
@@ -33,6 +35,8 @@ public class TetrisServerService(HubConnection _hubConnection) : ITetrisServer
         _hubConnection.On("RotateLeft", () => OnRotateLeft?.Invoke());
         _hubConnection.On("MoveLeft", () => OnMoveLeft?.Invoke());
         _hubConnection.On("MoveRight", () => OnMoveRight?.Invoke());
+        _hubConnection.On("OpponentDisconnected", () => OnDisconnected.Invoke());
+        _hubConnection.On("Quit", () => OnQuit.Invoke());
     }
 
     public async Task NotifyReady() => await _hubConnection.SendAsync("Ready");
@@ -41,5 +45,6 @@ public class TetrisServerService(HubConnection _hubConnection) : ITetrisServer
     public async Task NotifyRotateLeft() => await _hubConnection.SendAsync("RotateLeft");
     public async Task NotifyMoveLeft() => await _hubConnection.SendAsync("MoveLeft");
     public async Task NotifyMoveRight() => await _hubConnection.SendAsync("MoveRight");
+    public async Task NotifyQuit() => await _hubConnection.SendAsync("QuitGame");
 
 }
