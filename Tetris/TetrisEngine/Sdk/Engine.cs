@@ -107,6 +107,7 @@ public class Engine
         Server.OnMoveRight += _game.Opponent.MoveRight;
         Server.OnQuit += _game.Opponent.Quit;
         Server.OnDisconnected += () =>_game.Over(_game.Opponent);
+        Server.OnDisconnected += () => Game.Opponent.Disconnected = true;
     }
 
     private void InitServer()

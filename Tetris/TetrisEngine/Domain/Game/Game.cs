@@ -1,5 +1,4 @@
-﻿using System.Data;
-using TetrisEngine.Domain.Game.Player;
+﻿using TetrisEngine.Domain.Game.Player;
 
 namespace TetrisEngine.Domain.Game;
 

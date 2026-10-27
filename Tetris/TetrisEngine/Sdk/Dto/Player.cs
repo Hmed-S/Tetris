@@ -97,6 +97,20 @@ public class Player
             OnQuit?.Invoke();
         }
     }
+    private bool _disconnected;
+    public bool Disconnected 
+    { 
+        get
+        {
+            return _disconnected;
+        }
+        set
+        {
+            _disconnected = value;
+            if(_disconnected)
+            OnDisconnected?.Invoke();
+        }
+    }
 
     public event Action OnReady;
     public event Action<Tetromino, Tetromino> OnTetrominoPositionChange;
@@ -105,5 +119,6 @@ public class Player
     public event Action<int> OnLevelChange;
     public event Action<int> OnLineCountChange;
     public event Action OnQuit;
+    public event Action OnDisconnected;
 
 }

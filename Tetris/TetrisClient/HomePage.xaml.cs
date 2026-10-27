@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using TetrisClient.Controls;
@@ -133,11 +134,24 @@ public partial class HomePage : Page
                     opponentBoard.ReadyLabel.Visibility = Visibility.Visible;
                     _engine.Game.Opponent.OnQuit += gamePage.HideOpponentBoard;
 
-                    playerBoard.Dispatcher.Invoke(() =>
+                    _engine.Game.Opponent.OnQuit += () =>
                     {
-                        playerBoard.GameOverLabel.Content =
-                            $"{_engine.Game.Opponent.Name} Quit";
-                    });
+                        playerBoard.Dispatcher.Invoke(() =>
+                        {
+                          playerBoard.GameOverLabel.Text =
+                                $"{_engine.Game.Opponent.Name} Quit";
+                        });
+                    };
+
+                    _engine.Game.Opponent.OnDisconnected += () =>
+                    {
+                        playerBoard.Dispatcher.Invoke(() =>
+                        {
+                            playerBoard.GameOverLabel.Text =
+                                  $"Connection lost to {_engine.Game.Opponent.Name}";
+                        });
+                    };
+
                 });
             }
 

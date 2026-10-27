@@ -55,7 +55,20 @@
                 <local:TetrisMenuButton Grid.Row="4" x:Name="ReadyButton" Content="Ready" HorizontalAlignment="Center" VerticalAlignment="Top" Focusable="False" Click="ReadyClick"/>
             </Grid>
         </Grid>
-        <Label Name="GameOverLabel" Content="Game Over" Visibility="Hidden" HorizontalAlignment="Center" Background="#FF001428" Foreground="White" Margin="0,157,0,0" VerticalAlignment="Top" Height="43" Width="138" FontSize="24"/>
 
+        <TextBlock Name="GameOverLabel"
+           Text="Game Over"
+           Visibility="Hidden"
+           HorizontalAlignment="Center"
+           Background="#FF001428"
+           Foreground="White"
+           Margin="0,157,0,0"
+           VerticalAlignment="Top"
+           Height="43"
+           Width="138"
+           FontSize="14"
+           TextWrapping="Wrap"
+           TextAlignment="Center"
+           />
     </Grid>
 </UserControl>
