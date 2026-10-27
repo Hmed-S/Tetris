@@ -51,7 +51,7 @@ public class Game : IGame
         set;
     }
 
-    public List<Action> OnGameOver { get; } = [];
+    public List<Action<IPlayer>> OnGameOver { get; } = [];
 
     public List<Action> OnBothReady { get; } = [];
 
@@ -90,18 +90,18 @@ public class Game : IGame
         }
     }
 
-    public void Quit()
+    public void Quit(IPlayer player)
     {
         GameState = GameState.Quit;
         SetGameOverPlayer();
-        OnGameOver.ForEach(onGameOver => onGameOver());
+        OnGameOver.ForEach(onGameOver => onGameOver(player));
     }
 
-    public void Over()
+    public void Over(IPlayer player)
     {
         GameState = GameState.GameOver;
         SetGameOverPlayer();
-        OnGameOver.ForEach(onGameOver => onGameOver());
+        OnGameOver.ForEach(onGameOver => onGameOver(player));
     }
     
 }

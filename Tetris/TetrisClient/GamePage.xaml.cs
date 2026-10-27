@@ -53,4 +53,15 @@ public partial class GamePage : Page
         Grid.SetColumn(_opponentBoard, 1);
     }
 
+    public void HideOpponentBoard()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(() => HideOpponentBoard());
+            return;
+        }
+
+        _opponentBoard.Visibility = Visibility.Collapsed;
+    }
+
 }

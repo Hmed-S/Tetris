@@ -23,8 +23,6 @@ public class TetrisServerService(HubConnection _hubConnection) : ITetrisServer
         {
             await _hubConnection.StartAsync();
         }
-
-        
     }
 
     public void Listen()

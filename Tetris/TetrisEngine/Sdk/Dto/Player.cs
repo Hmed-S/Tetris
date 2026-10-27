@@ -79,7 +79,22 @@ public class Player
         set 
         {
             _isReady = value;
+            if(IsReady)
             OnReady?.Invoke();
+        }
+    }
+    private bool _quit;
+    public bool Quit 
+    { 
+        get
+        {
+            return _quit;
+        }
+        set
+        {
+            _quit = value;
+            if (IsReady)
+            OnQuit?.Invoke();
         }
     }
 
@@ -89,5 +104,6 @@ public class Player
     public event Action<int> OnScoreChange;
     public event Action<int> OnLevelChange;
     public event Action<int> OnLineCountChange;
+    public event Action OnQuit;
 
 }

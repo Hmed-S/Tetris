@@ -42,7 +42,17 @@ public class Engine
     
     private void SetGameEvents()
     {
-        _game.OnGameOver.Add(() => { Game.IsOver = true; Game.State = (_game.GameState == DomainGameState.GameOver) ? GameState.GameOver : GameState.Quit; });
+        _game.OnGameOver.Add((player) =>
+        {
+            Game.IsOver = true; 
+            Game.State = (_game.GameState == DomainGameState.GameOver) ? GameState.GameOver : GameState.Quit;
+            
+            Game.Player.Quit = player.Name.Value == Game.Player.Name && _game.GameState == DomainGameState.Quit;
+            
+            if(_game.Mode == GameMode.MultiPlayer)
+            Game.Opponent.Quit = player.Name.Value == Game?.Opponent.Name && _game.GameState == DomainGameState.Quit;
+
+        });
         _game.OnBothReady.Add(()=> { Game.BothReady = true; });
     }
 
@@ -96,7 +106,7 @@ public class Engine
         Server.OnMoveLeft += _game.Opponent.MoveLeft;
         Server.OnMoveRight += _game.Opponent.MoveRight;
         Server.OnQuit += _game.Opponent.Quit;
-        Server.OnDisconnected += _game.Over;
+        Server.OnDisconnected += () =>_game.Over(_game.Opponent);
     }
 
     private void InitServer()
@@ -187,7 +197,11 @@ public class Engine
 
         _game.Player.OnReady.Insert(0, ()=> Server.NotifyReady());
 
-        _game.OnGameOver.Insert(0, ()=> Server.NotifyQuit());
+        _game.OnGameOver.Insert(0, (player) =>
+        {
+            if (player.Name.Value != _game.Opponent.Name.Value) Server.NotifyQuit(); // todo: Only notify server when main player quits.
+            
+        });
     }
 
     public async Task<Game> StartMultiPlayerGame(int rowCount, int columnCount, string name)

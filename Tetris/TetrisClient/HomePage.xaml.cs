@@ -97,7 +97,6 @@ public partial class HomePage : Page
         GamePage gamePage = new (playerBoard, opponentBoard);
 
         _engine.Game.OnMatchFound += gamePage.ShowOpponentBoard;
-
         playerBoard.ReadyAction += _engine.Ready;
 
 
@@ -119,7 +118,6 @@ public partial class HomePage : Page
             playerBoard.StartGameLoop();
             opponentBoard.StartGameLoop();
 
-
         };
 
         _engine.Game.OnMatchFound += () =>
@@ -133,8 +131,14 @@ public partial class HomePage : Page
                     opponentBoard.PlayerNameLabel.Visibility = Visibility.Visible;
                     opponentBoard.PlayerNameLabel.Content = _engine.Game.Opponent.Name;
                     opponentBoard.ReadyLabel.Visibility = Visibility.Visible;
+                    _engine.Game.Opponent.OnQuit += gamePage.HideOpponentBoard;
+
+                    playerBoard.Dispatcher.Invoke(() =>
+                    {
+                        playerBoard.GameOverLabel.Content =
+                            $"{_engine.Game.Opponent.Name} Quit";
+                    });
                 });
-                return;
             }
 
         };

@@ -9,12 +9,12 @@ public interface IGame
     public GameMode Mode { get; init; }
     public GameState GameState { get; set; }
 
-    public List<Action> OnGameOver { get; }
+    public List<Action<IPlayer>> OnGameOver { get; }
     public List<Action> OnBothReady { get; }
 
     public abstract static IGame Start(GameMode gameMode, IPlayer player);
     public abstract static IGame GetGame();
-    public void Quit();
-    public void Over();
+    public void Quit(IPlayer player);
+    public void Over(IPlayer player);
 
 }

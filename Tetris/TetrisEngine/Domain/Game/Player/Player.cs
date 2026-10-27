@@ -73,7 +73,7 @@ public class Player : IPlayer
 
         if (Board.IsToppedOut(CurrentTetromino))
         {
-            Game.Over();
+            Game.Over(this);
         }
     }
 
@@ -141,7 +141,7 @@ public class Player : IPlayer
 
     public virtual void Quit()
     {
-        Game.Quit();
+        Game.Quit(this);
     }
 
     public virtual void Ready()
