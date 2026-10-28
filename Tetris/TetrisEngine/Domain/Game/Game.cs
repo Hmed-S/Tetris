@@ -44,6 +44,7 @@ public class Game : IGame
             }
         }
     }
+    public IPlayer Winner { get; set; }
     public GameState GameState
     {
         get;
@@ -100,6 +101,16 @@ public class Game : IGame
     {
         GameState = GameState.GameOver;
         SetGameOverPlayer();
+
+        if (Mode == GameMode.MultiPlayer)
+        {
+            if (player.Id == Opponent.Id)
+            {
+                Winner = Player;
+            }
+            else if (player.Id == Player.Id) Winner = Opponent;
+        }
+
         OnGameOver.ForEach(onGameOver => onGameOver(player));
     }
     

@@ -6,6 +6,7 @@ public interface IGame
 {
     public IPlayer Player { get; set; }
     public IPlayer Opponent { get; set; }
+    public IPlayer Winner { get; set; }
     public GameMode Mode { get; init; }
     public GameState GameState { get; set; }
 

@@ -112,6 +112,8 @@ public class Player
         }
     }
 
+    public bool Won { get; set; }
+
     public event Action OnReady;
     public event Action<Tetromino, Tetromino> OnTetrominoPositionChange;
     public event Action<Tetromino> OnPreviewChange;

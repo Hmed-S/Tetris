@@ -135,6 +135,18 @@ public partial class HomePage : Page
                     _engine.Game.Opponent.OnQuit += gamePage.HideOpponentBoard;
                     _engine.Game.Opponent.OnDisconnected += gamePage.HideOpponentBoard;
 
+
+                    _engine.Game.OnGameOver += () =>
+                    {
+                        playerBoard.Dispatcher.Invoke(()=>
+                        {
+                            if (_engine.Game.Player.Won)
+                                playerBoard.GameOverLabel.Text = "You won!";
+                            if (_engine.Game.Opponent.Won)
+                                playerBoard.GameOverLabel.Text = "You lose!";
+                        });
+                    };
+
                     _engine.Game.Opponent.OnQuit += () =>
                     {
                         playerBoard.Dispatcher.Invoke(() =>

@@ -7,6 +7,7 @@ public class GameOverPlayer(
     
     ): IPlayer
 {
+    public Guid Id { get; } = player.Id;
     public IGame Game { get; set; } = player.Game;
     public Name Name { get; set; } = player.Name;
     public Tetromino CurrentTetromino { get; set; } = player.CurrentTetromino;

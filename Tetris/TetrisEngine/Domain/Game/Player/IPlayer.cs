@@ -4,6 +4,7 @@ namespace TetrisEngine.Domain.Game.Player;
 
 public interface IPlayer
 {
+    public Guid Id { get; }
     public IGame Game { get; set; }
     public Name Name { get; set; }
     public Tetromino CurrentTetromino { get; set; }

@@ -7,6 +7,7 @@ namespace TetrisEngine.Domain.Game.Player;
 
 public class Player : IPlayer
 {
+    public Guid Id { get; private set; }
     public Name Name { get; set; }
     public Tetromino CurrentTetromino { get; set; }
     public Tetromino Preview { get; set; }
@@ -31,6 +32,7 @@ public class Player : IPlayer
 
     public Player(int seed, Random random, TetrisBoard board, Score score, Level level, Interval interval)
     {
+        Id = Guid.NewGuid();
         Seed = seed;
         Random = random;
         Board = board;
@@ -43,6 +45,7 @@ public class Player : IPlayer
 
     public Player(Name name, TetrisBoard board, Score score, Level level, Interval interval)
     {
+        Id = Guid.NewGuid();
         Name = name;
         Board = board;
         Score = score;
