@@ -83,6 +83,7 @@ public partial class HomePage : Page
         opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
 
         opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
+        playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
 
         playerBoard.PlayerNameLabel.Visibility = Visibility.Visible;
         playerBoard.PlayerNameLabel.Content = PlayerNameInput.Text;
@@ -125,14 +126,14 @@ public partial class HomePage : Page
         {
             ConfigureBoardEvents(opponentBoard, _engine.Game.Opponent);
 
-            if (!Dispatcher.CheckAccess())
-            {
                 Dispatcher.Invoke(() =>
                 {
                     opponentBoard.PlayerNameLabel.Visibility = Visibility.Visible;
                     opponentBoard.PlayerNameLabel.Content = _engine.Game.Opponent.Name;
                     opponentBoard.ReadyLabel.Visibility = Visibility.Visible;
+                    playerBoard.ReadyButton.Visibility = Visibility.Visible;
                     _engine.Game.Opponent.OnQuit += gamePage.HideOpponentBoard;
+                    _engine.Game.Opponent.OnDisconnected += gamePage.HideOpponentBoard;
 
                     _engine.Game.Opponent.OnQuit += () =>
                     {
@@ -140,6 +141,7 @@ public partial class HomePage : Page
                         {
                           playerBoard.GameOverLabel.Text =
                                 $"{_engine.Game.Opponent.Name} Quit";
+                          playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
                         });
                     };
 
@@ -149,11 +151,12 @@ public partial class HomePage : Page
                         {
                             playerBoard.GameOverLabel.Text =
                                   $"Connection lost to {_engine.Game.Opponent.Name}";
+                            playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
                         });
                     };
 
                 });
-            }
+            
 
         };
 

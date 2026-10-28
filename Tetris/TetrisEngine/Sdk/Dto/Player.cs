@@ -93,7 +93,7 @@ public class Player
         set
         {
             _quit = value;
-            if (IsReady)
+            if (_quit)
             OnQuit?.Invoke();
         }
     }

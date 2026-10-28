@@ -47,10 +47,10 @@ public class Engine
             Game.IsOver = true; 
             Game.State = (_game.GameState == DomainGameState.GameOver) ? GameState.GameOver : GameState.Quit;
             
-            Game.Player.Quit = player.Name.Value == Game.Player.Name && _game.GameState == DomainGameState.Quit;
+            Game.Player.Quit = player.Name.Value == _game.Player.Name.Value && _game.GameState == DomainGameState.Quit;
             
-            if(_game.Mode == GameMode.MultiPlayer)
-            Game.Opponent.Quit = player.Name.Value == Game?.Opponent.Name && _game.GameState == DomainGameState.Quit;
+            if(_game.Mode == GameMode.MultiPlayer && _game.Opponent != null)
+            Game.Opponent.Quit = player.Name.Value == _game.Opponent.Name.Value && _game.GameState == DomainGameState.Quit;
 
         });
         _game.OnBothReady.Add(()=> { Game.BothReady = true; });
@@ -200,7 +200,8 @@ public class Engine
 
         _game.OnGameOver.Insert(0, (player) =>
         {
-            if (player.Name.Value != _game.Opponent.Name.Value) Server.NotifyQuit(); // todo: Only notify server when main player quits.
+            if (player.Name.Value == _game.Player.Name.Value && _game.GameState == DomainGameState.Quit) Server.NotifyQuit();
+            //if (player.Name.Value != _game.Opponent.Name.Value) Server.NotifyQuit(); // todo: Only notify server when main player quits.
             
         });
     }
