@@ -1,12 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TetrisEngine.Domain.Game.Player;
+﻿namespace TetrisEngine.Domain.Game.Player;
 
 public readonly struct Name
-    (
-    [Required(AllowEmptyStrings = false)] string value
-    )
 {
- public readonly string Value { get => value; }
-    
+    public readonly string Value { get; }
+
+    public Name(string value)
+    {
+        if(string.IsNullOrEmpty(value))
+            throw new ArgumentException("Name can not be null or emtpy.");
+        Value = value;
+    }
 }

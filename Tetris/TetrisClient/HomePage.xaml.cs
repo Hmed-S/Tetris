@@ -83,6 +83,13 @@ public partial class HomePage : Page
             SinglePlayerButton.IsEnabled = true;
             return;
         }
+        catch(ArgumentException ae)
+        {
+            ErrorLabel.Content = ae.Message;
+            ErrorLabel.Visibility = Visibility.Visible;
+            SinglePlayerButton.IsEnabled = true;
+            return;
+        }
 
         GameBoard playerBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
         GameBoard opponentBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
