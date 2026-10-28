@@ -21,6 +21,7 @@
                Height="56"/>
 
         <local:TetrisMenuButton
+            x:Name="SinglePlayerButton"
             Content="Singleplayer"
             HorizontalAlignment="Center"
             Margin="0,101,0,0" VerticalAlignment="Top"
@@ -44,6 +45,18 @@
             Foreground="White"
             Height="38"
             FontSize="20" Margin="0,157,0,0"
+            />
+
+
+        <Label
+            Visibility="Collapsed"
+            Name="ErrorLabel"
+            Content="name:"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Foreground="Red"
+            Height="38"
+            FontSize="20" Margin="0,273,0,0"
             />
 
         <TextBox

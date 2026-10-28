@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using TetrisClient.Controls;
@@ -70,7 +70,19 @@ public partial class HomePage : Page
 
     private async void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
     {
-        await _engine.StartMultiPlayerGame(20, 10, PlayerNameInput.Text);
+        SinglePlayerButton.IsEnabled = false;
+        try
+        {
+            await _engine.StartMultiPlayerGame(20, 10, PlayerNameInput.Text);
+        }
+        catch(HttpRequestException)
+        {
+            ErrorLabel.Content = "Failed to connect to the server, try again later.";
+            ErrorLabel.Visibility = Visibility.Visible;
+            _engine.Quit();
+            SinglePlayerButton.IsEnabled = true;
+            return;
+        }
 
         GameBoard playerBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
         GameBoard opponentBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
