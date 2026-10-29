@@ -1,5 +1,4 @@
-﻿using TetrisEngine.Sdk;
-using TetrisEngine.Utility;
+﻿using TetrisEngine.Utility;
 
 namespace TetrisEngine.Domain.Board;
 
