@@ -3,6 +3,7 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net10.0-windows</TargetFramework>
+		<AssemblyName>Hmed-S-Tetris</AssemblyName>
         <UseWPF>true</UseWPF>
     </PropertyGroup>
     
