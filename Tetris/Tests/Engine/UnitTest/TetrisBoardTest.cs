@@ -2,7 +2,7 @@
 
 namespace TetrisEngine.Tests.Domain.Board;
 
-public class TetrisBoardTests
+public class TetrisBoardTest
 {
     private static TetrisBoard CreateBoard(int height = 10, int width = 10)
         => new(height, width);

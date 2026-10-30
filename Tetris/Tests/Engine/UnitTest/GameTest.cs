@@ -1,28 +1,19 @@
-﻿using System.Reflection;
-using TetrisEngine.Domain.Board;
+﻿using TetrisEngine.Domain.Board;
 using TetrisEngine.Domain.Game;
 using TetrisEngine.Domain.Game.Player;
 using TetrisEngine.Domain.Game.Player.Factory;
 
 namespace TetrisEngine.Tests.UnitTest;
 
-public class GameTests
+public class GameTest
 {
     private readonly PlayerFactory _playerFactory = new();
 
-    private static readonly FieldInfo GameField =
-        typeof(Game).GetField(
-            "_game",
-            BindingFlags.Static | BindingFlags.NonPublic)!;
-
-    public GameTests()
+    public GameTest()
     {
-        ResetStaticGame();
-    }
+        IGame game = Game.GetGame();
 
-    private static void ResetStaticGame()
-    {
-        GameField.SetValue(null, null);
+        game?.Quit(game.Player);
     }
 
     private IPlayer CreatePlayer(

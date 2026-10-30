@@ -20,7 +20,7 @@ public class GameOverPlayer(
     public Level Level { get; set; } = player.Level;
     public Lines Lines { get; set; } = player.Lines;
     public Interval Interval { get; set; } = player.Interval;
-    public List<Action> OnReady { get; set; } = [];
+    public List<Action> OnReady { get; set; } = player.OnReady;
 
     public List<Action<int>> OnLineClear { get; set; } = player.OnLineClear;
     public List<Action<PositionChangedEvent>> OnTetrominoPositionChange { get; set; } = player.OnTetrominoPositionChange;
