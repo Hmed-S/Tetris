@@ -13,6 +13,7 @@ public class Game : IGame
         set
         {
             field = value;
+            if(Mode == GameMode.MultiPlayer)
             value.OnReady.Add(CheckForBothReady);
         }
     }

@@ -17,6 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{58D013
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F8A2C336-863F-47E5-824F-97F41CBE52CA}"
 	ProjectSection(SolutionItems) = preProject
+		coverage.sh = coverage.sh
 		stryker.sh = stryker.sh
 	EndProjectSection
 EndProject
