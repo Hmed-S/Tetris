@@ -14,7 +14,7 @@ public class Game
         set
         {
             _opponent = value;
-            OnMatchFound();
+            OnMatchFound?.Invoke();
         }
     }
 
@@ -32,7 +32,7 @@ public class Game
         set
         {
             _bothReady = value;
-            OnBothReady.Invoke();
+            OnBothReady?.Invoke();
         }
     }
 

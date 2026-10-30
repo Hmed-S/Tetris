@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using TetrisClient.Controls;
 using TetrisEngine.Sdk;
+using TetrisEngine.Sdk.Server;
 
 namespace TetrisClient;
 
@@ -15,11 +16,14 @@ namespace TetrisClient;
 /// </summary>
 public partial class HomePage : Page
 {
-    private Engine _engine = new();
+    private Engine _engine;
 
     public HomePage()
     {
         InitializeComponent();
+
+        ITetrisServer tetrisServer = new TetrisServerService("http://localhost:5000/tetrisHub");
+        _engine = new Engine(tetrisServer);
     }
 
     public void ConfigureBoardEvents(GameBoard gameBoard, Player player)

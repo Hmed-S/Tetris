@@ -1,6 +1,6 @@
 ﻿using TetrisEngine.Domain.Board;
 
-namespace TetrisEngine.Tests.Domain.Board;
+namespace UnitTest.Domain;
 
 public class TetrisBoardTest
 {

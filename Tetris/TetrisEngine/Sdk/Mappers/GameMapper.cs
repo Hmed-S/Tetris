@@ -1,36 +1,24 @@
 ﻿using DomainGame = TetrisEngine.Domain.Game.IGame;
+using DomainGameState = TetrisEngine.Domain.Game.GameState;
 
 namespace TetrisEngine.Sdk.Mappers;
 
 internal static class GameMapper
 {
 
+    private static GameState ConvertGameState(DomainGameState gameState) => gameState switch
+    {
+        DomainGameState.Playing => GameState.Playing,
+        DomainGameState.GameOver => GameState.GameOver,
+        _ => GameState.Quit
+    };
+
     public static Game ToDto(this DomainGame game)
     {
         return new Game
         {
-            Player = new Player
-            {
-                Name = game.Player.Name.Value,
-                Preview = game.Player.Preview.ToDto(),
-                CurrentTetromino = game.Player.CurrentTetromino.ToDto(),
-                Board = new Board
-                {
-                    ColumnCount = game.Player.Board.Width,
-                    RowCount = game.Player.Board.Height,
-                },
-                Interval = new Interval
-                {
-                    FastDropSeconds = game.Player.Interval.FastDrop.Seconds,
-                    FastDropMiliSeconds = game.Player.Interval.FastDrop.MiliSeconds,
-                    Seconds = game.Player.Interval.Seconds,
-                    MiliSeconds = game.Player.Interval.MiliSeconds,
-                },
-                Score = game.Player.Score.Value,
-                Level = game.Player.Level.Value,
-                LineCount = game.Player.Lines.Value,
-            },
-            State = GameState.Playing,
+            Player = game.Player.ToDto(),
+            State = ConvertGameState(game.GameState),
         };
     }
 

@@ -27,7 +27,7 @@ internal static class TetrominoMapper
             Color = ConvertColor(tetromino.Color),
             Islanded = tetromino.DropStatus == DropStatus.Landed,
             Shape = tetromino.Shape.Value,
-            Points = tetromino.Points.Select(point => new Points { Column = point.Column, Row = point.Row }).ToList(),
+            Points = [.. tetromino.Points.Select(point => new Points { Column = point.Column, Row = point.Row })],
         };
 
     }

@@ -3,7 +3,7 @@ using TetrisEngine.Domain.Game;
 using TetrisEngine.Domain.Game.Player;
 using TetrisEngine.Domain.Game.Player.Factory;
 
-namespace TetrisEngine.Tests.UnitTest;
+namespace UnitTest.Domain;
 
 public class GameTest
 {

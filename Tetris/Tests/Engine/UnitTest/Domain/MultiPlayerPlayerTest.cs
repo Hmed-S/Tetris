@@ -1,8 +1,9 @@
 ﻿using TetrisEngine.Domain.Board;
 using TetrisEngine.Domain.Game;
 using TetrisEngine.Domain.Game.Player;
+using TetrisEngine.Tests.UnitTest;
 
-namespace TetrisEngine.Tests.UnitTest;
+namespace UnitTest.Domain;
 
 public class MultiPlayerPlayerTest
 {

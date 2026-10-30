@@ -11,15 +11,16 @@ public interface ITetrisServer
     public event Action OnMoveLeft;
     public event Action OnMoveRight;
     public event Action OnDisconnected;
+    public event Action OnFastDroppedToggled;
     public event Action OnQuit;
 
-    public void Listen();
-    public Task FindMatch();
+    public Task FindMatch(string name);
     public Task NotifyReady();
-    public Task NotifyDrop();
     public Task NotifyRotateRight();
     public Task NotifyRotateLeft();
     public Task NotifyMoveLeft();
     public Task NotifyMoveRight();
     public Task NotifyQuit();
+    public Task NotifyFastDrop();
+
 }

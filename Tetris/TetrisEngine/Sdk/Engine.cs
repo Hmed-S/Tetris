@@ -1,25 +1,28 @@
 ﻿using TetrisEngine.Domain.Board;
 using TetrisEngine.Domain.Game;
 using DomainIPlayer = TetrisEngine.Domain.Game.Player.IPlayer;
-using DomainPlayer = TetrisEngine.Domain.Game.Player.Player;
 using DomainInterval = TetrisEngine.Domain.Game.Interval;
 using DomainIGame = TetrisEngine.Domain.Game.IGame;
 using DomainGame = TetrisEngine.Domain.Game.Game;
 using DomainGameState = TetrisEngine.Domain.Game.GameState;
 using TetrisEngine.Sdk.Mappers;
 using TetrisEngine.Sdk.Server;
-using Microsoft.AspNetCore.SignalR.Client;
 using TetrisEngine.Domain.Game.Player;
+using TetrisEngine.Domain.Game.Player.Factory;
 
 namespace TetrisEngine.Sdk;
 
 public class Engine
 {
     private DomainIGame _game = DomainGame.GetGame();
-    public ITetrisServer Server { get; set; }
     public Game Game { get; private set; }
+    private ITetrisServer Server { get; }
 
-    
+    public Engine(ITetrisServer tetrisServer)
+    {
+        Server = tetrisServer;
+    }
+
     private void SetPlayerEvents(DomainIPlayer player, Player dto)
     {
 
@@ -52,54 +55,37 @@ public class Engine
             if (_game.Mode == GameMode.MultiPlayer && _game.Opponent != null)
             {
                 Game.Opponent.Quit = player.Id == _game.Opponent.Id && _game.GameState == DomainGameState.Quit;
-                Game.Opponent.Won = _game.Winner.Id == _game.Opponent.Id;
-                Game.Player.Won = _game.Winner.Id == _game.Player.Id;
+                
+                if(_game.GameState == DomainGameState.GameOver)
+                {
+                    Game.Opponent.Won = _game.Winner.Id == _game.Opponent.Id;
+                    Game.Player.Won = _game.Winner.Id == _game.Player.Id;
+                }
+
             }
             Game.IsOver = true;
         });
         _game.OnBothReady.Add(()=> { Game.BothReady = true; });
     }
 
-    private void DoStartGame(int rowCount, int columnCount, string name = null, GameMode gameMode = GameMode.SinglePlayer)
+    private void DoStartGame(int rowCount, int columnCount, string name = "JohnDoe", GameMode gameMode = GameMode.SinglePlayer)
     {
         int seed = new Random().Next();
 
         // TODO: Make factory, or similar.
-        DomainIPlayer player = new DomainPlayer
-        (
-            seed,
-            new Random(seed),
+        IPlayerFactory factory = new PlayerFactory();
+
+        DomainIPlayer player = factory.CreatePlayer(
+            gameMode, seed, new Name(name),
             new TetrisBoard(rowCount, columnCount),
-            new Score(),
-            new Level(),
-            new DomainInterval()
-        );
-
-        if ( gameMode == GameMode.MultiPlayer)
-        {
-            player = new MultiPlayerPlayer
-                (
-                   new Name(name),
-                   new TetrisBoard(rowCount, columnCount),
-                   new Score(),
-                   new Level(),
-                   new DomainInterval()
-                );
-
-        }
+            new Score(), new Level(),
+            new DomainInterval());
 
         _game = DomainGame.Start(gameMode, player);
 
         Game = _game.ToDto();
         SetGameEvents();
         SetPlayerEvents(player, Game.Player);
-    }
-
-    public Game StartSinglePlayerGame(int rowCount, int columnCount)
-    {
-        DoStartGame(rowCount, columnCount);
-
-        return Game;
     }
 
     private void SetServerEvents()
@@ -114,34 +100,21 @@ public class Engine
         Server.OnDisconnected += () => Game.Opponent.Disconnected = true;
     }
 
-    private void InitServer()
-    {
-        IHubConnectionBuilder hubConnectionBuilder = new HubConnectionBuilder()
-             .WithUrl($"http://localhost:5000/tetrisHub?name={_game.Player.Name.Value}");
-
-        HubConnection hubConnection = hubConnectionBuilder.Build();
-
-        Server = new TetrisServerService(hubConnection);
-
-    }
-
     private void SetOpponent(string name, int seed)
     {
-        DomainIPlayer player = new MultiPlayerPlayer
-        (
-            new Name(name),
+        IPlayerFactory factory = new PlayerFactory();
+
+        DomainIPlayer player = factory.CreatePlayer(
+            _game.Mode, seed, new Name(name),
             new TetrisBoard(_game.Player.Board.Height, _game.Player.Board.Width),
-            new Score(),
-            new Level(),
-            new DomainInterval()
-        )
-        {
-            Seed = seed,
-            Random = new(seed)
-        };
+            new Score(), new Level(),
+            new DomainInterval());
+
+        player.Seed = seed;
+        player.Random = new Random(seed);
 
         _game.Player.Seed = seed;
-        _game.Player.Random = new(seed);
+        _game.Player.Random = new Random(seed);
 
         _game.Opponent = player;
 
@@ -151,32 +124,10 @@ public class Engine
             _game.Opponent.Init();
         });
 
-        Game.Opponent = new Player // todo, make player mapper
-        {
-            Name = _game.Opponent.Name.Value,
-            Preview = _game.Opponent.Preview.ToDto(),
-            CurrentTetromino = _game.Opponent.CurrentTetromino.ToDto(),
-            Board = new Board
-            {
-                ColumnCount = _game.Opponent.Board.Width,
-                RowCount = _game.Opponent.Board.Height,
-            },
-            Interval = new Interval
-            {
-                FastDropSeconds = _game.Opponent.Interval.FastDrop.Seconds,
-                FastDropMiliSeconds = _game.Opponent.Interval.FastDrop.MiliSeconds,
-                Seconds = _game.Opponent.Interval.Seconds,
-                MiliSeconds = _game.Opponent.Interval.MiliSeconds,
-            },
-            Score = _game.Opponent.Score.Value,
-            Level = _game.Opponent.Level.Value,
-            LineCount = _game.Opponent.Lines.Value,
-        };
+        Game.Opponent = _game.Opponent.ToDto();
 
-        SetGameEvents();
         SetPlayerEvents(_game.Opponent, Game.Opponent);
         SetServerEvents();
-
     }
 
     private void NotifyServer()
@@ -204,24 +155,24 @@ public class Engine
 
         _game.OnGameOver.Insert(0, (player) =>
         {
-            if (player.Id == _game.Player.Id && _game.GameState == DomainGameState.Quit) Server.NotifyQuit();
-            //if (player.Name.Value != _game.Opponent.Name.Value) Server.NotifyQuit(); // todo: Only notify server when main player quits.
-            
+            if (player.Id == _game.Player.Id && _game.GameState == DomainGameState.Quit) Server.NotifyQuit();  
         });
+    }
+
+    public Game StartSinglePlayerGame(int rowCount, int columnCount)
+    {
+        DoStartGame(rowCount, columnCount);
+
+        return Game;
     }
 
     public async Task<Game> StartMultiPlayerGame(int rowCount, int columnCount, string name)
     {
         DoStartGame(rowCount, columnCount, name, GameMode.MultiPlayer);
-
-        InitServer();
-
         NotifyServer();
 
         Server.OnMatchFound += SetOpponent;
-
-        Server.Listen();
-        await Server.FindMatch();
+        await Server.FindMatch(_game.Player.Name.Value);
 
         return Game;
     }
