@@ -16,7 +16,7 @@ public class Board
         set
         {
             _lastClearedLine = value;
-            OnLineClear.Invoke(_lastClearedLine);
+            OnLineClear?.Invoke(_lastClearedLine);
         } 
     }
     private List<int> _lastSwappedLines = [];
@@ -29,7 +29,7 @@ public class Board
         set
         {
             _lastSwappedLines = value;
-            OnRowSwap.Invoke(_lastSwappedLines[0], _lastSwappedLines[1]);
+            OnRowSwap?.Invoke(_lastSwappedLines[0], _lastSwappedLines[1]);
         }
     }
 

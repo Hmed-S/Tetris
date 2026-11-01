@@ -28,7 +28,7 @@ public class Engine
 
         player.OnTetrominoPositionChange.Add((position) => dto.CurrentTetromino = position.CurrentTetromino.ToDto());
         player.OnPreviewChange.Add((preview) => dto.Preview = preview.ToDto());
-        player.OnTetrominoPositionChange.Add((position) => dto.Board.Values = _game.Player.Board.Values);
+        player.OnTetrominoPositionChange.Add((position) => dto.Board.Values = (int[,])player.Board.Values.Clone());
         player.OnReady.Add(() => dto.IsReady = true);
 
         player.OnLevelChange.Add((level) => {

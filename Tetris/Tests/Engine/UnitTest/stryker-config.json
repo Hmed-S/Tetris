@@ -44,7 +44,7 @@
       "s3-region": "",
       "fallback-version": "master"
     },
-    "dashboard-url": "https://dashboard.stryker-mutator.io",
+    //"dashboard-url": "https://dashboard.stryker-mutator.io",
     "test-projects": [],
     "test-case-filter": "",
     "test-runner": null,

@@ -15,7 +15,7 @@ internal static class PlayerMapper
             {
                 ColumnCount = player.Board.Width,
                 RowCount = player.Board.Height,
-                Values = player.Board.Values
+                Values = (int[,])player.Board.Values.Clone()
             },
             Interval = new Interval
             {
