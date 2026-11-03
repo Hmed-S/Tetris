@@ -26,7 +26,7 @@ public class RedisPlayerRepository(IRedisDatabase redis) : IPlayerRepository
     public async Task AddToQueue(Player player)
     {
         await SavePlayer(player);
-        await redis.SortedSetAddAsync("Players", player.Id, player.TimeJoined.Microsecond);
+        await redis.SortedSetAddAsync("Players", player.Id, player.TimeJoined.Ticks);
     }
 
     public async Task<long> GetQueueLength()

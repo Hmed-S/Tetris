@@ -30,6 +30,8 @@ namespace TetrisServer
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            string redisConnectionString = Configuration.GetConnectionString("Redis");
+
             services.AddTransient<IPlayerRepository, RedisPlayerRepository>();
             services.AddTransient<RedisPlayerConsumer>();
             services.AddSingleton<Random>();
@@ -43,38 +45,39 @@ namespace TetrisServer
 
             services.AddCap(cap =>
             {
-                
-
-                cap.UseRedis("localhost:6379");
-
+                cap.UseRedis(redisConnectionString);
                 cap.UseInMemoryStorage();
             });
 
+
             services.AddSignalR()
-                    .AddStackExchangeRedis(o =>
-                    {
-                        o.ConnectionFactory = async writer =>
-                        {
-                            var config = new ConfigurationOptions
-                            {
-                                AbortOnConnectFail = false
-                            };
-                            config.EndPoints.Add(IPAddress.Loopback, 0);
-                            config.SetDefaultPorts();
-                            var connection = await ConnectionMultiplexer.ConnectAsync(config, writer);
-                            connection.ConnectionFailed += (_, e) =>
-                            {
-                                Console.WriteLine("Connection to Redis failed.");
-                            };
+                .AddStackExchangeRedis(redisConnectionString);
 
-                            if (!connection.IsConnected)
-                            {
-                                Console.WriteLine("Did not connect to Redis.");
-                            }
+            //services.AddSignalR()
+            //        .AddStackExchangeRedis(o =>
+            //        {
+            //            o.ConnectionFactory = async writer =>
+            //            {
+            //                var config = new ConfigurationOptions
+            //                {
+            //                    AbortOnConnectFail = false
+            //                };
+            //                config.EndPoints.Add(IPAddress.Loopback, 0);
+            //                config.SetDefaultPorts();
+            //                var connection = await ConnectionMultiplexer.ConnectAsync(config, writer);
+            //                connection.ConnectionFailed += (_, e) =>
+            //                {
+            //                    Console.WriteLine("Connection to Redis failed.");
+            //                };
 
-                            return connection;
-                        };
-                    });
+            //                if (!connection.IsConnected)
+            //                {
+            //                    Console.WriteLine("Did not connect to Redis.");
+            //                }
+
+            //                return connection;
+            //            };
+            //        });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
