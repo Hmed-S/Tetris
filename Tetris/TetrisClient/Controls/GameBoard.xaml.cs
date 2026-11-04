@@ -123,6 +123,15 @@ public partial class GameBoard : UserControl
     {
         _timer.IsEnabled = !_timer.IsEnabled;
         PauseButton.Content = _timer.IsEnabled? "Pause" : "Resume" ;
+
+        if (_timer.IsEnabled)
+        {
+            SetKeyEvents();
+        }
+        if (!_timer.IsEnabled) 
+        {
+            DisableControlls();
+        }
     }
 
     private void StopGame(object sender, RoutedEventArgs e)
@@ -162,6 +171,14 @@ public partial class GameBoard : UserControl
         window.KeyDown += KeyDownControls;
         window.KeyUp += KeyUpControls;
     }
+
+    private void DisableControlls()
+    {
+        var window = Window.GetWindow(this);
+        window.KeyDown -= KeyDownControls;
+        window.KeyUp -= KeyUpControls;
+    }
+
 
     private void KeyDownControls(object sender, KeyEventArgs e)
     {
