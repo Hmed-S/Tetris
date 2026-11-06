@@ -51,9 +51,13 @@ public partial class HomePage : Page
     private async void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
     {
         SinglePlayerButton.IsEnabled = false;
+
         try
         {
+            StartMultiPlayerGameButton.IsEnabled = false;
+            ErrorLabel.Visibility = Visibility.Collapsed;
             await _engine.StartMultiPlayerGame(20, 10, PlayerNameInput.Text);
+
         }
         catch (HttpRequestException)
         {
@@ -62,6 +66,7 @@ public partial class HomePage : Page
             ErrorLabel.Visibility = Visibility.Visible;
             _engine.Quit();
             SinglePlayerButton.IsEnabled = true;
+            StartMultiPlayerGameButton.IsEnabled = true;
             return;
         }
         catch (ArgumentException ae)
@@ -69,6 +74,7 @@ public partial class HomePage : Page
             ErrorLabel.Content = ae.Message;
             ErrorLabel.Visibility = Visibility.Visible;
             SinglePlayerButton.IsEnabled = true;
+            StartMultiPlayerGameButton.IsEnabled = true;
             return;
         }
 
