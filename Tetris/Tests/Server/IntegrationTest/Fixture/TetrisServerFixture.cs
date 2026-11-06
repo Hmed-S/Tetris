@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.TestHost;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
 using System.Net;
 using Testcontainers.Redis;
@@ -16,9 +14,9 @@ public class TetrisServerFixture : IAsyncLifetime
             .WithImage("redis:7-alpine")
             .Build();
 
-    private IHost _host;
+    private WebApplicationFactory<Program> _factory;
     private ConnectionMultiplexer _redisConnection;
-    public IServiceProvider Services => _host.Services;
+    public IServiceProvider Services => _factory.Services;
 
     public string RedisConnectionString { get; private set; }
 
@@ -52,21 +50,15 @@ public class TetrisServerFixture : IAsyncLifetime
         _redisConnection =
             await ConnectionMultiplexer.ConnectAsync(redisOptions);
 
-        _host = await new HostBuilder()
-            .ConfigureWebHost(webHost =>
+        _factory = new WebApplicationFactory<Program>()
+            .WithWebHostBuilder(webHost =>
             {
-                webHost.UseTestServer();
-
                 webHost.ConfigureAppConfiguration(
                     (context, configuration) =>
                     {
                         configuration.AddInMemoryCollection(settings);
                     });
-
-
-                webHost.UseStartup<Startup>();
-            })
-            .StartAsync();
+            });
     }
 
     public HubConnection CreateHubConnection(string name)
@@ -75,7 +67,7 @@ public class TetrisServerFixture : IAsyncLifetime
             .WithUrl($"http://localhost:5000/tetrisHub?name={name}", options =>
             {
                 options.HttpMessageHandlerFactory =
-                    handler => _host.GetTestServer().CreateHandler();
+                    handler => _factory.Server.CreateHandler();
             })
             .Build();
     }
@@ -93,10 +85,9 @@ public class TetrisServerFixture : IAsyncLifetime
 
     public async Task DisposeAsync()
     {
-        if (_host != null)
+        if (_factory != null)
         {
-            await _host.StopAsync();
-            _host.Dispose();
+            _factory.Dispose();
         }
 
         if (_redisConnection != null)
