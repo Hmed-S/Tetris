@@ -51,7 +51,6 @@
         <Frame Grid.Row="1" 
                x:Name="MainFrame" 
                NavigationUIVisibility="Hidden"
-               Source="HomePage.xaml"
                />
     </Grid>
 </Window>

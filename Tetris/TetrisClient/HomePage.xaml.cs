@@ -6,7 +6,6 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using TetrisClient.Controls;
 using TetrisEngine.Sdk;
-using TetrisEngine.Sdk.Server;
 
 namespace TetrisClient;
 
@@ -15,16 +14,14 @@ namespace TetrisClient;
 /// </summary>
 public partial class HomePage : Page
 {
-    private Engine _engine;
+    private readonly Engine _engine;
+    private readonly GamePage _gamePage;
 
-    public HomePage()
-    {
+    public HomePage(Engine engine, GamePage gamePage)
+    {       
         InitializeComponent();
-
-        ITetrisServer tetrisServer =
-            new TetrisServerService("http://localhost:5000/tetrisHub");
-
-        _engine = new Engine(tetrisServer);
+        _engine = engine;
+        _gamePage = gamePage;
     }
 
     private void SetBoardEvents(GameBoard gameBoard)
@@ -47,7 +44,8 @@ public partial class HomePage : Page
         SetBoardEvents(gameboard);  
         gameboard.StartGameLoop();
 
-        NavigationService.Navigate(new GamePage(gameboard));
+        _gamePage.SetPlayerBoard(gameboard);
+        NavigationService.Navigate(_gamePage);
     }
 
     private async void Start_MultiPlayer_Game(object sender, RoutedEventArgs e)
@@ -82,27 +80,27 @@ public partial class HomePage : Page
 
         SetBoardEvents(playerBoard);
 
-        GamePage gamePage = new GamePage(playerBoard);
-        gamePage.MatchmakingLabel.Visibility = Visibility.Visible;
+        _gamePage.SetPlayerBoard(playerBoard);
+        _gamePage.MatchmakingLabel.Visibility = Visibility.Visible;
 
         _engine.Game.OnMatchFound += () =>
         {
-            gamePage.Dispatcher.Invoke(() =>
+            _gamePage.Dispatcher.Invoke(() =>
             {
-                SetupOpponentBoard(gamePage, playerBoard);
+                SetupOpponentBoard(_gamePage, playerBoard);
             });
         };
 
         _engine.Game.OnBothReady += () =>
         {
-            gamePage.Dispatcher.Invoke(() =>
+            _gamePage.Dispatcher.Invoke(() =>
             {
                 playerBoard.StartGameLoop();
-                gamePage.OpponentBoard?.StartGameLoop();
+                _gamePage.OpponentBoard?.StartGameLoop();
             });
         };
 
-        NavigationService.Navigate(gamePage);
+        NavigationService.Navigate(_gamePage);
     }
 
     private void SetupOpponentBoard(GamePage gamePage, GameBoard playerBoard)

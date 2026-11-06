@@ -1,6 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TetrisClient;
 
@@ -9,22 +9,31 @@ namespace TetrisClient;
 /// </summary>
 public partial class GamePage : Page
 {
-    private readonly GameBoard _playerBoard;
+    private GameBoard _playerBoard;
 
     public GameBoard OpponentBoard { get; set; }
 
-    public GamePage(GameBoard playerBoard)
+    public GamePage()
     {
         InitializeComponent();
-
-        _playerBoard = playerBoard;
-
-        _playerBoard.GameOver += (sender, e) =>
-            NavigationService.GoBack();
-
-        MainGrid.Children.Add(_playerBoard);
-
+        
         MatchmakingLabel.Visibility = Visibility.Collapsed;
+    }
+
+    public void SetPlayerBoard(GameBoard playerBoard)
+    {
+        _playerBoard = playerBoard;
+        _playerBoard.GameOver += (sender, e) => NavigateToHome();
+        MainGrid.Children.Add(_playerBoard);
+    }
+
+    private void NavigateToHome()
+    {
+        HomePage homePage = ((App)Application.Current)
+            .Services
+            .GetRequiredService<HomePage>();
+
+        NavigationService.Navigate(homePage);
     }
 
     public void ShowOpponentBoard()
