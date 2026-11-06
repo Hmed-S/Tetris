@@ -107,7 +107,7 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
 
     [Theory]
     [InlineData("Ready")]
-    [InlineData("Drop")]
+    [InlineData("FastDrop")]
     [InlineData("RotateLeft")]
     [InlineData("RotateRight")]
     [InlineData("MoveLeft")]

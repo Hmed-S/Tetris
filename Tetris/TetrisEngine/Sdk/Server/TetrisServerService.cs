@@ -7,7 +7,7 @@ public class TetrisServerService(string url) : ITetrisServer
     private HubConnection _hubConnection;
     public event Action<string, int> OnMatchFound;
     public event Action OnReady;
-    public event Action OnDrop;
+    public event Action OnFastDrop;
     public event Action OnRotateRight;
     public event Action OnRotateLeft;
     public event Action OnMoveLeft;
@@ -31,6 +31,7 @@ public class TetrisServerService(string url) : ITetrisServer
         _hubConnection.On("RotateLeft", () => OnRotateLeft?.Invoke());
         _hubConnection.On("MoveLeft", () => OnMoveLeft?.Invoke());
         _hubConnection.On("MoveRight", () => OnMoveRight?.Invoke());
+        _hubConnection.On("FastDrop", () => OnFastDrop?.Invoke());
         _hubConnection.On("ToggleFastDrop", () => OnFastDroppedToggled?.Invoke());
         _hubConnection.On("OpponentDisconnected", () => OnDisconnected.Invoke());
         _hubConnection.On("Quit", () => OnQuit.Invoke());
@@ -44,6 +45,6 @@ public class TetrisServerService(string url) : ITetrisServer
     public async Task NotifyMoveLeft() => await _hubConnection.SendAsync("MoveLeft");
     public async Task NotifyMoveRight() => await _hubConnection.SendAsync("MoveRight");
     public async Task NotifyQuit() => await _hubConnection.SendAsync("QuitGame");
-    public async Task NotifyFastDrop() => await _hubConnection.SendAsync("ToggleFastDrop");
+    public async Task NotifyFastDrop() => await _hubConnection.SendAsync("FastDrop");
 
 }

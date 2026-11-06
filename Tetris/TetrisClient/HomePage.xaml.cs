@@ -28,12 +28,12 @@ public partial class HomePage : Page
     {
         _engine.Game.OnGameOver += gameBoard.HandleGameover;
         gameBoard.GameLoop += _engine.Drop;
-        gameBoard.Quit += _engine.Quit;
+        gameBoard.OnQuit += _engine.Quit;
         gameBoard.OnRotateRight += _engine.RotateRight;
         gameBoard.OnRotateLeft += _engine.RotateLeft;
         gameBoard.OnMoveLeft += _engine.MoveLeft;
         gameBoard.OnMoveRight += _engine.MoveRight;
-        gameBoard.ReadyAction += _engine.Ready;
+        gameBoard.OnReady += _engine.Ready;
     }
 
     private void Start_Single_player_Game(object sender, RoutedEventArgs e)
@@ -85,7 +85,7 @@ public partial class HomePage : Page
             new DispatcherTimer());
 
         SetBoardEvents(playerBoard);
-
+        playerBoard.OnFastDrop += _engine.NotifyFastDrop;
         _gamePage.SetPlayerBoard(playerBoard);
         _gamePage.MatchmakingLabel.Visibility = Visibility.Visible;
 

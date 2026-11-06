@@ -18,6 +18,18 @@ public class Player
         }
     }
     private Tetromino _preview;
+    public bool FastDrop 
+    { 
+        get
+        {
+            return field;
+        }
+        internal set
+        {
+            field = value;
+            OnFastDropped?.Invoke();
+        }
+    }
     public Tetromino Preview
     { get
         {
@@ -122,5 +134,6 @@ public class Player
     public event Action<int> OnLineCountChange;
     public event Action OnQuit;
     public event Action OnDisconnected;
+    public event Action OnFastDropped;
 
 }

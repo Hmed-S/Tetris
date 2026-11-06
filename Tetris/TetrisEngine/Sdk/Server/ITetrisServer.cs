@@ -5,7 +5,7 @@ public interface ITetrisServer
     
     public event Action<string, int> OnMatchFound;
     public event Action OnReady;
-    public event Action OnDrop;
+    public event Action OnFastDrop;
     public event Action OnRotateRight;
     public event Action OnRotateLeft;
     public event Action OnMoveLeft;

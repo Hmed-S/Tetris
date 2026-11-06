@@ -33,11 +33,11 @@ public class TetrisHub(MatchService matchService) : Hub
         await Clients.Client(opponent.Id).SendAsync(nameof(Ready));
     }
 
-    public async Task Drop()
+    public async Task FastDrop()
     {
         Player opponent = await matchService.GetOpponentByPlayerId(Context.ConnectionId);
 
-        await Clients.Client(opponent.Id).SendAsync("Drop");
+        await Clients.Client(opponent.Id).SendAsync(nameof(FastDrop));
     }
 
     public async Task RotateLeft()

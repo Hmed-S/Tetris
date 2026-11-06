@@ -19,14 +19,15 @@ public partial class GameBoard : UserControl
     private TetrisGrid _preview;
     protected DispatcherTimer _timer;
     public Dictionary<int, Action> PlayerActions { get; private set; }
-    public event Action ReadyAction;
-    public event Action Quit;
+    public event Action OnReady;
+    public event Action OnQuit;
     public event EventHandler GameOver;
     public event Action GameLoop;
     public event Action OnMoveLeft;
     public event Action OnMoveRight;
     public event Action OnRotateLeft;
     public event Action OnRotateRight;
+    public event Action OnFastDrop;
 
     public GameBoard(Player player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
     {
@@ -60,7 +61,17 @@ public partial class GameBoard : UserControl
         _player.OnLevelChange += UpdateLevel;
         _player.OnLevelChange += (level) => UpdateInterval(_player.Interval.MiliSeconds);
         _player.OnReady += Ready;
-
+        _player.OnFastDropped += () =>
+        {
+            if(_player.FastDrop)
+            {
+                UpdateInterval(_player.Interval.FastDropMiliSeconds);
+            }
+            else
+            {
+                UpdateInterval(_player.Interval.MiliSeconds);
+            }
+        };
         UpdateInterval(_player.Interval.MiliSeconds);
     }
 
@@ -102,7 +113,7 @@ public partial class GameBoard : UserControl
 
     public void ReadyClick(object sender, RoutedEventArgs e)
     {
-        ReadyAction.Invoke();
+        OnReady.Invoke();
     }
 
     public void RedrawPreview(Tetromino preview)
@@ -161,18 +172,19 @@ public partial class GameBoard : UserControl
     private void StopGame(object sender, RoutedEventArgs e)
     {
         _timer.Stop();
-        if ((string)QuitButton.Content == "Quit") Quit.Invoke();
+        if ((string)QuitButton.Content == "Quit") OnQuit.Invoke();
         GameOver.Invoke(this, EventArgs.Empty);
     }
 
     private void FastDrop(object sender, RoutedEventArgs e)
     {
-
+        OnFastDrop?.Invoke();
         _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.FastDropMiliSeconds);
     }
 
-    private void QuitHardDrop(object sender, RoutedEventArgs e)
+    private void QuitFastDrop(object sender, RoutedEventArgs e)
     {
+        OnFastDrop?.Invoke();
         _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
     }
 
@@ -224,7 +236,7 @@ public partial class GameBoard : UserControl
         switch(e.Key)
         {
             case Key.Space:
-                QuitHardDrop(sender, e); 
+                QuitFastDrop(sender, e); 
                 break;
 
         }

@@ -98,6 +98,7 @@ public class Engine
         Server.OnQuit += _game.Opponent.Quit;
         Server.OnDisconnected += () =>_game.Over(_game.Opponent);
         Server.OnDisconnected += () => Game.Opponent.Disconnected = true;
+        Server.OnFastDrop += () => Game.Opponent.FastDrop = !Game.Opponent.FastDrop;
     }
 
     private void SetOpponent(string name, int seed)
@@ -157,6 +158,8 @@ public class Engine
         {
             if (player.Id == _game.Player.Id && _game.GameState == DomainGameState.Quit) Server.NotifyQuit();  
         });
+
+        Game.Player.OnFastDropped += () => Server.NotifyFastDrop();
     }
 
     public Game StartSinglePlayerGame(int rowCount, int columnCount)
@@ -177,16 +180,9 @@ public class Engine
         return Game;
     }
 
-    public void Drop()
-    {
-        _game.Player.DropTetromino();
-    }
-
-    public void OpponentDrop()
-    {
-        _game.Opponent.DropTetromino();
-    }
-
+    public void Drop() => _game.Player.DropTetromino();
+    public void OpponentDrop() => _game.Opponent.DropTetromino();
+    public void NotifyFastDrop() => Game.Player.FastDrop = !Game.Player.FastDrop;
     public void RotateRight() => _game.Player.RotateRight();
     public void RotateLeft() => _game.Player.RotateLeft();
     public void MoveRight() => _game.Player.MoveRight();
