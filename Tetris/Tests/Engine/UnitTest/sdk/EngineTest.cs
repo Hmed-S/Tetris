@@ -4,6 +4,8 @@ using TetrisEngine.Sdk.Server;
 using DomainGame = TetrisEngine.Domain.Game.Game;
 using DomainInterval = TetrisEngine.Domain.Game.Interval;
 using TetrisEngine.Domain.Game.Player;
+using TetrisEngine.Domain.Game.Player.Factory;
+
 namespace TetrisEngine.Sdk.Tests;
 
 public class EngineTest
@@ -51,7 +53,7 @@ public class EngineTest
             .Setup(server => server.NotifyFastDrop())
             .Returns(Task.CompletedTask);
 
-        _engine = new Engine(_serverMock.Object);
+        _engine = new Engine(_serverMock.Object, new PlayerFactory());
     }
 
     [Fact]

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TetrisEngine.Sdk;
 using TetrisEngine.Sdk.Server;
+using TetrisEngine.Domain.Game.Player.Factory;
 
 namespace TetrisClient;
 
@@ -25,6 +26,7 @@ public partial class App : Application
                 string serverUrl = context.Configuration["Server:Url"]
                     ?? throw new InvalidOperationException("The Server:Url setting is required.");
 
+                services.AddTransient<IPlayerFactory, PlayerFactory>();
                 services.AddTransient<ITetrisServer>(_ =>
                     new TetrisServerService(serverUrl));
                 services.AddTransient<Engine>();

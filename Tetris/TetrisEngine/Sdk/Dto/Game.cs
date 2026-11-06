@@ -3,35 +3,30 @@
 public class Game
 {
    public Player Player { get; set; }
-
-    private Player _opponent;
    public Player Opponent 
     {
         get
         {
-            return _opponent;
+            return field;
         }
         set
         {
-            _opponent = value;
+            field = value;
             OnMatchFound?.Invoke();
         }
     }
 
    public GameState State { get; set; }
-
-   private bool _isOver = false;
-   private bool _bothReady = false;
    
    public bool BothReady
     {
         get 
         {
-            return _bothReady;
+            return field;
         }
         set
         {
-            _bothReady = value;
+            field = value;
             OnBothReady?.Invoke();
         }
     }
@@ -42,12 +37,13 @@ public class Game
    public bool IsOver { 
        get 
         {
-            return _isOver;
+            return field;
         }
        set
        {
-            _isOver = value;
+            field = value;
             OnGameOver?.Invoke();
-       } }
+       } 
+    }
 
 }

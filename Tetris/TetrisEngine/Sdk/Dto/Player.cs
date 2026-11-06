@@ -4,20 +4,18 @@ public class Player
 {
     public string Name { get; set; }
     public Board Board { get; set; }
-    private Tetromino _currentTetromino;
     public Tetromino CurrentTetromino 
     {
         get
         {
-            return _currentTetromino;
+            return field;
         }
         set
         {
-            OnTetrominoPositionChange?.Invoke(_currentTetromino, value);
-            _currentTetromino = value;
+            OnTetrominoPositionChange?.Invoke(field, value);
+            field = value;
         }
     }
-    private Tetromino _preview;
     public bool FastDrop 
     { 
         get
@@ -31,95 +29,89 @@ public class Player
         }
     }
     public Tetromino Preview
-    { get
+    { 
+        get
         {
-            return _preview;
+            return field;
         }
         set
         {
-            _preview = value;
-            OnPreviewChange?.Invoke(_preview);
+            field = value;
+            OnPreviewChange?.Invoke(field);
         }
     }
     public Interval Interval { get; set; }
-
-    private int _score;
     public int Score 
     {
         get
         {
-            return _score;
+            return field;
         }
         set
         {
-            _score = value;
-            OnScoreChange?.Invoke(_score);
+            field = value;
+            OnScoreChange?.Invoke(field);
         }
     }
-    private int _level;
     public int Level 
     { 
        get
        {
-            return _level;
+            return field;
        }
        set
        {
-            _level = value;
-            OnLevelChange?.Invoke(_level);
+            field = value;
+            OnLevelChange?.Invoke(field);
        }
     }
-    private int _lineCount;
     public int LineCount
     {
         get
         {
-            return _lineCount;
+            return field;
         }
         set
         {
-            _lineCount = value;
-            OnLineCountChange?.Invoke(_lineCount);
+            field = value;
+            OnLineCountChange?.Invoke(field);
         }
     }
-    private bool _isReady = false;
     public bool IsReady {
         get
         {
-            return _isReady; 
+            return field; 
         }
         set 
         {
-            _isReady = value;
+            field = value;
             if(IsReady)
             OnReady?.Invoke();
         }
     }
-    private bool _quit;
     public bool Quit 
     { 
         get
         {
-            return _quit;
+            return field;
         }
         set
         {
-            _quit = value;
-            if (_quit)
+            field = value;
+            if (field)
             OnQuit?.Invoke();
         }
     }
-    private bool _disconnected;
     public bool Disconnected 
     { 
         get
         {
-            return _disconnected;
+            return field;
         }
         set
         {
-            _disconnected = value;
-            if(_disconnected)
+            field = value;
+            if(field)
             OnDisconnected?.Invoke();
         }
     }
