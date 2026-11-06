@@ -14,20 +14,24 @@ namespace TetrisClient;
 /// </summary>
 public partial class GameBoard : UserControl
 {
+    protected Player _player;
     private TetrisGrid _tetrisGrid;
     private TetrisGrid _preview;
-    private DispatcherTimer _timer;
-    public double FastDropMilliSeconds { get; set; }
-    public double DropIntervalMilliseconds { get; private set; }
+    protected DispatcherTimer _timer;
     public Dictionary<int, Action> PlayerActions { get; private set; }
     public event Action ReadyAction;
     public event Action Quit;
     public event EventHandler GameOver;
     public event Action GameLoop;
+    public event Action OnMoveLeft;
+    public event Action OnMoveRight;
+    public event Action OnRotateLeft;
+    public event Action OnRotateRight;
 
-    public GameBoard(TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
+    public GameBoard(Player player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
     {
         InitializeComponent();
+        _player = player;
 
         _tetrisGrid = tetrisGrid;
         _preview = preview;
@@ -41,9 +45,35 @@ public partial class GameBoard : UserControl
         PauseButton.Click += PauseTimer;
         QuitButton.Click += StopGame;
         _timer.Tick += (sender, e) => GameLoop.Invoke();
+        
+        SetPlayerEvents();
     }
 
-    public void StartGameLoop() => _timer.IsEnabled = true;
+    private void SetPlayerEvents()
+    {
+        _player.OnTetrominoPositionChange += DrawTetromino;
+        _player.OnPreviewChange += RedrawPreview;
+        _player.Board.OnLineClear += ClearLine;
+        _player.Board.OnRowSwap += SwapRow;
+        _player.OnScoreChange += UpdateScore;
+        _player.OnLineCountChange += UpdateLineCount;
+        _player.OnLevelChange += UpdateLevel;
+        _player.OnLevelChange += (level) => UpdateInterval(_player.Interval.MiliSeconds);
+        _player.OnReady += Ready;
+
+        UpdateInterval(_player.Interval.MiliSeconds);
+    }
+
+    public void StartGameLoop()
+    {
+        if (IsLoaded) SetKeyEvents();
+        else Loaded += (sender, e) => SetKeyEvents();
+
+        _tetrisGrid.Put(_player.CurrentTetromino);
+        _preview.Put(_player.Preview);
+        
+        _timer.IsEnabled = true;
+    }
 
     public void DrawTetromino(Tetromino previous, Tetromino next)
     {
@@ -55,23 +85,19 @@ public partial class GameBoard : UserControl
 
     public void Ready()
     {
-        if (!Dispatcher.CheckAccess())
+        Dispatcher.Invoke(()=>
         {
-            Dispatcher.Invoke(() => Ready());
-            return;
-        }
-
-        if(ReadyButton.Visibility == Visibility.Collapsed)
-        {
-            ReadyLabel.ShowReadyIcon();
-        }
-        else
-        {
-            ReadyButton.Visibility = Visibility.Collapsed;
-            ReadyLabel.Visibility = Visibility.Visible;
-            ReadyLabel.ShowReadyIcon();
-        }
-        
+            if (ReadyButton.Visibility == Visibility.Collapsed)
+            {
+                ReadyLabel.ShowReadyIcon();
+            }
+            else
+            {
+                ReadyButton.Visibility = Visibility.Collapsed;
+                ReadyLabel.Visibility = Visibility.Visible;
+                ReadyLabel.ShowReadyIcon();
+            }
+        });
     }
 
     public void ReadyClick(object sender, RoutedEventArgs e)
@@ -100,13 +126,11 @@ public partial class GameBoard : UserControl
 
     public void UpdateInterval(double interval)
     {
-        DropIntervalMilliseconds = interval;
-        _timer.Interval = TimeSpan.FromMilliseconds(DropIntervalMilliseconds);
+        _timer.Interval = TimeSpan.FromMilliseconds(interval);
     }
 
     public void HandleGameover()
     {
-
         Dispatcher.Invoke(() =>
             {
                 _timer.Stop();
@@ -144,25 +168,12 @@ public partial class GameBoard : UserControl
     private void FastDrop(object sender, RoutedEventArgs e)
     {
 
-        _timer.Interval = TimeSpan.FromMilliseconds(FastDropMilliSeconds);
+        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.FastDropMiliSeconds);
     }
 
     private void QuitHardDrop(object sender, RoutedEventArgs e)
     {
-        _timer.Interval = TimeSpan.FromMilliseconds(DropIntervalMilliseconds);
-    }
-
-    public void EnableKeyControls(Dictionary<int, Action> playerActions)
-    {
-        if (!Dispatcher.CheckAccess())
-        {
-            Dispatcher.Invoke(() => EnableKeyControls(playerActions));
-            return;
-        }
-        PlayerActions = playerActions;
-
-        if (IsLoaded) SetKeyEvents();
-        else Loaded += (sender, e) => SetKeyEvents();
+        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
     }
 
     private void SetKeyEvents()
@@ -188,17 +199,17 @@ public partial class GameBoard : UserControl
         {
             case Key.Up:
             case Key.X:
-                PlayerActions[0](); e.Handled = true; break;
+                OnRotateRight.Invoke(); e.Handled = true; break;
             case Key.RightShift:
             case Key.LeftCtrl:
             case Key.Z:
             case Key.Down:
-                PlayerActions[1](); e.Handled = true; break;
+                OnRotateLeft.Invoke(); e.Handled = true; break;
             case Key.Escape:
             case Key.F1: PauseTimer(sender, e); e.Handled = true; break;
             case Key.Left:
-                PlayerActions[2](); e.Handled = true; break;
-            case Key.Right: PlayerActions[3](); e.Handled = true; break;
+                OnMoveLeft.Invoke(); e.Handled = true; break;
+            case Key.Right: OnMoveRight.Invoke(); e.Handled = true; break;
             case Key.Space:
                 FastDrop(sender, e); e.Handled = true;
                 break;
@@ -220,9 +231,11 @@ public partial class GameBoard : UserControl
 
     }
 
-    public void StartOnLoaded()
+    internal void HideAllButtons()
     {
-        Loaded += (sender, e) => _timer.IsEnabled = true;
+        QuitButton.Visibility = Visibility.Collapsed;
+        ReadyButton.Visibility = Visibility.Collapsed;
+        PauseButton.Visibility = Visibility.Collapsed;
     }
 
 }

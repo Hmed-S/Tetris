@@ -9,31 +9,19 @@ namespace TetrisClient;
 /// </summary>
 public partial class GamePage : Page
 {
-    private GameBoard _playerBoard;
-    private GameBoard _opponentBoard;
+    private readonly GameBoard _playerBoard;
 
-    public GamePage(GameBoard playerBoard, GameBoard opponentBoard)
-    {
-        _playerBoard = playerBoard;
-        _opponentBoard = opponentBoard;
-
-        InitializeComponent();
-
-        _playerBoard.GameOver += (object sender, EventArgs e) => NavigationService.GoBack();
-
-        MainGrid.Children.Add(_playerBoard);
-        MainGrid.Children.Add(_opponentBoard);
-
-        Grid.SetColumn(playerBoard, 0);
-    }
+    public GameBoard OpponentBoard { get; set; }
 
     public GamePage(GameBoard playerBoard)
     {
-        _playerBoard = playerBoard;
-
         InitializeComponent();
 
-        _playerBoard.GameOver += (object sender, EventArgs e) => NavigationService.GoBack();
+        _playerBoard = playerBoard;
+
+        _playerBoard.GameOver += (sender, e) =>
+            NavigationService.GoBack();
+
         MainGrid.Children.Add(_playerBoard);
 
         MatchmakingLabel.Visibility = Visibility.Collapsed;
@@ -41,27 +29,35 @@ public partial class GamePage : Page
 
     public void ShowOpponentBoard()
     {
-        // Controleer of we op de verkeerde thread zitten, zo ja: stuur door naar de UI-thread
         if (!Dispatcher.CheckAccess())
         {
-            Dispatcher.Invoke(() => ShowOpponentBoard());
+            Dispatcher.Invoke(ShowOpponentBoard);
             return;
         }
 
-        // --- Vanaf hier is de code gegarandeerd op de UI-thread ---
+        if (OpponentBoard == null || MainGrid.Children.Contains(OpponentBoard))
+        {
+            return;
+        }
+
+        MainGrid.Children.Add(OpponentBoard);
+
+        Grid.SetColumn(OpponentBoard, 1);
+
         MatchmakingLabel.Visibility = Visibility.Collapsed;
-        Grid.SetColumn(_opponentBoard, 1);
     }
 
     public void HideOpponentBoard()
     {
         if (!Dispatcher.CheckAccess())
         {
-            Dispatcher.Invoke(() => HideOpponentBoard());
+            Dispatcher.Invoke(HideOpponentBoard);
             return;
         }
 
-        _opponentBoard.Visibility = Visibility.Collapsed;
+        if (OpponentBoard != null)
+        {
+            OpponentBoard.Visibility = Visibility.Collapsed;
+        }
     }
-
 }

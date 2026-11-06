@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,53 +21,32 @@ public partial class HomePage : Page
     {
         InitializeComponent();
 
-        ITetrisServer tetrisServer = new TetrisServerService("http://localhost:5000/tetrisHub");
+        ITetrisServer tetrisServer =
+            new TetrisServerService("http://localhost:5000/tetrisHub");
+
         _engine = new Engine(tetrisServer);
     }
 
-    public void ConfigureBoardEvents(GameBoard gameBoard, Player player)
+    private void SetBoardEvents(GameBoard gameBoard)
     {
-        player.OnTetrominoPositionChange += gameBoard.DrawTetromino;
-        player.OnPreviewChange += gameBoard.RedrawPreview;
-        player.Board.OnLineClear += gameBoard.ClearLine;
-        player.Board.OnRowSwap += gameBoard.SwapRow;
-        player.OnScoreChange += gameBoard.UpdateScore;
-        player.OnLineCountChange += gameBoard.UpdateLineCount;
-        player.OnLevelChange += gameBoard.UpdateLevel;
-        player.OnLevelChange += (level) => gameBoard.UpdateInterval(player.Interval.MiliSeconds);
-        player.OnReady += gameBoard.Ready;
-
-        gameBoard.UpdateInterval(player.Interval.MiliSeconds);
+        _engine.Game.OnGameOver += gameBoard.HandleGameover;
+        gameBoard.GameLoop += _engine.Drop;
+        gameBoard.Quit += _engine.Quit;
+        gameBoard.OnRotateRight += _engine.RotateRight;
+        gameBoard.OnRotateLeft += _engine.RotateLeft;
+        gameBoard.OnMoveLeft += _engine.MoveLeft;
+        gameBoard.OnMoveRight += _engine.MoveRight;
+        gameBoard.ReadyAction += _engine.Ready;
     }
-
 
     private void Start_Single_player_Game(object sender, RoutedEventArgs e)
     {
-        GameBoard gameboard = new (new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
-
         _engine.StartSinglePlayerGame(20, 10);
-        _engine.Game.OnGameOver += gameboard.HandleGameover;
+        GameBoard gameboard = new(_engine.Game.Player, new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
 
-        ConfigureBoardEvents(gameboard, _engine.Game.Player);
-        
-        gameboard.ReadyButton.Visibility = Visibility.Collapsed;
-        gameboard.FastDropMilliSeconds = _engine.Game.Player.Interval.FastDropMiliSeconds;
-        gameboard.GameLoop += _engine.Drop;
-        gameboard.StartOnLoaded();
-        gameboard.Quit += _engine.Quit;
-        
+        SetBoardEvents(gameboard);  
+        gameboard.StartGameLoop();
 
-        gameboard.EnableKeyControls(new Dictionary<int, Action>
-        {
-            {  0, _engine.RotateRight },
-            {  1, _engine.RotateLeft  },
-            {  2, _engine.MoveLeft    },
-            {  3, _engine.MoveRight   },
-        });
-
-        
-        gameboard.DrawTetromino(_engine.Game.Player.CurrentTetromino,_engine.Game.Player.CurrentTetromino);
-        gameboard.RedrawPreview(_engine.Game.Player.Preview);
         NavigationService.Navigate(new GamePage(gameboard));
     }
 
@@ -79,15 +57,16 @@ public partial class HomePage : Page
         {
             await _engine.StartMultiPlayerGame(20, 10, PlayerNameInput.Text);
         }
-        catch(HttpRequestException)
+        catch (HttpRequestException)
         {
-            ErrorLabel.Content = "Failed to connect to the server, try again later.";
+            ErrorLabel.Content ="Failed to connect to the server, try again later.";
+
             ErrorLabel.Visibility = Visibility.Visible;
             _engine.Quit();
             SinglePlayerButton.IsEnabled = true;
             return;
         }
-        catch(ArgumentException ae)
+        catch (ArgumentException ae)
         {
             ErrorLabel.Content = ae.Message;
             ErrorLabel.Visibility = Visibility.Visible;
@@ -95,110 +74,102 @@ public partial class HomePage : Page
             return;
         }
 
-        GameBoard playerBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
-        GameBoard opponentBoard = new(new TetrisGrid(20, 10), new TetrisGrid(4, 4), new DispatcherTimer());
+        GameBoard playerBoard = new MultiPlayerBoard(
+            _engine.Game.Player,
+            new TetrisGrid(20, 10),
+            new TetrisGrid(4, 4),
+            new DispatcherTimer());
 
-        _engine.Game.OnGameOver += playerBoard.HandleGameover;
-        _engine.Game.OnGameOver += opponentBoard.HandleGameover;
+        SetBoardEvents(playerBoard);
 
-        playerBoard.PauseButton.Visibility = Visibility.Collapsed;
-        opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
-        opponentBoard.QuitButton.Visibility = Visibility.Collapsed;
-
-        opponentBoard.ReadyButton.Visibility = Visibility.Collapsed;
-        playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
-
-        playerBoard.PlayerNameLabel.Visibility = Visibility.Visible;
-        playerBoard.PlayerNameLabel.Content = PlayerNameInput.Text;
-
-        ConfigureBoardEvents(playerBoard, _engine.Game.Player);
-
-        playerBoard.PauseButton.Visibility = Visibility.Collapsed;
-        opponentBoard.PauseButton.Visibility = Visibility.Collapsed;
-        playerBoard.GameLoop += _engine.Drop;
-        opponentBoard.GameLoop += _engine.OpponentDrop;
-        playerBoard.Quit += _engine.Quit;
-
-        GamePage gamePage = new (playerBoard, opponentBoard);
-
-        _engine.Game.OnMatchFound += gamePage.ShowOpponentBoard;
-        playerBoard.ReadyAction += _engine.Ready;
-
-
-        _engine.Game.OnBothReady += () =>
-        {
-            playerBoard.EnableKeyControls(new Dictionary<int, Action>
-            {
-                {  0, _engine.RotateRight },
-                {  1, _engine.RotateLeft  },
-                {  2, _engine.MoveLeft    },
-                {  3, _engine.MoveRight   },
-            });
-
-
-            playerBoard.DrawTetromino(_engine.Game.Player.CurrentTetromino, _engine.Game.Player.CurrentTetromino);
-            playerBoard.RedrawPreview(_engine.Game.Player.Preview);
-            opponentBoard.DrawTetromino(_engine.Game.Opponent.CurrentTetromino, _engine.Game.Opponent.CurrentTetromino);
-            opponentBoard.RedrawPreview(_engine.Game.Opponent.Preview);
-            playerBoard.StartGameLoop();
-            opponentBoard.StartGameLoop();
-
-        };
+        GamePage gamePage = new GamePage(playerBoard);
+        gamePage.MatchmakingLabel.Visibility = Visibility.Visible;
 
         _engine.Game.OnMatchFound += () =>
         {
-            ConfigureBoardEvents(opponentBoard, _engine.Game.Opponent);
+            gamePage.Dispatcher.Invoke(() =>
+            {
+                SetupOpponentBoard(gamePage, playerBoard);
+            });
+        };
 
-                Dispatcher.Invoke(() =>
-                {
-                    opponentBoard.PlayerNameLabel.Visibility = Visibility.Visible;
-                    opponentBoard.PlayerNameLabel.Content = _engine.Game.Opponent.Name;
-                    opponentBoard.ReadyLabel.Visibility = Visibility.Visible;
-                    playerBoard.ReadyButton.Visibility = Visibility.Visible;
-                    _engine.Game.Opponent.OnQuit += gamePage.HideOpponentBoard;
-                    _engine.Game.Opponent.OnDisconnected += gamePage.HideOpponentBoard;
-
-
-                    _engine.Game.OnGameOver += () =>
-                    {
-                        playerBoard.Dispatcher.Invoke(()=>
-                        {
-                            if (_engine.Game.Player.Won)
-                                playerBoard.GameOverLabel.Text = "You won!";
-                            if (_engine.Game.Opponent.Won)
-                                playerBoard.GameOverLabel.Text = "You lose!";
-                        });
-                    };
-
-                    _engine.Game.Opponent.OnQuit += () =>
-                    {
-                        playerBoard.Dispatcher.Invoke(() =>
-                        {
-                          playerBoard.GameOverLabel.Text =
-                                $"{_engine.Game.Opponent.Name} Quit";
-                          playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
-                        });
-                    };
-
-                    _engine.Game.Opponent.OnDisconnected += () =>
-                    {
-                        playerBoard.Dispatcher.Invoke(() =>
-                        {
-                            playerBoard.GameOverLabel.Text =
-                                  $"Connection lost to {_engine.Game.Opponent.Name}";
-                            playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
-                        });
-                    };
-
-                });
-            
-
+        _engine.Game.OnBothReady += () =>
+        {
+            gamePage.Dispatcher.Invoke(() =>
+            {
+                playerBoard.StartGameLoop();
+                gamePage.OpponentBoard?.StartGameLoop();
+            });
         };
 
         NavigationService.Navigate(gamePage);
     }
 
-    public void  ShowPlayerHandleInput(object sender, RoutedEventArgs e)
+    private void SetupOpponentBoard(GamePage gamePage, GameBoard playerBoard)
+    {
+        GameBoard opponentBoard = new MultiPlayerBoard(
+            _engine.Game.Opponent,
+            new TetrisGrid(20, 10),
+            new TetrisGrid(4, 4),
+            new DispatcherTimer());
+
+        gamePage.OpponentBoard = opponentBoard;
+
+        opponentBoard.GameLoop += _engine.OpponentDrop;
+        _engine.Game.OnGameOver += opponentBoard.HandleGameover;
+
+        opponentBoard.HideAllButtons();
+
+        gamePage.ShowOpponentBoard();
+
+        opponentBoard.ReadyLabel.Visibility = Visibility.Visible;
+        playerBoard.ReadyButton.Visibility = Visibility.Visible;
+
+        _engine.Game.Opponent.OnQuit += () =>
+        {
+            playerBoard.Dispatcher.Invoke(() =>
+            {
+                playerBoard.GameOverLabel.Text =
+                    $"{_engine.Game.Opponent.Name} Quit";
+
+                playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
+            });
+
+            gamePage.Dispatcher.Invoke(
+                gamePage.HideOpponentBoard);
+        };
+
+        _engine.Game.Opponent.OnDisconnected += () =>
+        {
+            playerBoard.Dispatcher.Invoke(() =>
+            {
+                playerBoard.GameOverLabel.Text =
+                    $"Connection lost to {_engine.Game.Opponent.Name}";
+
+                playerBoard.ReadyButton.Visibility = Visibility.Collapsed;
+            });
+
+            gamePage.Dispatcher.Invoke(
+                gamePage.HideOpponentBoard);
+        };
+
+        _engine.Game.OnGameOver += () =>
+        {
+            playerBoard.Dispatcher.Invoke(() =>
+            {
+                if (_engine.Game.Player.Won)
+                {
+                    playerBoard.GameOverLabel.Text = "You won!";
+                }
+                else if (_engine.Game.Opponent.Won)
+                {
+                    playerBoard.GameOverLabel.Text = "You lose!";
+                }
+            });
+        };
+    }
+
+    public void ShowPlayerHandleInput(object sender, RoutedEventArgs e)
     {
         MultiplayerButton.Visibility = Visibility.Collapsed;
         PlayerNameLabel.Visibility = Visibility.Visible;
