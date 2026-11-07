@@ -1,0 +1,53 @@
+name: Test and deploy TetrisClient
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Tetris/TetrisClient/**'
+  workflow_dispatch:
+
+jobs:
+  test-and-package:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet build Tetris/Tests/Engine/UnitTest
+        run: dotnet build Tetris/TetrisClient
+
+      - name: Run Engine tests
+        run: dotnet test Tetris/Tests/Engine/UnitTest
+
+      - name: Publish client
+        run: >-
+          dotnet publish Tetris/TetrisClient/TetrisClient.csproj
+          --configuration Release
+          --framework net10.0-windows
+          --runtime win-x64
+          --self-contained true
+          --output Tetris/TetrisClient/bin/Release/net10.0-windows/win-x64
+          --no-restore
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y
+
+      - name: Generate Executable Installer
+        shell: pwsh
+        run: '& "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" Tetris/TetrisClient/Installer/Tetris.iss'
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: tetris-client-installer
+          path: Tetris/TetrisClient/artifacts/installer/*.exe
+          if-no-files-found: error
