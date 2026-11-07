@@ -6,7 +6,6 @@ on:
       - main
     paths:
       - 'Tetris/TetrisClient/**'
-  workflow_dispatch:
 
 jobs:
   test-and-package:
@@ -21,9 +20,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Restore dependencies
-        run: dotnet build Tetris/Tests/Engine/UnitTest
-        run: dotnet build Tetris/TetrisClient
+      - name: Build client projects
+        shell: pwsh
+        run: |
+          dotnet build Tetris/Tests/Engine/UnitTest
+          dotnet build Tetris/TetrisClient
 
       - name: Run Engine tests
         run: dotnet test Tetris/Tests/Engine/UnitTest
