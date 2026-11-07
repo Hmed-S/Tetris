@@ -3,7 +3,6 @@ using TetrisEngine.Utility;
 
 namespace TetrisEngine.Domain.Game.Player;
 
-
 public class Player : IPlayer
 {
     public Guid Id { get; private set; }

@@ -1,5 +1,4 @@
 ﻿using DotNetCore.CAP;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
@@ -10,7 +9,7 @@ using TetrisServer.Service;
 
 namespace TetrisServer.Consumers;
 
-public class RedisPlayerConsumer(MatchService matchservice, IHubContext<TetrisHub> tetrisHub, ILogger<RedisPlayerConsumer> _logger) : Controller, ICapSubscribe
+public class RedisPlayerConsumer(MatchService matchservice, IHubContext<TetrisHub> tetrisHub, ILogger<RedisPlayerConsumer> _logger): ICapSubscribe
 {
 
     private async Task NotifyMatch(Player player1, Player player2, int seed)

@@ -1,26 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows.Controls;
 
-namespace TetrisClient.Controls
+namespace TetrisClient.Controls;
+
+/// <summary>
+/// Interaction logic for ControlPopup.xaml
+/// </summary>
+public partial class ControlPopup : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ControlPopup.xaml
-    /// </summary>
-    public partial class ControlPopup : UserControl
+    public ControlPopup()
     {
-        public ControlPopup()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
+
 }

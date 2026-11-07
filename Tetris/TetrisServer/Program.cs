@@ -21,7 +21,6 @@ IServiceCollection services = webApplicationBuilder.Services;
 webApplicationBuilder.WebHost.UseUrls("http://0.0.0.0:5000");
 webApplicationBuilder.Logging.AddFilter("Microsoft.AspNetCore.SignalR", LogLevel.Debug);
 
-
 services.AddTransient<IPlayerRepository, RedisPlayerRepository>();
 services.AddTransient<RedisPlayerConsumer>();
 services.AddSingleton<Random>();

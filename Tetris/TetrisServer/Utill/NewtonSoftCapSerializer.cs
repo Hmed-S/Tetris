@@ -17,8 +17,6 @@ public class NewtonSoftCapSerializer : ISerializer
 
     public object Deserialize(object value, Type valueType)
     {
-        // CAP kan soms al een JToken (zoals JObject) doorgeven vanuit interne caching.
-        // Als het al een JToken is, mappen we deze naar het doeltype, anders parsen we het als string.
         if (value is JToken jToken)
         {
             return jToken.ToObject(valueType);
@@ -39,13 +37,10 @@ public class NewtonSoftCapSerializer : ISerializer
             return new ValueTask<Message>(new Message(transportMessage.Headers, null));
         }
 
-        // Haal de JSON string uit de bytes van het transportbericht
         string json = Encoding.UTF8.GetString(transportMessage.Body.ToArray());
 
-        // Deserialiseer de object-payload met het juiste type
         object value = JsonConvert.DeserializeObject(json, valueType);
 
-        // Retourneer het volledige CAP Message object
         var message = new Message(transportMessage.Headers, value);
         return new ValueTask<Message>(message);
     }
@@ -67,7 +62,6 @@ public class NewtonSoftCapSerializer : ISerializer
             return new ValueTask<TransportMessage>(new TransportMessage(message.Headers, null));
         }
 
-        // In CAP wordt alleen de *Value* (de payload) van het Message object over de message broker verzonden
         var json = JsonConvert.SerializeObject(message.Value);
         var bytes = Encoding.UTF8.GetBytes(json);
 
