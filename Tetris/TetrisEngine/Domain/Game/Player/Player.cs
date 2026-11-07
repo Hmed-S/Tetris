@@ -137,7 +137,7 @@ public class Player : IPlayer
         });
     }
 
-    public virtual void RotateRight() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateRight));
+    public virtual void RotateRight() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateClockWise(), Move.RotateRight));
 
     public virtual void RotateLeft() => PutTetromino(() => new PositionChangedEvent(CurrentTetromino, CurrentTetromino.RotateCounterClockWise(), Move.RotateLeft));
 
