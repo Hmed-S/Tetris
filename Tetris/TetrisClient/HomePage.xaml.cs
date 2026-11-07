@@ -181,4 +181,16 @@ public partial class HomePage : Page
         StartMultiPlayerGameButton.Visibility = Visibility.Visible;
     }
 
+    public void ShowControls(object sender, RoutedEventArgs e)
+    {
+        if (ControlsPopup.IsVisible)
+        {
+            ControlsPopup.Visibility = Visibility.Collapsed;
+            HelpButton.Content = "Help";
+            return;
+        }
+        ControlsPopup.Visibility = Visibility.Visible;
+        HelpButton.Content = "Close";
+    }
+
 }
