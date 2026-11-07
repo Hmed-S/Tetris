@@ -193,6 +193,7 @@ public partial class GameBoard : UserControl
         var window = Window.GetWindow(this);
         window.KeyDown += KeyDownControls;
         window.KeyUp += KeyUpControls;
+        window.KeyDown += PauseControls;
     }
 
     private void DisableControlls()
@@ -217,8 +218,6 @@ public partial class GameBoard : UserControl
             case Key.Z:
             case Key.Down:
                 OnRotateLeft.Invoke(); e.Handled = true; break;
-            case Key.Escape:
-            case Key.F1: PauseTimer(sender, e); e.Handled = true; break;
             case Key.Left:
                 OnMoveLeft.Invoke(); e.Handled = true; break;
             case Key.Right: OnMoveRight.Invoke(); e.Handled = true; break;
@@ -227,6 +226,17 @@ public partial class GameBoard : UserControl
                 break;
         }
 
+    }
+
+    private void PauseControls(object sender, KeyEventArgs e)
+    {
+        if (e.IsRepeat) return;
+
+        switch(e.Key)
+        {
+            case Key.Escape:
+            case Key.F1: PauseTimer(sender, e); e.Handled = true; break;
+        }
     }
 
     private void KeyUpControls(object sender, KeyEventArgs e)
