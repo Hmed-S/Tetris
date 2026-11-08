@@ -5,31 +5,28 @@ public class Board
     public int RowCount { get; set; }
     public int ColumnCount { get; set; }
     public int[,] Values { get; set; }
-
-    private int _lastClearedLine;
     public int LastClearedLine 
     { 
         get
         {
-            return _lastClearedLine;
+            return field;
         }
         set
         {
-            _lastClearedLine = value;
-            OnLineClear.Invoke(_lastClearedLine);
+            field = value;
+            OnLineClear?.Invoke(field);
         } 
     }
-    private List<int> _lastSwappedLines = [];
     public List<int> LastSwappedLines 
     { 
         get
         {
-            return _lastSwappedLines;
+            return field;
         }
         set
         {
-            _lastSwappedLines = value;
-            OnRowSwap.Invoke(_lastSwappedLines[0], _lastSwappedLines[1]);
+            field = value;
+            OnRowSwap?.Invoke(field[0], field[1]);
         }
     }
 

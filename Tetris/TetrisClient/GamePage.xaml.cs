@@ -1,5 +1,6 @@
-﻿using System;
+﻿using System.Windows;
 using System.Windows.Controls;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TetrisClient;
 
@@ -8,26 +9,64 @@ namespace TetrisClient;
 /// </summary>
 public partial class GamePage : Page
 {
-    public GamePage(GameBoard gameboard, GameBoard opponentGameBoard)
+    private GameBoard _playerBoard;
+
+    public GameBoard OpponentBoard { get; set; }
+
+    public GamePage()
     {
         InitializeComponent();
-
-        MainGrid.Children.Add(
-            gameboard
-            );
-
-        MainGrid.Children.Add(opponentGameBoard);
-
-        Grid.SetColumn(gameboard, 0);
-        Grid.SetColumn(opponentGameBoard, 1);
-
+        
+        MatchmakingLabel.Visibility = Visibility.Collapsed;
     }
 
-    public GamePage(GameBoard gameboard)
+    public void SetPlayerBoard(GameBoard playerBoard)
     {
-        InitializeComponent();
-        gameboard.GameOver += (object sender, EventArgs e) => NavigationService.GoBack();
-        MainGrid.Children.Add(gameboard);
+        _playerBoard = playerBoard;
+        _playerBoard.GameOver += (sender, e) => NavigateToHome();
+        MainGrid.Children.Add(_playerBoard);
     }
 
+    private void NavigateToHome()
+    {
+        HomePage homePage = ((App)Application.Current)
+            .Services
+            .GetRequiredService<HomePage>();
+
+        NavigationService.Navigate(homePage);
+    }
+
+    public void ShowOpponentBoard()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(ShowOpponentBoard);
+            return;
+        }
+
+        if (OpponentBoard == null || MainGrid.Children.Contains(OpponentBoard))
+        {
+            return;
+        }
+
+        MainGrid.Children.Add(OpponentBoard);
+
+        Grid.SetColumn(OpponentBoard, 1);
+
+        MatchmakingLabel.Visibility = Visibility.Collapsed;
+    }
+
+    public void HideOpponentBoard()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(HideOpponentBoard);
+            return;
+        }
+
+        if (OpponentBoard != null)
+        {
+            OpponentBoard.Visibility = Visibility.Collapsed;
+        }
+    }
 }

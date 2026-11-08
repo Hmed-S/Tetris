@@ -1,36 +1,75 @@
 # Tetris
 
-A simple implementation of Tetris, with a planned but, as of writing, not included multiplayer mode.
+A simple implementation of Tetris with multiplayer support. The game is built using .NET 10.0 and C#.
 
-## Get started
+## Get Started
 
-## Running the binary
+## Installation
 
-1. Click on the latest release and download the `tetris-win64-0.1-beta.zip` file.
-2. Unpack the zip file at a location of your choice.
-3. Run the `hmed-s-tetris.exe` file.
+Simply download the [installer]() and install the game. Click the `Help` button for instructions on how to play.
 
-   * Optionally, you can create a desktop shortcut for easy access.
+## Running the Project
 
-## Running the project
+### The Client
 
-.NET 10.0 is required to run the solution.
-
-From the directory `./Tetris/TetrisClient`, run:
+From the `./Tetris/TetrisClient` directory, run:
 
 ```bash
 dotnet run
 ```
 
-## Playing the game
+### The Server
 
-The controls for the game are as follows:
+Run the following commands from the `./Tetris/TetrisServer` directory.
 
-| Action       | Key                                     |
-| ------------ | --------------------------------------- |
-| Move left    | Arrow key left                          |
-| Move right   | Arrow key right                         |
-| Rotate left  | Arrow key down, RightShift, LeftCtrl, Z |
-| Rotate right | Arrow key up, X                         |
-| FastDrop     | Space (hold)                            |
-| Pause        | Escape, F1                              |
+#### With Docker
+
+```bash
+docker-compose up
+```
+
+##### Services
+
+| Service      | URL            |
+| ------------ | -------------- |
+| Redis        | localhost:6379 |
+| RedisInsight | localhost:5540 |
+| TetrisServer | localhost:5050 |
+
+#### Without Docker
+
+##### Prerequisites
+
+- Redis running on `localhost:6379`
+- .NET 10.0
+
+Run:
+
+```bash
+dotnet run
+```
+
+## Models and Quick Architectural Overview
+
+### Domain Model
+
+The domain model shown below provides a quick overview of the application's domain structure.
+
+- Drop status indicates whether a tetromino has landed.
+- The `Player` class holds two references to `Tetromino`: the current tetromino, which is falling, and the preview tetromino. The preview becomes the current tetromino once the current one has landed.
+- The `Player` class uses the `TetrisBoard` to check whether a tetromino fits and to perform actions such as line clears. Notice that only the current tetromino and the preview tetromino are referenced.
+- Neither `Player` nor `TetrisBoard` holds references to all tetrominoes in a game.
+- The `Game` class is the main entity responsible for creating a game and managing its players, `GameState`, and `GameMode`.
+- Most attributes shown in the model are represented by value objects in the code, following the principles of [Domain-Driven Design](https://medium.com/@uzezijephter/understanding-value-objects-in-domain-driven-design-ddd-af144c742866).
+
+![Domain Model](Diagrams/domain-model.png)
+
+### Components
+
+This Tetris application consists of two applications: the server and the desktop client.
+
+The desktop client is divided into the Engine backend and the WPF frontend. The Engine consists of the Domain layer, which contains the core game logic, and a Facade layer (the SDK), which the clients depend on.
+
+The Facade layer exposes the required data through DTOs, which emit events that clients can react to. It also handles the connection to the server, which is used exclusively for multiplayer functionality.
+
+![Component Diagram](Diagrams/component-diagram.png)

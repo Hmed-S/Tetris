@@ -4,7 +4,19 @@ namespace TetrisEngine.Domain.Game;
 
 public class Game : IGame
 {
-    public required IPlayer Player { get; set; }
+    public required IPlayer Player
+    {
+        get
+        {
+            return field;
+        }
+        set
+        {
+            field = value;
+            if(Mode == GameMode.MultiPlayer)
+            value.OnReady.Add(CheckForBothReady);
+        }
+    }
     public required GameMode Mode { get; init; }
     public IPlayer Opponent
     {
@@ -28,16 +40,21 @@ public class Game : IGame
             else
             {
                 field = value;
+                value.Game = this;
+                value.OnReady.Add(CheckForBothReady);
             }
         }
     }
+    public IPlayer Winner { get; set; }
     public GameState GameState
     {
         get;
         set;
     }
 
-    public List<Action> OnGameOver { get; } = [];
+    public List<Action<IPlayer>> OnGameOver { get; } = [];
+
+    public List<Action> OnBothReady { get; } = [];
 
     private static IGame _game;
 
@@ -66,18 +83,36 @@ public class Game : IGame
 
     private void SetGameOverPlayer() => Player = new GameOverPlayer(Player);
 
-    public void Quit()
+    private void CheckForBothReady()
+    {
+        if (Player.IsReady && Opponent.IsReady)
+        {
+            OnBothReady.ForEach(onBothReady => onBothReady());
+        }
+    }
+
+    public void Quit(IPlayer player)
     {
         GameState = GameState.Quit;
         SetGameOverPlayer();
-        OnGameOver.ForEach(onGameOver => onGameOver());
+        OnGameOver.ForEach(onGameOver => onGameOver(player));
     }
 
-    public void Over()
+    public void Over(IPlayer player)
     {
         GameState = GameState.GameOver;
         SetGameOverPlayer();
-        OnGameOver.ForEach(onGameOver => onGameOver());
+
+        if (Mode == GameMode.MultiPlayer)
+        {
+            if (player.Id == Opponent.Id)
+            {
+                Winner = Player;
+            }
+            else if (player.Id == Player.Id) Winner = Opponent;
+        }
+
+        OnGameOver.ForEach(onGameOver => onGameOver(player));
     }
     
 }

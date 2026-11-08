@@ -21,6 +21,7 @@
                Height="56"/>
 
         <local:TetrisMenuButton
+            x:Name="SinglePlayerButton"
             Content="Singleplayer"
             HorizontalAlignment="Center"
             Margin="0,101,0,0" VerticalAlignment="Top"
@@ -33,7 +34,6 @@
             HorizontalAlignment="Center"
             Margin="0,157,0,0" VerticalAlignment="Top"
             Click="ShowPlayerHandleInput"
-            Visibility="Collapsed"
            />
 
         <Label
@@ -45,6 +45,18 @@
             Foreground="White"
             Height="38"
             FontSize="20" Margin="0,157,0,0"
+            />
+
+
+        <Label
+            Visibility="Collapsed"
+            Name="ErrorLabel"
+            Content="name:"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            Foreground="Red"
+            Height="38"
+            FontSize="20" Margin="0,273,0,0"
             />
 
         <TextBox
@@ -63,6 +75,17 @@
             Click="Start_MultiPlayer_Game"
           />
 
+        <local:TetrisMenuButton
+            x:Name="HelpButton"
+            Content="Help"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Margin="0,28,55,0"
+            Panel.ZIndex="1"
+            Click="ShowControls"
+           />
+
+        <local:ControlPopup x:Name="ControlsPopup" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
     </Grid>
 </Page>

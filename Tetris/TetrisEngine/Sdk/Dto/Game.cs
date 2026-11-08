@@ -3,21 +3,47 @@
 public class Game
 {
    public Player Player { get; set; }
-   public Player Oponent { get; set; }
+   public Player Opponent 
+    {
+        get
+        {
+            return field;
+        }
+        set
+        {
+            field = value;
+            OnMatchFound?.Invoke();
+        }
+    }
 
    public GameState State { get; set; }
+   
+   public bool BothReady
+    {
+        get 
+        {
+            return field;
+        }
+        set
+        {
+            field = value;
+            OnBothReady?.Invoke();
+        }
+    }
 
-   private bool _isOver = false;
+   public event Action OnBothReady;
    public event Action OnGameOver;
+   public event Action OnMatchFound;
    public bool IsOver { 
        get 
         {
-            return _isOver;
+            return field;
         }
        set
        {
-            _isOver = value;
-            OnGameOver.Invoke();
-       } }
+            field = value;
+            OnGameOver?.Invoke();
+       } 
+    }
 
 }

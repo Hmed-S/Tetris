@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,19 +14,26 @@ namespace TetrisClient;
 /// </summary>
 public partial class GameBoard : UserControl
 {
+    protected Player _player;
     private TetrisGrid _tetrisGrid;
     private TetrisGrid _preview;
-    private DispatcherTimer _timer;
-    private Engine _engine;
-    private Player _player;
+    protected DispatcherTimer _timer;
+    public Dictionary<int, Action> PlayerActions { get; private set; }
+    public event Action OnReady;
+    public event Action OnQuit;
     public event EventHandler GameOver;
+    public event Action GameLoop;
+    public event Action OnMoveLeft;
+    public event Action OnMoveRight;
+    public event Action OnRotateLeft;
+    public event Action OnRotateRight;
+    public event Action OnFastDrop;
 
-    public GameBoard(Engine engine, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
+    public GameBoard(Player player, TetrisGrid tetrisGrid, TetrisGrid preview, DispatcherTimer timer)
     {
         InitializeComponent();
+        _player = player;
 
-        _engine = engine;
-        _player = engine.Game.Player;
         _tetrisGrid = tetrisGrid;
         _preview = preview;
         _timer = timer;
@@ -35,36 +43,47 @@ public partial class GameBoard : UserControl
 
         Grid.SetRow(_preview, 1);
 
-
-        if (_player.Name != null)
-        {
-            PlayerNameLabel.Content = _player.Name;
-
-        }
-        else
-        {
-            PlayerNameLabel.Visibility = System.Windows.Visibility.Collapsed;
-        }
-
-        HandleEvents();
-
-        _timer.Tick += GameLoop;
-        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
-
-        _preview.Put(_player.Preview);
-        _tetrisGrid.Put(_player.CurrentTetromino);
-
         PauseButton.Click += PauseTimer;
         QuitButton.Click += StopGame;
-
-        _timer.IsEnabled = true;
+        _timer.Tick += (sender, e) => GameLoop.Invoke();
+        
+        SetPlayerEvents();
     }
 
-    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+    private void SetPlayerEvents()
     {
-        var window = Window.GetWindow(this);
-        window.KeyDown += KeyDownControls;
-        window.KeyUp += KeyUpControls;
+        _player.OnTetrominoPositionChange += DrawTetromino;
+        _player.OnPreviewChange += RedrawPreview;
+        _player.Board.OnLineClear += ClearLine;
+        _player.Board.OnRowSwap += SwapRow;
+        _player.OnScoreChange += UpdateScore;
+        _player.OnLineCountChange += UpdateLineCount;
+        _player.OnLevelChange += UpdateLevel;
+        _player.OnLevelChange += (level) => UpdateInterval(_player.Interval.MiliSeconds);
+        _player.OnReady += Ready;
+        _player.OnFastDropped += () =>
+        {
+            if(_player.FastDrop)
+            {
+                UpdateInterval(_player.Interval.FastDropMiliSeconds);
+            }
+            else
+            {
+                UpdateInterval(_player.Interval.MiliSeconds);
+            }
+        };
+        UpdateInterval(_player.Interval.MiliSeconds);
+    }
+
+    public void StartGameLoop()
+    {
+        if (IsLoaded) SetKeyEvents();
+        else Loaded += (sender, e) => SetKeyEvents();
+
+        _tetrisGrid.Put(_player.CurrentTetromino);
+        _preview.Put(_player.Preview);
+        
+        _timer.IsEnabled = true;
     }
 
     public void DrawTetromino(Tetromino previous, Tetromino next)
@@ -73,6 +92,28 @@ public partial class GameBoard : UserControl
             _tetrisGrid.Erase(previous);
 
         _tetrisGrid.Put(next);
+    }
+
+    public void Ready()
+    {
+        Dispatcher.Invoke(()=>
+        {
+            if (ReadyButton.Visibility == Visibility.Collapsed)
+            {
+                ReadyLabel.ShowReadyIcon();
+            }
+            else
+            {
+                ReadyButton.Visibility = Visibility.Collapsed;
+                ReadyLabel.Visibility = Visibility.Visible;
+                ReadyLabel.ShowReadyIcon();
+            }
+        });
+    }
+
+    public void ReadyClick(object sender, RoutedEventArgs e)
+    {
+        OnReady.Invoke();
     }
 
     public void RedrawPreview(Tetromino preview)
@@ -92,72 +133,76 @@ public partial class GameBoard : UserControl
     public void UpdateLevel(int level)
     {
         Level.Content = $"Level: {level}";
-        
     }
 
-    public void UpdateInterval(int interval)
+    public void UpdateInterval(double interval)
     {
-        _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
+        _timer.Interval = TimeSpan.FromMilliseconds(interval);
     }
 
     public void HandleGameover()
     {
-        Window.GetWindow(this).KeyDown -= KeyDownControls;
-        Window.GetWindow(this).KeyUp -= KeyUpControls;
-        PauseButton.IsEnabled = false;
-        _timer.Stop();
-        GameOverLabel.Visibility = Visibility.Visible;
-        QuitButton.Content = "Main Menu";
-    }
+        Dispatcher.Invoke(() =>
+            {
+                _timer.Stop();
+                Window.GetWindow(this).KeyDown -= KeyDownControls;
+                Window.GetWindow(this).KeyUp -= KeyUpControls;
+                PauseButton.IsEnabled = false;
+                GameOverLabel.Visibility = Visibility.Visible;
+                QuitButton.Content = "Main Menu";
+            });
 
-    private void HandleEvents()
-    {
-
-        _player.OnTetrominoPositionChange += DrawTetromino;
-        _player.OnPreviewChange += RedrawPreview;
-        _player.Board.OnLineClear += ClearLine;
-        _player.Board.OnRowSwap += SwapRow;
-        _player.OnScoreChange += UpdateScore;
-        _player.OnLineCountChange += UpdateLineCount;
-        _player.OnLevelChange += UpdateLevel;
-        _player.OnLevelChange -= UpdateInterval;
-
-        _engine.Game.OnGameOver += HandleGameover;
-    }
-
-    private void GameLoop(object sender, EventArgs args)
-    {
-        _engine.Drop();
     }
 
     private void PauseTimer(object sender, RoutedEventArgs e)
     {
         _timer.IsEnabled = !_timer.IsEnabled;
         PauseButton.Content = _timer.IsEnabled? "Pause" : "Resume" ;
+
+        if (_timer.IsEnabled)
+        {
+            SetKeyEvents();
+        }
+        if (!_timer.IsEnabled) 
+        {
+            DisableControlls();
+        }
     }
 
     private void StopGame(object sender, RoutedEventArgs e)
     {
-        if (_engine.Game.State == GameState.Playing)
-        {
-            _timer.Stop();
-            _engine.Quit();
-
-        }
-
+        _timer.Stop();
+        if ((string)QuitButton.Content == "Quit") OnQuit.Invoke();
         GameOver.Invoke(this, EventArgs.Empty);
     }
 
-    private void HardDrop(object sender, RoutedEventArgs e)
+    private void FastDrop(object sender, RoutedEventArgs e)
     {
-
+        OnFastDrop?.Invoke();
         _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.FastDropMiliSeconds);
     }
 
-    private void QuitHardDrop(object sender, RoutedEventArgs e)
+    private void QuitFastDrop(object sender, RoutedEventArgs e)
     {
+        OnFastDrop?.Invoke();
         _timer.Interval = TimeSpan.FromMilliseconds(_player.Interval.MiliSeconds);
     }
+
+    private void SetKeyEvents()
+    {
+        var window = Window.GetWindow(this);
+        window.KeyDown += KeyDownControls;
+        window.KeyUp += KeyUpControls;
+        window.KeyDown += PauseControls;
+    }
+
+    private void DisableControlls()
+    {
+        var window = Window.GetWindow(this);
+        window.KeyDown -= KeyDownControls;
+        window.KeyUp -= KeyUpControls;
+    }
+
 
     private void KeyDownControls(object sender, KeyEventArgs e)
     {
@@ -167,20 +212,30 @@ public partial class GameBoard : UserControl
         {
             case Key.Up:
             case Key.X:
-                _engine.RotateRight(); break;
+                OnRotateRight.Invoke(); e.Handled = true; break;
             case Key.RightShift:
             case Key.LeftCtrl:
             case Key.Z:
             case Key.Down:
-                _engine.RotateLeft(); break;
-            case Key.Escape:
-            case Key.F1: PauseTimer(sender, e); break;
+                OnRotateLeft.Invoke(); e.Handled = true; break;
             case Key.Left:
-                _engine.MoveLeft(); break;
-            case Key.Right: _engine.MoveRight(); break;
+                OnMoveLeft.Invoke(); e.Handled = true; break;
+            case Key.Right: OnMoveRight.Invoke(); e.Handled = true; break;
             case Key.Space:
-                HardDrop(sender, e);
+                FastDrop(sender, e); e.Handled = true;
                 break;
+        }
+
+    }
+
+    private void PauseControls(object sender, KeyEventArgs e)
+    {
+        if (e.IsRepeat) return;
+
+        switch(e.Key)
+        {
+            case Key.Escape:
+            case Key.F1: PauseTimer(sender, e); e.Handled = true; break;
         }
     }
 
@@ -191,11 +246,18 @@ public partial class GameBoard : UserControl
         switch(e.Key)
         {
             case Key.Space:
-                QuitHardDrop(sender, e); 
+                QuitFastDrop(sender, e); 
                 break;
 
         }
 
+    }
+
+    internal void HideAllButtons()
+    {
+        QuitButton.Visibility = Visibility.Collapsed;
+        ReadyButton.Visibility = Visibility.Collapsed;
+        PauseButton.Visibility = Visibility.Collapsed;
     }
 
 }

@@ -11,6 +11,7 @@ public readonly struct Point
     public static List<Point> Of(int x, int y, Tetromino tetromino)
     {
         List<Point> points = [];
+        if (tetromino.Shape.Value == null) return points;
 
         foreach (var i in Enumerable.Range(0, tetromino.Shape.Value.RowCount()))
         {

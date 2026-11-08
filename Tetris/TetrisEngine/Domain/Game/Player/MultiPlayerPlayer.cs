@@ -4,9 +4,9 @@ namespace TetrisEngine.Domain.Game.Player;
 
 public class MultiPlayerPlayer : Player
 {
-    public MultiPlayerPlayer(int seed, Random random, TetrisBoard board, Score score, Level level, Interval interval) : base(seed, random, board, score, level, interval)
+    public MultiPlayerPlayer(Name name, TetrisBoard board, Score score, Level level, Interval interval) : base(name, board, score, level, interval)
     {
-       
+
     }
 
     public override void Next()
@@ -59,7 +59,9 @@ public class MultiPlayerPlayer : Player
     public override void Ready()
     {
         int seed = new Random().Next();
+        IsReady = true;
         Seed = seed;
+        OnReady.ForEach(onReady => onReady());
     }
 
 }

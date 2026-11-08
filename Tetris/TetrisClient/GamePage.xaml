@@ -13,6 +13,6 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-       
+        <Label Name="MatchmakingLabel" Grid.Column="1" Content="Searching for match..." HorizontalAlignment="Center" VerticalAlignment="Center" Width="356" FontSize="36" Foreground="White" />
     </Grid>
 </Page>

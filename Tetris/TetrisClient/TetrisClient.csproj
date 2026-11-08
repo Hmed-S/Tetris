@@ -3,11 +3,13 @@
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
         <TargetFramework>net10.0-windows</TargetFramework>
+		<AssemblyName>Hmed-S-Tetris</AssemblyName>
         <UseWPF>true</UseWPF>
     </PropertyGroup>
     
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.6" />
+      <PackageReference Include="Microsoft.AspNetCore.Components" Version="10.0.14" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
     </ItemGroup>
 
 	<PropertyGroup>
@@ -22,9 +24,23 @@
     </ItemGroup>
     
     <ItemGroup>
+      <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
       <None Update="TetrisMenuButton.xaml">
         <Generator>MSBuild:Compile</Generator>
       </None>
     </ItemGroup>
+
+	<ItemGroup>
+		<None Update="appsettings.Development.json">
+			<DependentUpon>appsettings.json</DependentUpon>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 
 </Project>

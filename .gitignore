@@ -351,3 +351,7 @@ MigrationBackup/
 
 # JetBrains Rider
 *.idea/
+
+# Redis users
+./Tetris/TetrisServer.users.acl
+/Tetris/TetrisServer/users.acl

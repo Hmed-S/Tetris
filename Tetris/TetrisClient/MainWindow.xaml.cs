@@ -7,9 +7,10 @@ namespace TetrisClient;
 /// </summary>
 public partial class MainWindow: Window
 {
-    public MainWindow()
+    public MainWindow(HomePage homePage)
     {
         InitializeComponent();
+        MainFrame.Navigate(homePage);
     }
 
     private void Close_button_Click(object sender, RoutedEventArgs e)

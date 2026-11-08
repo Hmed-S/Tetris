@@ -4,77 +4,128 @@ public class Player
 {
     public string Name { get; set; }
     public Board Board { get; set; }
-    private Tetromino _currentTetromino;
     public Tetromino CurrentTetromino 
     {
         get
         {
-            return _currentTetromino;
+            return field;
         }
         set
         {
-            OnTetrominoPositionChange?.Invoke(_currentTetromino, value);
-            _currentTetromino = value;
+            OnTetrominoPositionChange?.Invoke(field, value);
+            field = value;
         }
     }
-    private Tetromino _preview;
-    public Tetromino Preview
-    { get
+    public bool FastDrop 
+    { 
+        get
         {
-            return _preview;
+            return field;
+        }
+        internal set
+        {
+            field = value;
+            OnFastDropped?.Invoke();
+        }
+    }
+    public Tetromino Preview
+    { 
+        get
+        {
+            return field;
         }
         set
         {
-            _preview = value;
-            OnPreviewChange?.Invoke(_preview);
+            field = value;
+            OnPreviewChange?.Invoke(field);
         }
     }
     public Interval Interval { get; set; }
-
-    private int _score;
     public int Score 
     {
         get
         {
-            return _score;
+            return field;
         }
         set
         {
-            _score = value;
-            OnScoreChange?.Invoke(_score);
+            field = value;
+            OnScoreChange?.Invoke(field);
         }
     }
-    private int _level;
     public int Level 
     { 
        get
        {
-            return _level;
+            return field;
        }
        set
        {
-            _level = value;
-            OnLevelChange?.Invoke(_level);
+            field = value;
+            OnLevelChange?.Invoke(field);
        }
     }
-    private int _lineCount;
     public int LineCount
     {
         get
         {
-            return _lineCount;
+            return field;
         }
         set
         {
-            _lineCount = value;
-            OnLineCountChange?.Invoke(_lineCount);
+            field = value;
+            OnLineCountChange?.Invoke(field);
+        }
+    }
+    public bool IsReady {
+        get
+        {
+            return field; 
+        }
+        set 
+        {
+            field = value;
+            if(IsReady)
+            OnReady?.Invoke();
+        }
+    }
+    public bool Quit 
+    { 
+        get
+        {
+            return field;
+        }
+        set
+        {
+            field = value;
+            if (field)
+            OnQuit?.Invoke();
+        }
+    }
+    public bool Disconnected 
+    { 
+        get
+        {
+            return field;
+        }
+        set
+        {
+            field = value;
+            if(field)
+            OnDisconnected?.Invoke();
         }
     }
 
+    public bool Won { get; set; }
+
+    public event Action OnReady;
     public event Action<Tetromino, Tetromino> OnTetrominoPositionChange;
     public event Action<Tetromino> OnPreviewChange;
     public event Action<int> OnScoreChange;
     public event Action<int> OnLevelChange;
     public event Action<int> OnLineCountChange;
+    public event Action OnQuit;
+    public event Action OnDisconnected;
+    public event Action OnFastDropped;
 
 }

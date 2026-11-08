@@ -1,12 +1,14 @@
 ﻿using TetrisEngine.Domain.Board;
 using TetrisEngine.Domain.Game;
 using DomainIPlayer = TetrisEngine.Domain.Game.Player.IPlayer;
-using DomainPlayer = TetrisEngine.Domain.Game.Player.Player;
 using DomainInterval = TetrisEngine.Domain.Game.Interval;
 using DomainIGame = TetrisEngine.Domain.Game.IGame;
 using DomainGame = TetrisEngine.Domain.Game.Game;
 using DomainGameState = TetrisEngine.Domain.Game.GameState;
 using TetrisEngine.Sdk.Mappers;
+using TetrisEngine.Sdk.Server;
+using TetrisEngine.Domain.Game.Player;
+using TetrisEngine.Domain.Game.Player.Factory;
 
 namespace TetrisEngine.Sdk;
 
@@ -14,50 +16,127 @@ public class Engine
 {
     private DomainIGame _game = DomainGame.GetGame();
     public Game Game { get; private set; }
+    public IPlayerFactory PlayerFactory { get; }
+    private ITetrisServer Server { get; }
 
-    private void SetGameEvents()
+    public Engine(ITetrisServer tetrisServer, IPlayerFactory playerFactory)
     {
-        _game.Player.OnTetrominoPositionChange.Add((previous, current) => Game.Player.CurrentTetromino = current.ToDto());
-        _game.Player.OnPreviewChange.Add((preview) => Game.Player.Preview = preview.ToDto());
-        _game.Player.OnTetrominoPositionChange.Add((previous, current) => Game.Player.Board.Values = _game.Player.Board.Values);
-        
+        Server = tetrisServer;
+        PlayerFactory = playerFactory;
+    }
 
-        _game.Player.OnLevelChange.Add((level) => {
-            Game.Player.Level = level.Value;
-            Game.Player.Interval.Seconds = _game.Player.Interval.Seconds;
-            Game.Player.Interval.MiliSeconds = _game.Player.Interval.MiliSeconds;
-            });
-        _game.Player.OnLineClear.Add((line) => Game.Player.Board.LastClearedLine = line);
-        _game.Player.OnLineSwab.Add((bottomLine, topLine) => Game.Player.Board.LastSwappedLines = [bottomLine, topLine]);
-        _game.Player.OnScoreChange.Add((score) => Game.Player.Score = score.Value);
-        _game.Player.OnLineCountChange.Add((lines) => Game.Player.LineCount = lines.Value);
+    private void DoStartGame(int rowCount, int columnCount, string name = "JohnDoe", GameMode gameMode = GameMode.SinglePlayer)
+    {
+        int seed = new Random().Next();
 
-        _game.OnGameOver.Add(() => { Game.IsOver = true; Game.State = (_game.GameState == DomainGameState.GameOver) ? GameState.GameOver : GameState.Quit; });
+        IPlayerFactory factory = PlayerFactory;
+
+        DomainIPlayer player = factory.CreatePlayer(
+            gameMode, seed, new Name(name),
+            new TetrisBoard(rowCount, columnCount),
+            new Score(), new Level(),
+            new DomainInterval());
+
+        _game = DomainGame.Start(gameMode, player);
+
+        Game = _game.ToDto();
+        _game.MapGameActionEvents(Game);
+        _game.Player.MapPlayerActionEvents(Game.Player);
+    }
+
+    private void SetServerEvents()
+    {
+        Server.OnReady += _game.Opponent.Ready;
+        Server.OnRotateRight += _game.Opponent.RotateRight;
+        Server.OnRotateLeft += _game.Opponent.RotateLeft;
+        Server.OnMoveLeft += _game.Opponent.MoveLeft;
+        Server.OnMoveRight += _game.Opponent.MoveRight;
+        Server.OnQuit += _game.Opponent.Quit;
+        Server.OnDisconnected += () =>_game.Over(_game.Opponent);
+        Server.OnDisconnected += () => Game.Opponent.Disconnected = true;
+        Server.OnFastDrop += () => Game.Opponent.FastDrop = !Game.Opponent.FastDrop;
+    }
+
+    private void SetOpponent(string name, int seed)
+    {
+        DomainIPlayer player = PlayerFactory.CreatePlayer(
+            _game.Mode, seed, new Name(name),
+            new TetrisBoard(_game.Player.Board.Height, _game.Player.Board.Width),
+            new Score(), new Level(),
+            new DomainInterval());
+
+        player.Seed = seed;
+        player.Random = new Random(seed);
+
+        _game.Player.Seed = seed;
+        _game.Player.Random = new Random(seed);
+
+        _game.Opponent = player;
+
+        _game.OnBothReady.Insert(0, () =>
+        {
+            _game.Player.Init();
+            _game.Opponent.Init();
+        });
+
+        Game.Opponent = _game.Opponent.ToDto();
+
+        _game.Opponent.MapPlayerActionEvents(Game.Opponent);
+        SetServerEvents();
+    }
+
+    private void NotifyServer()
+    {
+        _game.Player.OnTetrominoPositionChange.Insert(0, (position)=>
+        {
+            switch (position.Move) 
+            {
+                case Move.MoveLeft:
+                    Server.NotifyMoveLeft();
+                    break;
+                case Move.MoveRight:
+                    Server.NotifyMoveRight();
+                    break;
+                case Move.RotateLeft: 
+                    Server.NotifyRotateLeft();
+                    break;
+                case Move.RotateRight:
+                    Server.NotifyRotateRight();
+                    break;
+            }
+        });
+
+        _game.Player.OnReady.Insert(0, ()=> Server.NotifyReady());
+
+        _game.OnGameOver.Insert(0, (player) =>
+        {
+            if (player.Id == _game.Player.Id && _game.GameState == DomainGameState.Quit) Server.NotifyQuit();  
+        });
+
+        Game.Player.OnFastDropped += () => Server.NotifyFastDrop();
     }
 
     public Game StartSinglePlayerGame(int rowCount, int columnCount)
     {
-        int seed = new Random().Next();
-        DomainIPlayer player = new DomainPlayer
-        (
-            seed,
-            new Random(seed),
-            new TetrisBoard(rowCount, columnCount),
-            new Score(),
-            new Level(),
-            new DomainInterval()
-        );
+        DoStartGame(rowCount, columnCount);
 
-        _game = DomainGame.Start(GameMode.SinglePlayer, player);
+        return Game;
+    }
 
-        Game = _game.ToDto();
-        SetGameEvents();
-        
+    public async Task<Game> StartMultiPlayerGame(int rowCount, int columnCount, string name)
+    {
+        DoStartGame(rowCount, columnCount, name, GameMode.MultiPlayer);
+        NotifyServer();
+
+        Server.OnMatchFound += SetOpponent;
+        await Server.FindMatch(_game.Player.Name.Value);
+
         return Game;
     }
 
     public void Drop() => _game.Player.DropTetromino();
-    public void Next() => _game.Player.Next();
+    public void OpponentDrop() => _game.Opponent.DropTetromino();
+    public void NotifyFastDrop() => Game.Player.FastDrop = !Game.Player.FastDrop;
     public void RotateRight() => _game.Player.RotateRight();
     public void RotateLeft() => _game.Player.RotateLeft();
     public void MoveRight() => _game.Player.MoveRight();
