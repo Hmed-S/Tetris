@@ -9,7 +9,36 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-and-deploy:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore Tetris/Tetris.sln
+
+      - name: Verify Docker is available
+        run: docker info
+
+      - name: Build server tests
+        run: |
+          dotnet build Tetris/Tests/Server/UnitTest
+          dotnet build Tetris/Tests/Server/IntegrationTest
+
+      - name: Run server tests
+        run: |
+          dotnet test Tetris/Tests/Server/UnitTest
+          dotnet test Tetris/Tests/Server/IntegrationTest
+
+  deploy:
+    needs: test
     runs-on: windows-latest
 
     steps:
@@ -21,20 +50,8 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: Build server tests
-        shell: pwsh
-        run: |
-          dotnet build Tetris/Tests/Server/UnitTest
-          dotnet build Tetris/Tests/Server/IntegrationTest
-
-      - name: Set up Docker
-        uses: docker/setup-docker-action@v5
-
-      - name: Run server tests
-        shell: pwsh
-        run: |
-          dotnet test Tetris/Tests/Server/UnitTest
-          dotnet test Tetris/Tests/Server/IntegrationTest
+      - name: Restore server dependencies
+        run: dotnet restore Tetris/TetrisServer/TetrisServer.csproj
 
       - name: Set up production environment
         uses: microsoft/variable-substitution@v1

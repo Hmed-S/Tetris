@@ -23,6 +23,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{EBC64779-0C07-463A-8FEF-33A45CE0E9D0}"
+	ProjectSection(SolutionItems) = preProject
+		coverage.sh = coverage.sh
+		..\README.md = ..\README.md
+		stryker.sh = stryker.sh
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "Tests\Server\UnitTest\UnitTest.csproj", "{86212C28-ED02-4136-B0C9-EB7A69B82BA2}"
 EndProject
