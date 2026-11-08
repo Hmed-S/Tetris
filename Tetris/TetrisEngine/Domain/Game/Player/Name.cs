@@ -7,7 +7,7 @@ public readonly struct Name
     public Name(string value)
     {
         if(string.IsNullOrEmpty(value))
-            throw new ArgumentException("Name can not be null or emtpy.");
+            throw new ArgumentException("Name can not be empty.");
         Value = value;
     }
 }

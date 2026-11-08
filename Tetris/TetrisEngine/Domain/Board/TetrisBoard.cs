@@ -6,7 +6,6 @@ public class TetrisBoard
 {
     public int Height { get; }
     public int Width { get; }
-    public int Lines { get; private set; }
     public virtual int[,] Values { get; init; }
 
     public TetrisBoard(int rowCount, int columnCount)

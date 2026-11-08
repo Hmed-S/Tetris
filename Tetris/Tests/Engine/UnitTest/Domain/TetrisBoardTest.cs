@@ -52,7 +52,6 @@ public class TetrisBoardTest
 
         Assert.Equal(height, board.Height);
         Assert.Equal(width, board.Width);
-        Assert.Equal(0, board.Lines);
         Assert.Equal(height, board.Values.GetLength(0));
         Assert.Equal(width, board.Values.GetLength(1));
 
