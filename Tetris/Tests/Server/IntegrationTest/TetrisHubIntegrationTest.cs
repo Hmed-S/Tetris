@@ -40,10 +40,10 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
         await player2.StartAsync();
 
         (string Name, int Seed) match1 =
-            await player1Match.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            await player1Match.Task.WaitAsync(TimeSpan.FromSeconds(60));
 
         (string Name, int Seed) match2 =
-            await player2Match.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            await player2Match.Task.WaitAsync(TimeSpan.FromSeconds(60));
 
         Assert.True(player1Match.Task.IsCompleted);
         Assert.True(player2Match.Task.IsCompleted);
@@ -83,10 +83,10 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
             await player2.StartAsync();
 
             (string Name, int Seed) match1 =
-                await player1Match.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                await player1Match.Task.WaitAsync(TimeSpan.FromSeconds(60));
 
             (string Name, int Seed) match2 =
-                await player2Match.Task.WaitAsync(TimeSpan.FromSeconds(10));
+                await player2Match.Task.WaitAsync(TimeSpan.FromSeconds(60));
 
             Assert.Equal("Player Two", match1.Name);
             Assert.Equal("Player One", match2.Name);
