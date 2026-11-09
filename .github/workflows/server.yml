@@ -53,12 +53,18 @@ jobs:
         run: dotnet restore Tetris/TetrisServer/TetrisServer.csproj
 
       - name: Set up production environment
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: 'D:\a\Tetris\Tetris\Tetris\TetrisServer\appsettings.json'
+        shell: pwsh
         env:
-          REDIS_HOSTS_HOST: ${{ secrets.REDISHOST }}
-          ConnectionStrings_Redis: ${{ secrets.REDISURL }}
+          REDIS_HOST: ${{ secrets.REDISHOST }}
+          REDIS_URL: ${{ secrets.REDISURL }}
+        run: |
+          $settingsPath = Join-Path $env:GITHUB_WORKSPACE 'Tetris/TetrisServer/appsettings.json'
+          $settings = Get-Content -Raw -Path $settingsPath | ConvertFrom-Json
+
+          $settings.Redis.Hosts[0].Host = $env:REDIS_HOST
+          $settings.ConnectionStrings.Redis = $env:REDIS_URL
+
+          $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath -Encoding utf8
 
       - name: Publish server
         run: >-
