@@ -61,6 +61,8 @@ public class TetrisServerFixture : IAsyncLifetime
                         configuration.AddInMemoryCollection(settings);
                     });
             });
+
+        _ = _factory.Server;
     }
 
     public HubConnection CreateHubConnection(string name)

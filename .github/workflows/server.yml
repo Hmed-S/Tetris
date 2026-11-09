@@ -34,7 +34,7 @@ jobs:
         run: dotnet build Tetris/Tests/Server/IntegrationTest
 
       - name: Run integration tests
-        run: dotnet test Tetris/Tests/Server/IntegrationTest
+        run: dotnet test Tetris/Tests/Server/IntegrationTest --logger "console;verbosity=detailed"
 
   deploy:
     needs: test
