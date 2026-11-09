@@ -24,8 +24,8 @@ jobs:
       - name: Build client projects
         shell: pwsh
         run: |
-          dotnet build Tetris/Tests/Engine/UnitTest
-          dotnet build Tetris/TetrisClient
+          dotnet build Tetris/Tests/Engine/UnitTest/UnitTest.csproj
+          dotnet build Tetris/TetrisClient/TetrisClient.csproj --configuration Release --framework net10.0-windows --runtime win-x64 --self-contained true
 
       - name: Run Engine tests
         run: dotnet test Tetris/Tests/Engine/UnitTest
