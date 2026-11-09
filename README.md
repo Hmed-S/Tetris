@@ -6,7 +6,7 @@ A simple implementation of Tetris with multiplayer support. The game is built us
 
 ## Installation
 
-Simply download the [installer](https://github.com/Hmed-S/Tetris/releases/download/Hmed-S-Tetris-Setup-v0.2.0-beta.exe) and install the game. Click the `Help` button for instructions on how to play.
+Simply download the [installer](https://github.com/Hmed-S/Tetris/releases/download/v0.2.0-beta/Hmed-S-Tetris-Setup-v0.2.0-beta.exe) and install the game. Click the `Help` button for instructions on how to play.
 
 ## Running the Project
 
