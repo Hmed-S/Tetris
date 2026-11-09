@@ -55,7 +55,7 @@ jobs:
       - name: Set up production environment
         uses: microsoft/variable-substitution@v1
         with:
-          files: '${{env.DOTNET_ROOT}}\Tetris\TetrisServer\appsettings.json'
+          files: 'D:\a\Tetris\Tetris\Tetris\TetrisServer\appsettings.json'
         env:
           REDIS_HOSTS_HOST: ${{ secrets.REDISHOST }}
           ConnectionStrings_Redis: ${{ secrets.REDISURL }}
