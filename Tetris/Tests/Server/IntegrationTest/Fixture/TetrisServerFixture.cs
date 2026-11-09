@@ -28,7 +28,7 @@ public class TetrisServerFixture : IAsyncLifetime
     {
         await _redis.StartAsync();
 
-        RedisConnectionString = _redis.GetConnectionString();
+        RedisConnectionString = _redis.GetConnectionString() + ",abortConnect=false";
 
         Dictionary<string, string> settings = new()
         {
