@@ -40,10 +40,10 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
         await player2.StartAsync();
 
         (string Name, int Seed) match1 =
-            await player1Match.Task.WaitAsync(TimeSpan.FromMinutes(5));
+            await player1Match.Task.WaitAsync(TimeSpan.FromSeconds(30));
 
         (string Name, int Seed) match2 =
-            await player2Match.Task.WaitAsync(TimeSpan.FromMinutes(5));
+            await player2Match.Task.WaitAsync(TimeSpan.FromSeconds(30));
 
         Assert.True(player1Match.Task.IsCompleted);
         Assert.True(player2Match.Task.IsCompleted);
@@ -83,10 +83,10 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
             await player2.StartAsync();
 
             (string Name, int Seed) match1 =
-                await player1Match.Task.WaitAsync(TimeSpan.FromMinutes(5));
+                await player1Match.Task.WaitAsync(TimeSpan.FromSeconds(30));
 
             (string Name, int Seed) match2 =
-                await player2Match.Task.WaitAsync(TimeSpan.FromMinutes(5));
+                await player2Match.Task.WaitAsync(TimeSpan.FromSeconds(30));
 
             Assert.Equal("Player Two", match1.Name);
             Assert.Equal("Player One", match2.Name);
@@ -128,7 +128,7 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
             await player1.InvokeAsync(methodName);
 
             await receivedMessage.Task.WaitAsync(
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromSeconds(30));
         }
         finally
         {
@@ -153,7 +153,7 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
             await player1.InvokeAsync("QuitGame");
 
             await receivedQuit.Task.WaitAsync(
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromSeconds(30));
 
             IPlayerRepository repository =
                 _fixture.Services.GetRequiredService<IPlayerRepository>();
@@ -189,7 +189,7 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
             await player1.StopAsync();
 
             await receivedDisconnect.Task.WaitAsync(
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromSeconds(30));
 
             IPlayerRepository repository =
                 _fixture.Services.GetRequiredService<IPlayerRepository>();

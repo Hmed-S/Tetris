@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 using System.Net;
 using Testcontainers.Redis;
+using Microsoft.Extensions.DependencyInjection;
+using DotNetCore.CAP;
 
 namespace TetrisServer.IntegrationTests.Fixtures;
 
