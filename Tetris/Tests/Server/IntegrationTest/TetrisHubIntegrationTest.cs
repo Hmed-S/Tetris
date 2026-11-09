@@ -5,18 +5,18 @@ using TetrisServer.IntegrationTests.Fixtures;
 
 namespace TetrisServer.IntegrationTests.Hubs;
 
-public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
+public class TetrisHubIntegrationTest
 {
     private readonly TetrisServerFixture _fixture;
 
-    public TetrisHubIntegrationTest(TetrisServerFixture fixture)
+    public TetrisHubIntegrationTest()
     {
-        _fixture = fixture;
+        _fixture = new TetrisServerFixture();
     }
 
-    private async Task<(HubConnection Player1, HubConnection Player2)>
-        ConnectTwoPlayersAsync()
+    private async Task<(HubConnection Player1, HubConnection Player2)> ConnectTwoPlayersAsync()
     {
+        await _fixture.InitializeAsync();
         await _fixture.ResetRedisAsync();
 
         HubConnection player1 = _fixture.CreateHubConnection("Player One");
@@ -58,6 +58,7 @@ public class TetrisHubIntegrationTest : IClassFixture<TetrisServerFixture>
     [Fact]
     public async Task Connect_TwoPlayers_MatchesThemSuccessfully()
     {
+        await _fixture.InitializeAsync();
         await _fixture.ResetRedisAsync();
 
         HubConnection player1 = _fixture.CreateHubConnection("Player One");

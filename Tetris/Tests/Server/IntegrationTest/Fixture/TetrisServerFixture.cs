@@ -1,9 +1,6 @@
 ﻿using DotNet.Testcontainers.Builders;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using System.Net;
 using Testcontainers.Redis;
@@ -40,7 +37,6 @@ public class TetrisServerFixture : IAsyncLifetime
         Environment.SetEnvironmentVariable("Redis__Password", "");
         Environment.SetEnvironmentVariable("Redis__AllowAdmin", "true");
         Environment.SetEnvironmentVariable("Redis__Ssl", "false");
-        Environment.SetEnvironmentVariable("Cap__DefaultGroupName", $"cap.queue.tetristest.{Guid.NewGuid():N}.v1");
 
         ConfigurationOptions redisOptions = ConfigurationOptions.Parse(RedisConnectionString);
         redisOptions.AllowAdmin = true;
