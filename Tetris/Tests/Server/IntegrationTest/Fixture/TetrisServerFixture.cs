@@ -1,17 +1,18 @@
-using Garnet;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
 using System.Net;
+using Testcontainers.Redis;
 
 namespace TetrisServer.IntegrationTests.Fixtures;
 
 public class TetrisServerFixture : IAsyncLifetime
 {
-    private GarnetServer _redis;
-    private ILoggerFactory _loggerFactory;
+    private readonly RedisContainer _redis =
+        new RedisBuilder()
+            .WithImage("redis:7-alpine")
+            .Build();
 
     private WebApplicationFactory<Program> _factory;
     private ConnectionMultiplexer _redisConnection;
@@ -21,21 +22,16 @@ public class TetrisServerFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        _loggerFactory = LoggerFactory.Create(builder => builder.AddDebug());
-        _redis = new GarnetServer(
-            ["--bind", "127.0.0.1", "--port", "6379"],
-            _loggerFactory,
-            cleanupDir: true,
-            authenticationSettingsOverride: null);
-        _redis.Start();
+        await _redis.StartAsync();
 
-        RedisConnectionString = "127.0.0.1:6379";
+        RedisConnectionString = _redis.GetConnectionString();
 
         Dictionary<string, string> settings = new()
         {
             ["ConnectionStrings:Redis"] = RedisConnectionString,
-            ["Redis:Hosts:0:Host"] = "127.0.0.1",
-            ["Redis:Hosts:0:Port"] = "6379",
+            ["Redis:Hosts:0:Host"] = _redis.Hostname,
+            ["Redis:Hosts:0:Port"] =
+                _redis.GetMappedPublicPort(6379).ToString(),
             ["Redis:Password"] = "",
             ["Redis:AllowAdmin"] = "true",
             ["Redis:Ssl"] = "false",
@@ -99,8 +95,7 @@ public class TetrisServerFixture : IAsyncLifetime
             await _redisConnection.DisposeAsync();
         }
 
-        _redis?.Dispose();
-        _loggerFactory?.Dispose();
+        await _redis.DisposeAsync();
     }
 
 }
