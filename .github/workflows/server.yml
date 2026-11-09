@@ -60,8 +60,31 @@ jobs:
         run: |
           $settingsPath = Join-Path $env:GITHUB_WORKSPACE 'Tetris/TetrisServer/appsettings.json'
           $settings = Get-Content -Raw -Path $settingsPath | ConvertFrom-Json
+          $redisUri = [Uri]$env:REDIS_URL
 
-          $settings.Redis.Hosts[0].Host = $env:REDIS_HOST
+          if (-not $redisUri.Host) {
+              throw 'REDISURL does not contain a valid Redis hostname.'
+          }
+
+          $redisHost = if ($env:REDIS_HOST) { $env:REDIS_HOST } else { $redisUri.Host }
+          $redisPort = if ($redisUri.Port -gt 0) { $redisUri.Port } else { 6379 }
+          $redisSsl = $redisUri.Scheme -eq 'rediss'
+
+          $user = ''
+          $password = ''
+          if ($redisUri.UserInfo) {
+              $credentials = $redisUri.UserInfo -split ':', 2
+              $user = [Uri]::UnescapeDataString($credentials[0])
+              if ($credentials.Count -eq 2) {
+                  $password = [Uri]::UnescapeDataString($credentials[1])
+              }
+          }
+
+          $settings.Redis.User = $user
+          $settings.Redis.Password = $password
+          $settings.Redis.Ssl = $redisSsl
+          $settings.Redis.Hosts[0].Host = $redisHost
+          $settings.Redis.Hosts[0].Port = $redisPort
           $settings.ConnectionStrings.Redis = $env:REDIS_URL
 
           $settings | ConvertTo-Json -Depth 10 | Set-Content -Path $settingsPath -Encoding utf8
