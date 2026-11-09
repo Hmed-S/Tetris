@@ -24,15 +24,17 @@ jobs:
       - name: Verify Docker is available
         run: docker info
 
-      - name: Build server tests
-        run: |
-          dotnet build Tetris/Tests/Server/UnitTest
-          dotnet build Tetris/Tests/Server/IntegrationTest
+      - name: Build unit tests
+        run: dotnet build Tetris/Tests/Server/UnitTest
+          
+      - name: Run unit tests
+        run: dotnet test Tetris/Tests/Server/UnitTest
 
-      - name: Run server tests
-        run: |
-          dotnet test Tetris/Tests/Server/UnitTest
-          dotnet test Tetris/Tests/Server/IntegrationTest
+      - name: Build integration tests
+        run: dotnet build Tetris/Tests/Server/IntegrationTest
+
+      - name: Run integration tests
+        run: dotnet test Tetris/Tests/Server/IntegrationTest
 
   deploy:
     needs: test
