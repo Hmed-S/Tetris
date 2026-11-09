@@ -50,7 +50,7 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore server dependencies
-        run: dotnet restore Tetris/TetrisServer/TetrisServer.csproj
+        run: dotnet restore Tetris/TetrisServer/TetrisServer.csproj --runtime win-x86
 
       - name: Set up production environment
         shell: pwsh
