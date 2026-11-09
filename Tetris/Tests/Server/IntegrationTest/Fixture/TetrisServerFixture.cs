@@ -13,6 +13,7 @@ public class TetrisServerFixture : IAsyncLifetime
     private readonly RedisContainer _redis =
         new RedisBuilder()
             .WithImage("redis:7-alpine")
+            .WithPortBinding(6379, 6379)
             .WithWaitStrategy(
                 Wait.ForUnixContainer()
                     .UntilInternalTcpPortIsAvailable(6379))
@@ -28,7 +29,7 @@ public class TetrisServerFixture : IAsyncLifetime
     {
         await _redis.StartAsync();
 
-        RedisConnectionString = _redis.GetConnectionString() + ",abortConnect=false";
+        RedisConnectionString = _redis.GetConnectionString();
 
         Dictionary<string, string> settings = new()
         {
