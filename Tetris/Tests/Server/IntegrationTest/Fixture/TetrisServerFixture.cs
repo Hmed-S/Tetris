@@ -1,7 +1,7 @@
 ﻿using DotNet.Testcontainers.Builders;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 using System.Net;
 using Testcontainers.Redis;
@@ -13,7 +13,6 @@ public class TetrisServerFixture : IAsyncLifetime
     private readonly RedisContainer _redis =
         new RedisBuilder()
             .WithImage("redis:7-alpine")
-            .WithPortBinding(6379, 6379)
             .WithWaitStrategy(
                 Wait.ForUnixContainer()
                     .UntilInternalTcpPortIsAvailable(6379))
@@ -30,42 +29,22 @@ public class TetrisServerFixture : IAsyncLifetime
         await _redis.StartAsync();
 
         RedisConnectionString = _redis.GetConnectionString();
+        string dynamicPort = _redis.GetMappedPublicPort(6379).ToString();
+        string hostname = _redis.Hostname;
 
-        Dictionary<string, string> settings = new()
-        {
-            ["ConnectionStrings:Redis"] = RedisConnectionString,
-            ["Redis:Hosts:0:Host"] = _redis.Hostname,
-            ["Redis:Hosts:0:Port"] =
-                _redis.GetMappedPublicPort(6379).ToString(),
-            ["Redis:Password"] = "",
-            ["Redis:AllowAdmin"] = "true",
-            ["Redis:Ssl"] = "false",
-            ["Redis:ConnectTimeout"] = "5000",
-            ["Redis:SyncTimeout"] = "5000",
-            ["Redis:Database"] = "0",
-            ["Redis:PoolSize"] = "5",
-            ["Redis:IsDefault"] = "true",
-            ["Redis:AllowAdmin"] = "true"
-        };
+        Environment.SetEnvironmentVariable("ConnectionStrings__Redis", RedisConnectionString);
+        Environment.SetEnvironmentVariable("Redis__Hosts__0__Host", hostname);
+        Environment.SetEnvironmentVariable("Redis__Hosts__0__Port", dynamicPort);
+        Environment.SetEnvironmentVariable("Redis__Password", "");
+        Environment.SetEnvironmentVariable("Redis__AllowAdmin", "true");
+        Environment.SetEnvironmentVariable("Redis__Ssl", "false");
 
         ConfigurationOptions redisOptions = ConfigurationOptions.Parse(RedisConnectionString);
-
         redisOptions.AllowAdmin = true;
+        _redisConnection = await ConnectionMultiplexer.ConnectAsync(redisOptions);
 
-        _redisConnection =
-            await ConnectionMultiplexer.ConnectAsync(redisOptions);
+        _factory = new WebApplicationFactory<Program>();
 
-        _factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(webHost =>
-            {
-                webHost.ConfigureAppConfiguration(
-                    (context, configuration) =>
-                    {
-                        configuration.AddInMemoryCollection(settings);
-                    });
-            });
-
-        _ = _factory.Server;
     }
 
     public HubConnection CreateHubConnection(string name)
