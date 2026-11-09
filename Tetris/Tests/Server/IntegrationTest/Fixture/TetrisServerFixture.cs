@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
 using System.Net;
 using Testcontainers.Redis;
-using Microsoft.Extensions.DependencyInjection;
-using DotNetCore.CAP;
 
 namespace TetrisServer.IntegrationTests.Fixtures;
 
@@ -14,6 +13,9 @@ public class TetrisServerFixture : IAsyncLifetime
     private readonly RedisContainer _redis =
         new RedisBuilder()
             .WithImage("redis:7-alpine")
+            .WithWaitStrategy(
+                Wait.ForUnixContainer()
+                    .UntilInternalTcpPortIsAvailable(6379))
             .Build();
 
     private WebApplicationFactory<Program> _factory;
